@@ -49,6 +49,13 @@ public class ForumSystem {
 		}
 	}
 
+	/**
+	 * 
+	 * @param name of member in forum
+	 * @param forumName name of forum
+	 * 
+	 */
+	
 	public boolean addAdminToForum(String name,String forumName){
 		Forum forum=getForum(forumName);
 		if(forum==null){
@@ -80,24 +87,6 @@ public class ForumSystem {
 
 		return true;
 	}
-
-	public boolean logout(){
-		return _state.logout();
-	}
-
-	public boolean registerToForum(String forumName,String userName,String password,String email){
-		if(!_state.isInForum(forumName)){
-			System.out.println("not in forum");
-			return false;
-		}
-		Forum forum=getForum(forumName);
-		if(forum==null)
-			return false;
-		else{
-			return forum.register(userName, password, email);
-		}
-	}
-
 	public boolean complain(String user,String moderator,String forumName,String subForumName,String content){
 		if(!_state.isMemberLoggedInForum(user, forumName)){
 			System.out.println("not connected to forum!");

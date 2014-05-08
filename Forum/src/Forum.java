@@ -93,28 +93,27 @@ public class Forum {
 		return true;
 	}
 
-	public boolean register(String name,String pass,String email){
+	public report register(String name,String pass,String email){
 		//add fields
 		//do delegation to member constructor
 		//have to check if this user is already exists
 		if(isMember(name)){
 			System.out.println("member already exists");
-			return false;
+			return report.ALL_READY_MEMBER_EXIST;
 		}
 		else if(isEmail(email)){
 			System.out.println("email adress already exists in forum");
-			return false;
+			return report.ALL_READY_EMAIL_EXIST;
 		}
 		else{
 			Member newMember= new Member(name,pass,email);
 			System.out.println("registered, an email will be sent");
+			insertNewMember(newMember);
 
 			//wait for confirmation email?
-
-			insertNewMember(newMember);
 		}
 
-		return true;
+		return report.OK;
 	}
 
 
@@ -295,12 +294,11 @@ public class Forum {
 	}
 
 	public boolean addAdmin(Member member) {
-		if(isMember(member.get_userName())){
+		if(isMember(member)){
 			_administrators.add(member);
 			return true;
 		}
 		return false;
-
 	}
 
 	/**
@@ -316,6 +314,11 @@ public class Forum {
 		return false;
 	}
 
+	public boolean isMember(Member m) {
+		if( _members.indexOf(m) == -1)
+			return false;
+		return true;
+	}
 
 
 	/**
