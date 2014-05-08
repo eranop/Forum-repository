@@ -1,5 +1,6 @@
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 
 public class Post {
@@ -10,7 +11,9 @@ public class Post {
 	private String content;
 	private int index;
 	private HashMap <Integer, Post> responses;
-	
+	/**
+	 * new post 
+	 */
 	public Post(Member publisher, String title, String content, int index)
 	{
 		this.root = null;
@@ -20,7 +23,9 @@ public class Post {
 		this.index = index;
 		this.responses = new HashMap <Integer, Post>();
 	}
-	
+	/**
+	 * response post
+	 */
 	public Post(Member publisher, String title, String content, int index, Post root)
 	{
 		this.root = root;
@@ -31,6 +36,10 @@ public class Post {
 		this.responses = new HashMap <Integer, Post>();
 	}
 
+	public Set<Integer> getResponsesIndex(){
+		return responses.keySet();
+	}
+	
 	public boolean areResponsesEmpty()
 	{
 		return responses.isEmpty();

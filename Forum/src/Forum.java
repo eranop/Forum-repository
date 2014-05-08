@@ -39,7 +39,7 @@ public class Forum {
 
 	//functionality
 
-
+/*
 	public boolean setFriends(String user1,String user2){
 		if(!isMember(user1) || !isMember(user2)){
 			System.out.println("member doesnt exist!");
@@ -53,7 +53,14 @@ public class Forum {
 			return true;
 		}
 	}
+*/
 
+	public report setFriends(Member user1,Member user2){
+			user1.addFriend(user2);
+			user2.addFriend(user1);
+			return report.OK;
+		
+	}
 
 	public Member login(String userName, String password){
 
@@ -205,7 +212,7 @@ public class Forum {
 		return true;
 
 	}
-
+/*
 	public boolean deleteFromSubForum(String subName,int postID){
 		SubForum subforum=getSubForum(subName);
 		if(subforum==null){
@@ -216,7 +223,7 @@ public class Forum {
 	}
 
 
-
+*/
 
 
 	public HashMap<Integer,Post> showPostInSubForum(String subForumName) {
@@ -229,24 +236,20 @@ public class Forum {
 	}
 
 
-	public boolean deleteSubForum(String subForumName, String adminName) {
-		if(!isAdmin(adminName)){
+	public report deleteSubForum(String subForumName, Member admin) {
+		if(!isAdmin(admin)){
 			System.out.println("not admin!");
-			return false;
+			return report.IS_NOT_ADMIN;
 		}
-		if(getSubForum(subForumName)==null){
+		SubForum sf=getSubForum(subForumName);
+		if(sf==null){
 			System.out.println("no such sub-forum!");
-			return false;
+			return report.NO_SUCH_SUBFORUM;
 		}
-		for(int i=0;i<_subForums.size();i++){
-			if(_subForums.elementAt(i).getName().equals(subForumName)){
-				_subForums.remove(i);
-				return true;
-			}
-		}
-		return false;
+		_subForums.remove(sf);
+		return report.OK;
 	}
-	
+	/*
 	public boolean addModerator(String subForumName, String adminName,
 			String moderatorName) {
 		if(!isAdmin(adminName)){
@@ -266,7 +269,7 @@ public class Forum {
 		return subForum.addModerator(moderator);
 		
 	}
-
+*/
 
 	//helper functions
 
@@ -331,6 +334,11 @@ public class Forum {
 			if(_administrators.elementAt(i).get_userName().equals(userName))
 				return true;
 		}
+		return false;
+	}
+	public boolean isAdmin(Member m) {
+		if(_administrators.indexOf(m)!=-1)
+			return true;
 		return false;
 	}
 	/**

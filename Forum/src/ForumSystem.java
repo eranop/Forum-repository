@@ -87,6 +87,7 @@ public class ForumSystem {
 
 		return true;
 	}
+	/*
 	public boolean complain(String user,String moderator,String forumName,String subForumName,String content){
 		if(!_state.isMemberLoggedInForum(user, forumName)){
 			System.out.println("not connected to forum!");
@@ -109,7 +110,7 @@ public class ForumSystem {
 		return true;
 		
 	}
-	
+
 	public boolean deleteSubForum(String forumName,String subForumName,String adminName){
 		if(!_state.isMemberLoggedInForum(adminName, forumName)){
 			System.out.println("not connected to forum!");
@@ -122,7 +123,7 @@ public class ForumSystem {
 		}
 		return forum.deleteSubForum(subForumName,adminName);
 	}
-	
+	*/
 	
 	/**
 	 * adds a moderator to a sub-forum if the moderator is a member
@@ -132,6 +133,7 @@ public class ForumSystem {
 	 * @param moderatorName
 	 * @return true if the moderator was added
 	 */
+	/*
 	public boolean addModerator(String forumName,String subForumName,String adminName,String moderatorName){
 		if(!_state.isMemberLoggedInForum(adminName, forumName)){
 			System.out.println("not connected to forum!");
@@ -188,7 +190,7 @@ public class ForumSystem {
 		return false;
 
 	}
-
+*/
 	public boolean writePostInSubForum(String forumName,String subForumName,
 			String username,String title,String content){
 		if(!_state.isMemberLoggedInForum(username, forumName)){
@@ -217,6 +219,7 @@ public class ForumSystem {
 			System.out.println("no such forum!");
 		return false;
 	}
+	/*
 	public boolean deletePostInSubForum(String forumName,String subForumName,int postID,String moderator){
 		Forum forum=getForum(forumName);
 		if(forum!=null){
@@ -230,7 +233,7 @@ public class ForumSystem {
 			System.out.println("no such forum!");
 		return false;
 	}
-
+*/
 
 
 	public boolean loginSuperAdmin(String userName, String password){
@@ -302,7 +305,7 @@ public class ForumSystem {
 	}
 	
 	//helper functions
-	private Forum getForum(String forumName){
+	public Forum getForum(String forumName){
 		for(int i=0;i<_forums.size();i++){
 			if(_forums.elementAt(i).get_forumName().equals(forumName)){
 				return _forums.elementAt(i);
