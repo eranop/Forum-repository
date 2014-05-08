@@ -67,7 +67,7 @@ public class UserConectionState {
 		if(m==null)
 			return report.NO_MODERATOR;
 		return _subForum.complain(_member, m, content);
-	}//heara
+	}
 
 
 	
