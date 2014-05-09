@@ -7,6 +7,7 @@ public class UserConectionState {
 	private Member _member;
 	private Post _post;
 	private ForumSystem _fs;
+	private boolean _isSuperAdmin;
 	
 public UserConectionState(ForumSystem fs){
 		_fs=fs;
@@ -14,6 +15,7 @@ public UserConectionState(ForumSystem fs){
 		_subForum=null;
 		_member=null;
 		_post=null;
+		_isSuperAdmin=false;
 	}
 	
 /**
@@ -43,6 +45,10 @@ public UserConectionState(ForumSystem fs){
 			return report.NO_FORUM;
 		_forum=null;
 		_subForum=null;
+		if(!_isSuperAdmin){ 
+			//superAdmin stay connected as member even if he exit the forum
+			_member=null;
+		}
 		return report.OK;
 	}
 	public report enterForum(String forumName){
@@ -90,8 +96,35 @@ public UserConectionState(ForumSystem fs){
 	}
 
 	
+	public report loginAsSuperAdmin(String userName, String pass){
+		if(userName==null || pass==null){
+			return report.NULL_ARGUMENTS;
+		}
+		if(_member!=null){
+			return report.ALL_READY_MEMBER_EXIST;
+		}
+		if(!_fs.isValidSuperAdmin(userName, pass)){
+			return report.IS_NOT_SUPERADMIN;
+		}
+		_isSuperAdmin=true;
+		_member=Member.createSuperAdminMember(userName);
+		return report.OK;
+	}
+	public report logoutAsSuperAdmin(){
+		if(!_isSuperAdmin){
+			return report.IS_NOT_SUPERADMIN;
+		}
+		if(_member==null){
+			return report.ALL_READY_MEMBER_EXIST;
+		}
+		_isSuperAdmin=false;
+		_member=null;
+		return report.OK;
+	}
+	
 /**
- * functions that set in domain layer
+ * functions that "set" in domain layer
+ * return only report, not objects
  */
 	public report registerToForum(String userName,String password,String email){
 		if(_forum==null){
@@ -256,19 +289,20 @@ public UserConectionState(ForumSystem fs){
 	}
 
 
-	public report loginSuperAdmin(String userName, String password){
-		return report.OK;
-	}
-
-	public report logoutSuperAdmin(){
-		return report.OK;
-	}
-
-
 /**
  * functions that transform objects of domain layer 
  * to the GUI representation
  */
+	
+	
+	public Post getPost(int id){
+		
+	}
+	
 
-
+	
+	
+	
+	
+	
 }

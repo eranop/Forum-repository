@@ -1,11 +1,8 @@
 
 public class SuperAdmin {
 	
-	
 	private String _userName;
-	
 	private String _password;
-	
 	private String _email;
 	
 	public SuperAdmin(){

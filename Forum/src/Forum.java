@@ -130,15 +130,20 @@ public class Forum {
 
 
 	//needs some work - when to return false? - when he is already admin?
-	public boolean setAdmin(Member member){
+	public report addAdminByName(String member){
+		if(isMember(member))
+			return report.NO_SUCH_USER_NAME;
+		Member m=getMember(member);
+		_administrators.add(m);
+		return report.OK;
+	}
 
-		if(!isMember(member.get_userName()))
-			insertNewMember(member);
-		if(!isAdmin(member.get_userName())){
+	public report addAdmin(Member member) {
+		if(isMember(member)){
 			_administrators.add(member);
-			return true;
+			return report.OK;
 		}
-		return false;
+		return report.NO_SUCH_USER_NAME;
 	}
 
 
@@ -294,14 +299,6 @@ public class Forum {
 				return _members.elementAt(i);
 		}
 		return null;
-	}
-
-	public boolean addAdmin(Member member) {
-		if(isMember(member)){
-			_administrators.add(member);
-			return true;
-		}
-		return false;
 	}
 
 	/**

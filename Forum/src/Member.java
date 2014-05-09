@@ -1,31 +1,40 @@
-import java.util.Collection;
 import java.util.Vector;
 import java.util.HashMap;
 
 
 public class Member {
 
-
-
-
 	private String _userName;
-
 	private String _password;
-
 	private String _email;
+	
 	private MemberType _type;
 	private Vector<Member> _friends;
 	private HashMap<Integer,Message> _messages;
 	private int _msgCounter;
 
-	public Member(String _userName, String _password, String _email) {
+	public Member(String userName, String password, String email) {
 
-		this._userName = _userName;
-		this._password = _password;
-		this._email = _email;
+		this._userName = userName;
+		this._password = password;
+		this._email = email;
 		_friends=new Vector<Member>();
 		_messages=new HashMap<Integer,Message>();
 		_msgCounter=0;
+	}
+	/**
+	 * constructor for superAdmin membership
+	 */
+	private Member(String userName) {
+		this._userName = userName;
+		_friends=new Vector<Member>();
+		_messages=new HashMap<Integer,Message>();
+		_msgCounter=0;
+	}
+	
+	public static Member createSuperAdminMember(String userName){
+		String name=userName.concat("- administrator");
+		return new Member(name);
 	}
 
 	public boolean addFriend(Member member){
