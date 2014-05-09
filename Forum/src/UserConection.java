@@ -1,21 +1,23 @@
 
 
-public class UserConectionState {
-
+public class UserConection {
+private static int IDs=0;
 	private Forum _forum;
 	private SubForum _subForum;
 	private Member _member;
 	private Post _post;
-	private ForumSystem _fs;
+	private ForumsManagement _fs;
 	private boolean _isSuperAdmin;
+	private int _id;
 	
-public UserConectionState(ForumSystem fs){
+public UserConection(ForumsManagement fs){
 		_fs=fs;
 		_forum=null;
 		_subForum=null;
 		_member=null;
 		_post=null;
 		_isSuperAdmin=false;
+		_id=IDs++;
 	}
 	
 /**
@@ -287,6 +289,20 @@ public UserConectionState(ForumSystem fs){
 			}
 		}
 	}
+	
+	public report createSubforum(String name,String description){
+		if(_forum==null){
+			return report.NO_FORUM;
+		}
+		if(_member==null){
+			return report.NOT_LOGGED;
+		}
+		if(!_forum.isAdmin(_member)){
+			return report.NOT_ALLOWED;
+		}
+		
+		return _forum.createSubForum(name, description);
+	}
 
 
 /**
@@ -294,15 +310,19 @@ public UserConectionState(ForumSystem fs){
  * to the GUI representation
  */
 	
-	
+	/*
 	public Post getPost(int id){
 		
 	}
-	
+	*/
 
 	
 	
-	
-	
+	/**
+	 * getters
+	 */
+	public int getID(){
+		return _id;
+	}
 	
 }

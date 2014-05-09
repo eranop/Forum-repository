@@ -3,9 +3,9 @@ public class InitializeSystem {
 
 	
 	
-	public ForumSystem init(String superAdminName, String password, String email){
+	public ForumsManagement init(String superAdminName, String password, String email){
 
-		ForumSystem fs= new ForumSystem();
+		ForumsManagement fs= new ForumsManagement();
 		fs.setSuperAdmin(superAdminName, password, email);
 
 		return fs;

@@ -19,7 +19,7 @@ public class SubForum {
 	@SuppressWarnings("unused")
 	private Vector <Member> bannedUsers;		//List of banned member (who cannot enter the forum) NOT IMPLEMENTED YET.
 	
-	public SubForum (String name, String desc, Forum forum) 
+	public SubForum (String name, String desc) 
 	{
 		this.msgCounter = 0;
 		this.name = name;
@@ -36,7 +36,7 @@ public class SubForum {
 	/**
 	 * Creating a Sub Forum with moderator 
 	 */
-	public SubForum (String name, String desc, Forum forum, Member moderator) 
+	public SubForum (String name, String desc, Member moderator) 
 	{
 		this.msgCounter = 0;
 		this.name = name;

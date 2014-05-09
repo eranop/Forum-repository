@@ -5,7 +5,7 @@ import java.util.Vector;
  * use by super administrator actor
  * contains super administrator operations
  */
-public class ForumSystem {
+public class ForumsManagement {
 
 
 
@@ -13,7 +13,7 @@ public class ForumSystem {
 	private SuperAdmin _superAdmin;
 	private Vector<Forum> _forums;
 
-	public ForumSystem() {
+	public ForumsManagement() {
 		_forums=new Vector<Forum>();
 		_superAdmin=new SuperAdmin();
 	}

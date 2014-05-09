@@ -1,10 +1,15 @@
+package consul_interface;
+import ForumsManagement;
+import Post;
+import SubForum;
+
 import java.util.Scanner;
 import java.util.Vector;
 
 
 public class UserInterface {
-	private ForumSystem _fs;
-	public UserInterface(ForumSystem fs) {
+	private ForumsManagement _fs;
+	public UserInterface(ForumsManagement fs) {
 		_fs = fs;
 	}
 	public void run() {

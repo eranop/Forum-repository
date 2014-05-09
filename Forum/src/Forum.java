@@ -3,28 +3,21 @@ import java.util.Vector;
 
 
 public class Forum {
-
-
 	//Fields
-
 	private String _forumName;
 	private String _description;
 	private Vector<Member> _members;
 	private Vector<SubForum> _subForums;
 	private Vector<Member> _administrators;
 
-
 	//constructors
-
 	public Forum(String forumName,String description){
 		_forumName=forumName;
 		_description=description;
 		_members=new Vector<Member>();
 		_subForums=new Vector<SubForum>();
 		_administrators=new Vector<Member>();
-
 	}
-
 
 	public Forum(String forumName,String description,Member admin){
 		_forumName=forumName;
@@ -39,67 +32,11 @@ public class Forum {
 
 	//functionality
 
-/*
-	public boolean setFriends(String user1,String user2){
-		if(!isMember(user1) || !isMember(user2)){
-			System.out.println("member doesnt exist!");
-			return false;
-		}
-		else{
-			Member member1=getMember(user1);
-			Member member2=getMember(user2);
-			member1.addFriend(member2);
-			member2.addFriend(member1);
-			return true;
-		}
-	}
-*/
-
 	public report setFriends(Member user1,Member user2){
 			user1.addFriend(user2);
 			user2.addFriend(user1);
-			return report.OK;
-		
+			return report.OK;	
 	}
-
-	public Member login(String userName, String password){
-
-
-		Member ans= assureMember(userName,password);
-		if(ans!=null){
-			System.out.println("successful login!");
-
-			return ans;
-		}
-		System.out.println("wrong username");
-
-		return null;
-	}
-
-
-
-
-	public boolean complainInSubForum(String subForumName,String user,
-			String moderator, String content){
-		SubForum subforum=getSubForum(subForumName);
-		if(subforum==null){
-			System.out.println("no such sub-forum");
-			return false;
-		}
-		Member member=getMember(user);
-		if(member==null){
-			System.out.println("no such member!");
-			return false;
-		}
-		Member moderatorMember=getMember(moderator);
-		if(moderatorMember==null){
-			System.out.println("no such member!");
-			return false;
-		}
-		subforum.complain(member, moderatorMember, content);
-		return true;
-	}
-
 	public report register(String name,String pass,String email){
 		//add fields
 		//do delegation to member constructor
@@ -124,11 +61,6 @@ public class Forum {
 	}
 
 
-
-
-
-
-
 	//needs some work - when to return false? - when he is already admin?
 	public report addAdminByName(String member){
 		if(isMember(member))
@@ -146,26 +78,17 @@ public class Forum {
 		return report.NO_SUCH_USER_NAME;
 	}
 
-
-
-	public boolean createSubForum(String name,String description,String admin){
+	public report createSubForum(String name,String description){
 		//add fields
 		//delegation to Subforum constructor
 		if(findSubforum(name)){
 			System.out.println("sub forum already exists!");
-			return false;
+			return report.ALREADY_SUBFORUM_EXIST;
 		}
-		if(!isAdmin(admin)){
-			System.out.println("you are not an asministrator!");
-			return false;
-		}
-		SubForum sub=new SubForum(name, description,this);
+		SubForum sub=new SubForum(name, description);
 		_subForums.add(sub);
-
-		return true;
-
+		return report.OK;
 	}
-
 
 
 	public String viewSubForums(){
@@ -175,72 +98,12 @@ public class Forum {
 		return ans;
 	}
 
-
-
-
 	//need to understand how to do - part of registration
 	public boolean sendIdentificationByEmail(String email, Member member){
 
 
 		return false;
 	}
-
-	public boolean postInSubForum(String subName,String user,String title,String content){
-		SubForum subforum=getSubForum(subName);
-		if(subforum==null){
-			System.out.println("no such sub-forum");
-			return false;
-		}
-		Member member=getMember(user);
-		if(member==null){
-			System.out.println("no such member!");
-			return false;
-		}
-		subforum.addPost(member, title, content);
-		return true;
-	}
-
-	public boolean postResponseInSubForum(String subForumName,String user,
-			String title,String content,int postToResponseID){
-
-		SubForum subforum=getSubForum(subForumName);
-		if(subforum==null){
-			System.out.println("no such sub-forum");
-			return false;
-		}
-		Member member=getMember(user);
-		if(member==null){
-			System.out.println("no such member!");
-			return false;
-		}
-		subforum.postRespond(member,postToResponseID,title,content);
-		return true;
-
-	}
-/*
-	public boolean deleteFromSubForum(String subName,int postID){
-		SubForum subforum=getSubForum(subName);
-		if(subforum==null){
-			System.out.println("no such sub-forum");
-			return false;
-		}
-		return subforum.deletePost(postID);
-	}
-
-
-*/
-
-
-	public HashMap<Integer,Post> showPostInSubForum(String subForumName) {
-		SubForum subForum=getSubForum(subForumName);
-		if(subForum==null){
-			System.out.println("no such subForum");
-			return null;
-		}
-		return subForum.getRootPosts();
-	}
-
-
 	public report deleteSubForum(String subForumName, Member admin) {
 		if(!isAdmin(admin)){
 			System.out.println("not admin!");
@@ -254,34 +117,8 @@ public class Forum {
 		_subForums.remove(sf);
 		return report.OK;
 	}
-	/*
-	public boolean addModerator(String subForumName, String adminName,
-			String moderatorName) {
-		if(!isAdmin(adminName)){
-			System.out.println("not admin!");
-			return false;
-		}
-		SubForum subForum=getSubForum(subForumName);
-		if(subForum==null){
-			System.out.println("no such sub-forum!");
-			return false;
-		}
-		Member moderator=getMember(moderatorName);
-		if(moderator==null){
-			System.out.println("moderator is not a member!");
-			return false;
-		}
-		return subForum.addModerator(moderator);
-		
-	}
-*/
-
-	//helper functions
-
 	/**
 	 * validates that the member exists and that his password is correct
-	 * @param userName
-	 * @param password
 	 * @return the member if validated and null otherwise
 	 */
 	private Member assureMember(String userName,String password) {
@@ -303,7 +140,6 @@ public class Forum {
 
 	/**
 	 * check if the member exists
-	 * @param userName
 	 * @return true if members exists in the forum
 	 */
 	public boolean isMember(String userName) {
@@ -394,8 +230,6 @@ public class Forum {
 		_members.add(newMember);
 	}
 
-
-
 	//getters and setters
 
 	public String get_forumName() {
@@ -439,15 +273,82 @@ public class Forum {
 	public String toString(){
 		return _forumName;
 	}
+}
+/*
+public boolean postInSubForum(String subName,String user,String title,String content){
+	SubForum subforum=getSubForum(subName);
+	if(subforum==null){
+		System.out.println("no such sub-forum");
+		return false;
+	}
+	Member member=getMember(user);
+	if(member==null){
+		System.out.println("no such member!");
+		return false;
+	}
+	subforum.addPost(member, title, content);
+	return true;
+}
 
+public boolean postResponseInSubForum(String subForumName,String user,
+		String title,String content,int postToResponseID){
 
-	
-
-
-
-
-
-
-
+	SubForum subforum=getSubForum(subForumName);
+	if(subforum==null){
+		System.out.println("no such sub-forum");
+		return false;
+	}
+	Member member=getMember(user);
+	if(member==null){
+		System.out.println("no such member!");
+		return false;
+	}
+	subforum.postRespond(member,postToResponseID,title,content);
+	return true;
 
 }
+
+public boolean deleteFromSubForum(String subName,int postID){
+	SubForum subforum=getSubForum(subName);
+	if(subforum==null){
+		System.out.println("no such sub-forum");
+		return false;
+	}
+	return subforum.deletePost(postID);
+}
+
+
+
+
+
+public HashMap<Integer,Post> showPostInSubForum(String subForumName) {
+	SubForum subForum=getSubForum(subForumName);
+	if(subForum==null){
+		System.out.println("no such subForum");
+		return null;
+	}
+	return subForum.getRootPosts();
+}
+
+public boolean addModerator(String subForumName, String adminName,
+		String moderatorName) {
+	if(!isAdmin(adminName)){
+		System.out.println("not admin!");
+		return false;
+	}
+	SubForum subForum=getSubForum(subForumName);
+	if(subForum==null){
+		System.out.println("no such sub-forum!");
+		return false;
+	}
+	Member moderator=getMember(moderatorName);
+	if(moderator==null){
+		System.out.println("moderator is not a member!");
+		return false;
+	}
+	return subForum.addModerator(moderator);
+	
+}
+*/
+
+

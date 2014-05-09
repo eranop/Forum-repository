@@ -1,3 +1,6 @@
+package consul_interface;
+
+import ForumsManagement;
 
 import java.util.Scanner;
 
@@ -14,7 +17,7 @@ public class InitForum {
 			System.out.print("enter email: ");
 			String email= sc.next();
 			
-			ForumSystem fs= new ForumSystem();
+			ForumsManagement fs= new ForumsManagement();
 			fs.setSuperAdmin(superAdminName, passward, email);
 			UserInterface GUI=new UserInterface(fs);
 			
