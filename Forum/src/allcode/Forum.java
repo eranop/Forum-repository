@@ -7,6 +7,7 @@ public class Forum {
 	//Fields
 	private String _forumName;
 	private String _description;
+	private ForumPolicy _forumPolicy;
 	private Vector<Member> _members;
 	private Vector<SubForum> _subForums;
 	private Vector<Member> _administrators;
@@ -15,6 +16,7 @@ public class Forum {
 	public Forum(String forumName,String description){
 		_forumName=forumName;
 		_description=description;
+		_forumPolicy = new ForumPolicy();
 		_members=new Vector<Member>();
 		_subForums=new Vector<SubForum>();
 		_administrators=new Vector<Member>();
@@ -23,6 +25,7 @@ public class Forum {
 	public Forum(String forumName,String description,Member admin){
 		_forumName=forumName;
 		_description=description;
+		_forumPolicy = new ForumPolicy();
 		_members=new Vector<Member>();
 		_subForums=new Vector<SubForum>();
 		_administrators=new Vector<Member>();
@@ -273,6 +276,14 @@ public class Forum {
 
 	public String toString(){
 		return _forumName;
+	}
+
+	public ForumPolicy get_forumPolicy() {
+		return _forumPolicy;
+	}
+
+	public void set_forumPolicy(ForumPolicy _forumPolicy) {
+		this._forumPolicy = _forumPolicy;
 	}
 }
 /*

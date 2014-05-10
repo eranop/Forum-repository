@@ -1,36 +1,40 @@
 package allcode;
+import java.util.Date;
 import java.util.Vector;
 import java.util.HashMap;
 
 
 public class Member {
 
+	private Date _regDate;
 	private String _userName;
 	private String _password;
 	private String _email;
 	
 	private MemberType _type;
 	private Vector<Member> _friends;
+	private Vector<String> _pastPasswords;
 	private HashMap<Integer,Message> _messages;
 	private int _msgCounter;
 
 	public Member(String userName, String password, String email) {
 
+		_regDate = DateManagment.getDate();
 		this._userName = userName;
 		this._password = password;
 		this._email = email;
-		_friends=new Vector<Member>();
-		_messages=new HashMap<Integer,Message>();
-		_msgCounter=0;
+		_friends = new Vector<Member>();
+		_messages = new HashMap<Integer,Message>();
+		_msgCounter = 0;
 	}
 	/**
 	 * constructor for superAdmin membership
 	 */
 	private Member(String userName) {
 		this._userName = userName;
-		_friends=new Vector<Member>();
-		_messages=new HashMap<Integer,Message>();
-		_msgCounter=0;
+		_friends = new Vector<Member>();
+		_messages = new HashMap<Integer,Message>();
+		_msgCounter = 0;
 	}
 	
 	public static Member createSuperAdminMember(String userName){
@@ -118,6 +122,10 @@ public class Member {
 			return false;
 		}
 	}
+	public Date get_regDate() {
+		return _regDate;
+	}
+
 
 
 

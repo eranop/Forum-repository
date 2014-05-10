@@ -6,75 +6,75 @@ import java.util.Set;
 
 public class Post {
 	
-	private Post root;
-	private Member publisher;
-	private String title;
-	private String content;
-	private int index;
-	private HashMap <Integer, Post> responses;
+	private Post _root;
+	private Member _publisher;
+	private String _title;
+	private String _content;
+	private int _index;
+	private HashMap <Integer, Post> _responses;
 	/**
 	 * new post 
 	 */
 	public Post(Member publisher, String title, String content, int index)
 	{
-		this.root = null;
-		this.title = title;
-		this.content = content;
-		this.publisher = publisher;
-		this.index = index;
-		this.responses = new HashMap <Integer, Post>();
+		this._root = null;
+		this._title = title;
+		this._content = content;
+		this._publisher = publisher;
+		this._index = index;
+		this._responses = new HashMap <Integer, Post>();
 	}
 	/**
 	 * response post
 	 */
 	public Post(Member publisher, String title, String content, int index, Post root)
 	{
-		this.root = root;
-		this.title = title;
-		this.content = content;
-		this.publisher = publisher;
-		this.index = index;
-		this.responses = new HashMap <Integer, Post>();
+		this._root = root;
+		this._title = title;
+		this._content = content;
+		this._publisher = publisher;
+		this._index = index;
+		this._responses = new HashMap <Integer, Post>();
 	}
 
 	public Set<Integer> getResponsesIndex(){
-		return responses.keySet();
+		return _responses.keySet();
 	}
 	
 	public boolean areResponsesEmpty()
 	{
-		return responses.isEmpty();
+		return _responses.isEmpty();
 	}
 	
 	public boolean addResponse(int index, Post post)
 	{
-		responses.put(index, post);
+		_responses.put(index, post);
 		return true;
 	}
 	
 	public Post getRespond(int index)
 	{
-		return responses.get(index);
+		return _responses.get(index);
 	}
 	
 	public int getIndex()
 	{
-		return this.index;
+		return this._index;
 	}
 	
 	public String getContent() 
 	{
-		return this.content;
+		return this._content;
 	}
 	
 	public String getTitle()
 	{
-		return this.title;
+		return this._title;
 	}
 	
 	public Post getRoot()
 	{
-		return this.root;
+		return this._root;
 	}
 	
 	public void showPost()
@@ -93,12 +93,12 @@ public class Post {
 	 */
 	public void unfold()
 	{
-		if (this.root == null)
+		if (this._root == null)
 			System.out.println("Post " + this.getIndex() + ". " + this.getTitle() + ". By: " + this.getPublisher());
 		if (areResponsesEmpty())
 			return;
 		
-		Collection<Post> cl = responses.values();
+		Collection<Post> cl = _responses.values();
 		Object tempposts[] = cl.toArray();
 		for (int i = 0; i < tempposts.length; i++)
 		{
@@ -108,7 +108,7 @@ public class Post {
 	}
 
 	public String getPublisher() {
-		return publisher.get_userName();
+		return _publisher.get_userName();
 	}
 
 
