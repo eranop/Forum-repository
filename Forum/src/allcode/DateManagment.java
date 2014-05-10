@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DateManagment {
 
-	public DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	public static DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private static DateManagment instance = null;
 
 	private DateManagment() {

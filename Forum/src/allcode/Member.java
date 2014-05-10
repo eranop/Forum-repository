@@ -30,7 +30,7 @@ public class Member {
 		this._password = password;
 		this._email = email;
 		_friends = new Vector<Member>();
-		_messages = new HashMap<Integer,Message>();
+		_messages = new HashMap<Integer, Message>();
 		_msgCounter = 0;
 	}
 	/**
@@ -39,7 +39,7 @@ public class Member {
 	private Member(String userName) {
 		this._userName = userName;
 		_friends = new Vector<Member>();
-		_messages = new HashMap<Integer,Message>();
+		_messages = new HashMap<Integer, Message>();
 		_msgCounter = 0;
 	}
 	
@@ -81,13 +81,13 @@ public class Member {
 	}	
 	
 	public void message(String message) {
-		Message newMessage=new Message("System message",message);
+		Message newMessage = new Message("System message", message);
 		_messages.put(_msgCounter, newMessage);
 		_msgCounter++;
 	}
 
 	public void message(String sender,String message){
-		Message newMessage=new Message(sender,message);
+		Message newMessage = new Message(sender,message);
 		_messages.put(_msgCounter, newMessage);
 		_msgCounter++;
 

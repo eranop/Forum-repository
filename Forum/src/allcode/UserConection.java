@@ -219,7 +219,8 @@ public UserConection(ForumsManagement fs){
 			System.out.println("user not logged!");
 			return report.NOT_LOGGED;
 		}
-		return _subForum.addPost(_member, title, content);
+		if  (_subForum.addPost(_member, title, content) == report.OK)
+			_forum.notifyNewMsgToMembers(_member, title, _subForum);
 	}
 
 	public report writeResponsePost(String title,String content){

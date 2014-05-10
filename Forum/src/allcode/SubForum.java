@@ -63,6 +63,7 @@ public class SubForum {
 		Post newPost = new Post(member, title, content, _msgCounter++);
 		_rootPosts.put(newPost.getIndex(), newPost);
 		_allPosts.put(newPost.getIndex(), newPost);
+		notifyNewMsgToMembers(newPost);
 		//if (allPosts.get(newPost.getIndex()) != null)
 			//return true;
 		//return false;
@@ -95,6 +96,24 @@ public class SubForum {
 		return report.OK;
 	}
 
+	public report postEdit(Member member, int orgPostIndx, String title, String content)
+	{
+		if(member==null || title==null || content==null)
+			return report.NULL_ARGUMENTS;
+		
+		Post post = _allPosts.get(orgPostIndx);									//getting the original post we want to respond to by index
+		if(post == null)
+			return report.NO_SUCH_POST;
+		if (!post.getMember().equals(member))
+			return report.NOT_POST_OWNER;
+		
+		post.setTitle(title);
+		post.setContent(content);
+		notifyResponders(post);
+		return report.OK;
+	}
+	
+	
 	/**
 	 * deleting a post from subforum
 	 */
@@ -252,6 +271,24 @@ public class SubForum {
 		Complain newComplain = new Complain(member, moderator, complain);
 		_complains.add(newComplain);
 		return report.OK;
+	}
+	
+	public void notifyNewMsgToMembers(Post post)
+	{
+		for (int i = 0; i < _forum.get_members().size(); i++)
+			_forum.get_members().get(i).message(
+					"A new post has been added in: " + this.getName() + 
+					". Title: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
+					". In: " + DateManagment.dateFormat.format(DateManagment.getDate()));
+	}
+	
+	public void notifyResponders(Post post)
+	{
+		for (int i = 0; i < post.getResponds().size(); i++)
+			post.getResponds().get(i).getMember().message(
+					"a former post that you've replaied has changed in: " + this.getName() + 
+					". New title is: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
+					". Changed in " + DateManagment.dateFormat.format(DateManagment.getDate()));
 	}
 	
 	public boolean banUser(Member member)

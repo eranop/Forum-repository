@@ -67,9 +67,19 @@ public class Post {
 		return this._content;
 	}
 	
+	public void setContent(String content) 
+	{
+		this._content = content;
+	}
+	
 	public String getTitle()
 	{
 		return this._title;
+	}
+	
+	public void setTitle(String title) 
+	{
+		this._title = title;
 	}
 	
 	public Post getRoot()
@@ -111,7 +121,13 @@ public class Post {
 		return _publisher.get_userName();
 	}
 
-
+	public Member getMember(){
+		return _publisher;
+	}
 	
+	public HashMap <Integer, Post> getResponds()
+	{
+		return this._responses;
+	}
 
 }

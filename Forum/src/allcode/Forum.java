@@ -234,6 +234,37 @@ public class Forum {
 		_members.add(newMember);
 	}
 
+	
+	
+	
+	
+	
+	public void notifyNewMsgToMembers(Member member, String title, SubForum subforum)
+	{
+		for (int i = 0; i < this.get_members().size(); i++)
+			this.get_members().get(i).message(
+					"A new post has been added in: " + subforum.getName() + 
+					". Title: " + title + ". Posted by: " + member.get_userName() + 
+					". In: " + DateManagment.dateFormat.format(DateManagment.getDate()));
+	}
+	
+	public void notifyResponders(Post post)
+	{
+		for (int i = 0; i < post.getResponds().size(); i++)
+			post.getResponds().get(i).getMember().message(
+					"a former post that you've replaied has changed in: " + this.getName() + 
+					". New title is: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
+					". Changed in " + DateManagment.dateFormat.format(DateManagment.getDate()));
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	//getters and setters
 
 	public String get_forumName() {
