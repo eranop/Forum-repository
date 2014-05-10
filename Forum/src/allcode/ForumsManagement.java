@@ -26,7 +26,7 @@ public class ForumsManagement {
 			return report.NULL_ARGUMENTS; 
 		}
 		if(isForumExist(name)){
-			return report.ALL_READY_FORUM_EXIST;
+			return report.ALREADY_FORUM_EXIST;
 		}
 		Forum forum=new Forum(name,description);
 		report rep=forum.register(adminName, adminPass, adminMail);

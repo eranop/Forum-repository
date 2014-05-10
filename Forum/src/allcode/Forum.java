@@ -47,11 +47,11 @@ public class Forum {
 		//have to check if this user is already exists
 		if(isMember(name)){
 			System.out.println("member already exists");
-			return report.ALL_READY_MEMBER_EXIST;
+			return report.ALREADY_MEMBER_EXIST;
 		}
 		else if(isEmail(email)){
 			System.out.println("email adress already exists in forum");
-			return report.ALL_READY_EMAIL_EXIST;
+			return report.ALREADY_EMAIL_EXIST;
 		}
 		else{
 			Member newMember= new Member(name,pass,email);

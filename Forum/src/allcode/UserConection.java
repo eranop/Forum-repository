@@ -41,7 +41,7 @@ public UserConection(ForumsManagement fs){
 			_member=m;
 			return report.OK;
 		}	
-		return report.INVALID_PASSWARD;
+		return report.INVALID_PASSWORD;
 	}	
 	public report exitForum(){
 		if(_forum==null)
@@ -104,7 +104,7 @@ public UserConection(ForumsManagement fs){
 			return report.NULL_ARGUMENTS;
 		}
 		if(_member!=null){
-			return report.ALL_READY_MEMBER_EXIST;
+			return report.ALREADY_MEMBER_EXIST;
 		}
 		if(!_fs.isValidSuperAdmin(userName, pass)){
 			return report.IS_NOT_SUPERADMIN;
@@ -118,7 +118,7 @@ public UserConection(ForumsManagement fs){
 			return report.IS_NOT_SUPERADMIN;
 		}
 		if(_member==null){
-			return report.ALL_READY_MEMBER_EXIST;
+			return report.ALREADY_MEMBER_EXIST;
 		}
 		_isSuperAdmin=false;
 		_member=null;

@@ -38,6 +38,10 @@ public class DateManagment {
 		return (int)getDateDiff(date1, date2, TimeUnit.DAYS);
 	}
 	
+	/**
+	 * getting the current date.
+	 * @return returns the current date , hour, minute, second.
+	 */
 	public static Date getDate()
 	{
 		return new Date();

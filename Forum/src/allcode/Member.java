@@ -7,19 +7,25 @@ import java.util.HashMap;
 public class Member {
 
 	private Date _regDate;
+	private Date _passwordDate;
+	
+	private String _passQuestion;
+	private String _passAnswer;
+	
 	private String _userName;
 	private String _password;
 	private String _email;
 	
 	private MemberType _type;
-	private Vector<Member> _friends;
-	private Vector<String> _pastPasswords;
-	private HashMap<Integer,Message> _messages;
+	private Vector <Member> _friends;
+	private Vector <String> _oldPasswords;
+	private HashMap <Integer, Message> _messages;
 	private int _msgCounter;
 
 	public Member(String userName, String password, String email) {
 
 		_regDate = DateManagment.getDate();
+		_passwordDate = DateManagment.getDate();
 		this._userName = userName;
 		this._password = password;
 		this._email = email;
@@ -64,8 +70,16 @@ public class Member {
 	public boolean isValidMemberForSuperAdministrator(){
 		return false;
 	}
-
-
+	
+	
+	public report answerPasswordQuestion(String answer)
+	{
+		if (this._passAnswer.equals(answer))
+			return report.OK;
+		else
+			return report.WRONG_PASSWORD_ANSWER;
+	}	
+	
 	public void message(String message) {
 		Message newMessage=new Message("System message",message);
 		_messages.put(_msgCounter, newMessage);
@@ -79,21 +93,30 @@ public class Member {
 
 	}
 
-
-	//getters and setters
+	public report setNewPassword(String newPassword) {
+		for (int i = 0; i < _oldPasswords.size(); i++)		//checking all former passwords
+			if (_oldPasswords.get(i).equals(newPassword))
+				return report.PASSWORD_ALREADY_BEEN_USED;
+		
+		_oldPasswords.add(this._password);
+		this._password = newPassword;
+		this._passwordDate = DateManagment.getDate();
+		return report.OK;
+	}
+	
+	/* 
+	 * getters and setters
+	 */
 
 	public String get_userName() {
 		return _userName;
 	}
-	public void set_userName(String _userName) {
-		this._userName = _userName;
+	public void set_userName(String userName) {
+		this._userName = userName;
 	}
 
 	public String get_password() {
 		return _password;
-	}
-	public void set_password(String _password) {
-		this._password = _password;
 	}
 
 	public String get_email() {
@@ -114,6 +137,34 @@ public class Member {
 	public void setFriends(Vector<Member> friends) {
 		this._friends = friends;
 	}
+	
+	public Date get_regDate() {
+		return _regDate;
+	}
+	
+	public Date get_passwordDate() {
+		return _passwordDate;
+	}
+
+	public int daysSinceLastPassword() {
+		return DateManagment.getDateDiffDays(_passwordDate, DateManagment.getDate());
+	}
+	public String get_passQuestion() {
+		return _passQuestion;
+	}
+	public void set_passQuestion(String passQuestion) {
+		this._passQuestion = passQuestion;
+	}
+	public String get_passAnswer() {
+		return _passAnswer;
+	}
+	public void set_passAnswer(String passAnswer) {
+		this._passAnswer = passAnswer;
+	}
+	
+	/* 
+	 * END getters and setters
+	 */
 
 	public boolean equals(Object object){
 		if(object instanceof Member && ((Member)object).get_userName() == this._userName){
@@ -122,10 +173,6 @@ public class Member {
 			return false;
 		}
 	}
-	public Date get_regDate() {
-		return _regDate;
-	}
-
 
 
 
