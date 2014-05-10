@@ -234,11 +234,6 @@ public class Forum {
 		_members.add(newMember);
 	}
 
-	
-	
-	
-	
-	
 	public void notifyNewMsgToMembers(Member member, String title, SubForum subforum)
 	{
 		for (int i = 0; i < this.get_members().size(); i++)
@@ -248,19 +243,41 @@ public class Forum {
 					". In: " + DateManagment.dateFormat.format(DateManagment.getDate()));
 	}
 	
-	public void notifyResponders(Post post)
+	public void notifyResponders(Member member, String title, SubForum subforum, Post post)
 	{
 		for (int i = 0; i < post.getResponds().size(); i++)
 			post.getResponds().get(i).getMember().message(
-					"a former post that you've replaied has changed in: " + this.getName() + 
+					"a former post that you've replaied has changed in: " + subforum.getName() + 
 					". New title is: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
 					". Changed in " + DateManagment.dateFormat.format(DateManagment.getDate()));
 	}
 	
 	
+	public boolean canDeleteMessage(Member member, Post post, SubForum subforum) {
+		if ( (_forumPolicy.isDeleteMessagePublisher() && member.equals(post.getMember()))		//if member is owner and policy allows
+				|| (_forumPolicy.isDeleteMessageAdmin() && this.isAdmin(member))				//if member is admin and policy allows
+				|| (_forumPolicy.isDeleteMessageModerator() && subforum.isModerator(member)))	//if member is moder and policy allows
+			return true;
+		return false;
+	}
 	
+	public boolean canAddModerator(Member member) {
+		if ( (_forumPolicy.getModeratorDays() <= DateManagment.getDateDiffDays(member.get_regDate(), DateManagment.getDate()))	//if this date - registration date in days > policy days
+			&& (_forumPolicy.getModeratorPosts() <= member.get_postsCounter()) )	//if member published enuf posts.
+			return true;
+		return false;
+	}
 	
-	
+	public boolean canRemoveModerator(Member member, Member admin, SubForum subForum) {
+		if ( ((_forumPolicy.isDeleteModeratorOnlyByRankingAdmin() && admin.equals(member.getPromoter()) )	//only promoter admin can delete mod and admin is the promoter
+			||	(!_forumPolicy.isDeleteModeratorOnlyByRankingAdmin()))	//if all admins can delete the mod
+			&& (_forumPolicy.isDeleteLastModerator()					//if can delete last mod
+					|| (!_forumPolicy.isDeleteLastModerator() && subForum.getModerators().size() > 1)))	//if canNOT delete last mod but num of mods > 1
+			return true;
+		return false;
+	}
+
+
 	
 	
 	
@@ -316,6 +333,10 @@ public class Forum {
 	public void set_forumPolicy(ForumPolicy _forumPolicy) {
 		this._forumPolicy = _forumPolicy;
 	}
+
+
+
+
 }
 /*
 public boolean postInSubForum(String subName,String user,String title,String content){

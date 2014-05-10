@@ -63,10 +63,10 @@ public class SubForum {
 		Post newPost = new Post(member, title, content, _msgCounter++);
 		_rootPosts.put(newPost.getIndex(), newPost);
 		_allPosts.put(newPost.getIndex(), newPost);
-		notifyNewMsgToMembers(newPost);
 		//if (allPosts.get(newPost.getIndex()) != null)
 			//return true;
 		//return false;
+		member.set_postsCounter(member.get_postsCounter()+1);
 		return report.OK;
 	}
 	/**
@@ -93,6 +93,7 @@ public class SubForum {
 		Post newPost = new Post(member, title, content, _msgCounter++, originalPost);	//creating the new respond(Post).
 		_allPosts.put(newPost.getIndex(),  newPost);										//adding the post to allPosts.
 		originalPost.addResponse(newPost.getIndex(), newPost);					//adding it and return true if succeed.
+		member.set_postsCounter(member.get_postsCounter()+1);
 		return report.OK;
 	}
 
@@ -109,7 +110,6 @@ public class SubForum {
 		
 		post.setTitle(title);
 		post.setContent(content);
-		notifyResponders(post);
 		return report.OK;
 	}
 	
@@ -150,19 +150,14 @@ public class SubForum {
 	 * adding moderator to the subforum
 	 * @param member moderator we want to add
 	 */
-	public report addModerator(Member member)
+	public report addModerator(Member member, Member promoter)
 	{
 		member.message("you've been added as modarator in bla bla\n");
 		_moderators.add(member);
+		member.setPromoter(promoter);
 		return report.OK;
 	}
 
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -213,7 +208,6 @@ public class SubForum {
 			System.out.println("Post number: " + index + " doesnt exist.");
 	}
 	
-	
 	/** 
 	 * showing on the screen a post
 	 * @param index is the number of Post
@@ -226,7 +220,6 @@ public class SubForum {
 		else
 			System.out.println("Post number: " + index + " doesnt exist.");
 	}
-	
 	
 	
 	/**
@@ -246,14 +239,15 @@ public class SubForum {
 	 * @return true upon success. false otherwise
 	 */
 	
-	public boolean removeModerator(Member member)
+	public report removeModerator(Member member)
 	{
 		if (isModerator(member))
-		{
-			member.message("Moderator premission has been removed from bla bla\n");
-			return _moderators.remove(member);
-		}
-		return false;
+			if (_moderators.remove(member))
+			{
+				member.message("Moderator premission has been removed from " + this.getName());
+				return report.OK;
+			}
+		return report.IS_NOT_MODERATOR;
 	}
 	
 	/**
@@ -271,24 +265,6 @@ public class SubForum {
 		Complain newComplain = new Complain(member, moderator, complain);
 		_complains.add(newComplain);
 		return report.OK;
-	}
-	
-	public void notifyNewMsgToMembers(Post post)
-	{
-		for (int i = 0; i < _forum.get_members().size(); i++)
-			_forum.get_members().get(i).message(
-					"A new post has been added in: " + this.getName() + 
-					". Title: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
-					". In: " + DateManagment.dateFormat.format(DateManagment.getDate()));
-	}
-	
-	public void notifyResponders(Post post)
-	{
-		for (int i = 0; i < post.getResponds().size(); i++)
-			post.getResponds().get(i).getMember().message(
-					"a former post that you've replaied has changed in: " + this.getName() + 
-					". New title is: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
-					". Changed in " + DateManagment.dateFormat.format(DateManagment.getDate()));
 	}
 	
 	public boolean banUser(Member member)
@@ -317,8 +293,6 @@ public class SubForum {
 		this._description = description;
 	}
 
-
-
 	public String getUserPolicy() {
 		return _userPolicy;
 	}
@@ -338,7 +312,7 @@ public class SubForum {
 		return _complains;
 	}
 	
-	public Vector <Member> getModeratos(){
+	public Vector <Member> getModerators(){
 		return _moderators;
 	}
 	
@@ -368,6 +342,26 @@ public class SubForum {
 	{
 		return forum.isMember(moderator.get_userName());
 	}
-*/
+
+	
+	public void notifyNewMsgToMembers(Post post)
+	{
+		for (int i = 0; i < _forum.get_members().size(); i++)
+			_forum.get_members().get(i).message(
+					"A new post has been added in: " + this.getName() + 
+					". Title: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
+					". In: " + DateManagment.dateFormat.format(DateManagment.getDate()));
+	}
+	
+	public void notifyResponders(Post post)
+	{
+		for (int i = 0; i < post.getResponds().size(); i++)
+			post.getResponds().get(i).getMember().message(
+					"a former post that you've replaied has changed in: " + this.getName() + 
+					". New title is: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
+					". Changed in " + DateManagment.dateFormat.format(DateManagment.getDate()));
+	}
+	
+	*/
 
 }
