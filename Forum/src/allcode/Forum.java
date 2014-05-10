@@ -1,3 +1,4 @@
+package allcode;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -85,7 +86,7 @@ public class Forum {
 			System.out.println("sub forum already exists!");
 			return report.ALREADY_SUBFORUM_EXIST;
 		}
-		SubForum sub=new SubForum(name, description);
+		SubForum sub = new SubForum(name, description, this);
 		_subForums.add(sub);
 		return report.OK;
 	}

@@ -1,3 +1,4 @@
+package allcode;
 import java.util.Vector;
 import java.util.HashMap;
 

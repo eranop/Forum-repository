@@ -1,10 +1,12 @@
 package consul_interface;
-import ForumsManagement;
-import Post;
-import SubForum;
-
 import java.util.Scanner;
 import java.util.Vector;
+
+import allcode.ForumsManagement;
+import allcode.Post;
+import allcode.SubForum;
+
+import allcode.*;
 
 
 public class UserInterface {
@@ -92,15 +94,15 @@ public class UserInterface {
 		System.out.println("---delete post----");
 		String[] fields={"forum name", "sub forum name", "post id", "moderator name"};
 		fields=getInformationFromUser(fields);
-		boolean res=_fs.deletePostInSubForum(fields[0], fields[1], Integer.parseInt(fields[2]), fields[3]);
+		report res  =_fs.deletePostInSubForum(fields[0], fields[1], Integer.parseInt(fields[2]), fields[3]);
 		System.out.println(res);
 	}
 	private void complainOnMediatorGUI() {
 		System.out.println("---complain---");
 		String[] fields={"userName", "moderator name", "forum name", "sub forum name", "complain content"};
-		fields=getInformationFromUser(fields);
+		fields = getInformationFromUser(fields);
 
-		boolean res=_fs.complain(fields[0], fields[1], fields[2], fields[3], fields[4]);
+		report res = _fs.complain(fields[0], fields[1], fields[2], fields[3], fields[4]);
 		System.out.println(res);
 	}
 	private void set2membersAsFriendsGUI(Scanner sc) {

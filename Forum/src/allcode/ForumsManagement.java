@@ -1,3 +1,4 @@
+package allcode;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -6,9 +7,6 @@ import java.util.Vector;
  * contains super administrator operations
  */
 public class ForumsManagement {
-
-
-
 
 	private SuperAdmin _superAdmin;
 	private Vector<Forum> _forums;

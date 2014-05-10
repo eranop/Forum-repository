@@ -1,3 +1,4 @@
+package allcode;
 
 public class Main {
 

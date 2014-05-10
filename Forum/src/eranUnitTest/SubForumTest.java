@@ -1,7 +1,11 @@
+package eranUnitTest;
+
 import static org.junit.Assert.*;
+import allcode.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
 
 
 public class SubForumTest {
@@ -47,30 +51,30 @@ public class SubForumTest {
 	}
 	@Test
 	public void testPostsDelete() {
-		assertFalse(sub.deletePost(10));
-		assertTrue(sub.deletePost(5));
+		assertTrue(sub.deletePost(10) == report.NO_POST);
+		assertTrue(sub.deletePost(5) == report.OK);
 		assertTrue(sub.getAllPosts().size() == 8);
 		assertTrue(sub.getRootPosts().size() == 4);
 	}
 	@Test
 	public void testPostsCreate() {
-		assertTrue(sub.addPost(mem2, "newtitle", "content"));
+		assertTrue(sub.addPost(mem2, "newtitle", "content") == report.OK);
 		assertTrue(sub.getRootPosts().size() == 6);
-		assertTrue(sub.postRespond(mem3, 9, "title", "content"));
+		assertTrue(sub.postRespond(mem3, 9, "title", "content") == report.OK);
 		assertTrue(sub.getRootPosts().size() == 6);
 		assertTrue(sub.getAllPosts().size() == 11);
 	}
 	
 	@Test
 	public void testDeleteUnexistedPost() {
-		assertFalse(sub.deletePost(2));
+		assertTrue(sub.deletePost(2) == report.NO_POST);
 		assertTrue(sub.getRootPosts().size() == 5);
 		assertTrue(sub.getAllPosts().size() == 9);
 	}
 	@Test
 	public void testModeratorsSize() {
 		assertTrue(sub.getModeratos().size() == 1);
-		assertTrue(sub.addModerator(mem5));
+		assertTrue(sub.addModerator(mem5) == report.OK);
 		assertTrue(sub.getModeratos().size() == 2);
 		assertTrue(sub.removeModerator(mem4));
 		assertTrue(sub.getModeratos().size() == 1);
@@ -85,7 +89,7 @@ public class SubForumTest {
 	public void testModeratorsAdding() {
 		assertTrue(sub.isModerator(mem4));
 		assertFalse(sub.isModerator(mem5));
-		assertTrue(sub.addModerator(mem5));
+		assertTrue(sub.addModerator(mem5) == report.OK);
 		assertTrue(sub.isModerator(mem5));
 	}
 	

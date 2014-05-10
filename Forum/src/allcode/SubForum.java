@@ -1,3 +1,4 @@
+package allcode;
 import java.util.Collection;
 import java.util.Set;
 import java.util.Vector;
@@ -10,7 +11,7 @@ public class SubForum {
 	private String description;					//Sub forum description
 	private String modPolicy;					//Moderators policy
 	private String userPolicy;					//Users policy
-	//private Forum forum;						//The main forum above this sub.
+	private Forum forum;						//The main forum above this sub.
 	private Vector <Member> moderators;			//List of moderatos (maybe should be set so the same user cannot be added twice)
 	private HashMap <Integer, Post> allPosts;	//List of all posts
 	private HashMap <Integer, Post> rootPosts;	//List of root posts
@@ -19,13 +20,12 @@ public class SubForum {
 	@SuppressWarnings("unused")
 	private Vector <Member> bannedUsers;		//List of banned member (who cannot enter the forum) NOT IMPLEMENTED YET.
 	
-	public SubForum (String name, String desc) 
+	public SubForum (String name, String desc, Forum forum) 
 	{
 		this.msgCounter = 0;
 		this.name = name;
 		this.description = desc;
-		//this.forum = forum;
-		
+		this.forum = forum;
 		this.moderators = new Vector <Member>();
 		this.allPosts = new HashMap <Integer, Post>();
 		this.rootPosts = new HashMap <Integer, Post>();
@@ -47,7 +47,7 @@ public class SubForum {
 		this.allPosts = new HashMap <Integer, Post>();
 		this.rootPosts = new HashMap <Integer, Post>();
 		this.complains = new Vector <Complain>();
-		moderators.add(moderator);
+		this.moderators.add(moderator);
 		this.bannedUsers = new Vector <Member>();
 	}
 	
@@ -99,6 +99,8 @@ public class SubForum {
 	 */
 	public report deletePost(Post post)
 	{
+		if (post == null)
+			return report.NO_POST;
 		Post p=allPosts.remove(post.getIndex());
 		if(p==null)
 			return report.NO_SUCH_POST;

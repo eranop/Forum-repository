@@ -1,8 +1,8 @@
 package consul_interface;
 
-import ForumsManagement;
-
 import java.util.Scanner;
+
+import allcode.ForumsManagement;
 
 public class InitForum {
 	
