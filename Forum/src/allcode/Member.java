@@ -16,11 +16,14 @@ public class Member {
 	private String _password;
 	private String _email;
 	
+	private Member promoter;
 	private MemberType _type;
 	private Vector <Member> _friends;
 	private Vector <String> _oldPasswords;
+	private HashMap <Integer, Post> _posts;
 	private HashMap <Integer, Message> _messages;
 	private int _msgCounter;
+	private int _postsCounter;
 
 	public Member(String userName, String password, String email) {
 
@@ -29,9 +32,12 @@ public class Member {
 		this._userName = userName;
 		this._password = password;
 		this._email = email;
-		_friends = new Vector<Member>();
-		_messages = new HashMap<Integer, Message>();
+		_friends = new Vector <Member>();
+		_messages = new HashMap <Integer, Message>();
+		_posts = new HashMap <Integer, Post> ();
+		promoter = null;
 		_msgCounter = 0;
+		set_postsCounter(0);
 	}
 	/**
 	 * constructor for superAdmin membership
@@ -40,7 +46,9 @@ public class Member {
 		this._userName = userName;
 		_friends = new Vector<Member>();
 		_messages = new HashMap<Integer, Message>();
+		_posts = new HashMap <Integer, Post> ();
 		_msgCounter = 0;
+		set_postsCounter(0);
 	}
 	
 	public static Member createSuperAdminMember(String userName){
@@ -172,6 +180,24 @@ public class Member {
 		} else {
 			return false;
 		}
+	}
+	public int get_postsCounter() {
+		return _postsCounter;
+	}
+	public void set_postsCounter(int _postsCounter) {
+		this._postsCounter = _postsCounter;
+	}
+	public Member getPromoter() {
+		return promoter;
+	}
+	public void setPromoter(Member promoter) {
+		this.promoter = promoter;
+	}
+	public HashMap <Integer, Post> getPosts() {
+		return _posts;
+	}
+	public void setPosts(HashMap <Integer, Post> posts) {
+		this._posts = posts;
 	}
 
 

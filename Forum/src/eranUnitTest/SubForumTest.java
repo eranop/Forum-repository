@@ -73,11 +73,11 @@ public class SubForumTest {
 	}
 	@Test
 	public void testModeratorsSize() {
-		assertTrue(sub.getModeratos().size() == 1);
+		assertTrue(sub.getModerators().size() == 1);
 		assertTrue(sub.addModerator(mem5) == report.OK);
-		assertTrue(sub.getModeratos().size() == 2);
+		assertTrue(sub.getModerators().size() == 2);
 		assertTrue(sub.removeModerator(mem4));
-		assertTrue(sub.getModeratos().size() == 1);
+		assertTrue(sub.getModerators().size() == 1);
 	}
 	
 	@Test

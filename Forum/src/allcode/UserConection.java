@@ -169,24 +169,52 @@ public UserConection(ForumsManagement fs){
 	}
 
 	public report addModerator(String adminName,String moderatorName){
-		if(_subForum==null){
+		if(_subForum == null){
 			System.out.println("not connected to forum!");
 			return report.NO_SUBFORUM;
 		}
-		if(_member==null){
+		if(_member == null){
 			return report.NOT_LOGGED;
 		}
 		if(_forum.isAdmin(_member)){
-			Member m=_forum.getMember(moderatorName);
-			if(m==null){
+			Member member =_forum.getMember(moderatorName);
+			if(member == null){
 				return report.NO_SUCH_USER_NAME;
 			}
-			return _subForum.addModerator(m);
+			if (_forum.canAddModerator(member))
+				return _subForum.addModerator(member, _member);
+			else
+				return report.DENIED_BY_POLICY;
 		}
 		else{
 			return report.IS_NOT_ADMIN;
 		}
 	}
+	
+	public report removeModerator(String adminName,String moderatorName){
+		if(_subForum == null){
+			System.out.println("not connected to forum!");
+			return report.NO_SUBFORUM;
+		}
+		if(_member == null){
+			return report.NOT_LOGGED;
+		}
+		if(_forum.isAdmin(_member)){
+			Member member =_forum.getMember(moderatorName);
+			if(member == null){
+				return report.NO_SUCH_USER_NAME;
+			}
+			if (_forum.canRemoveModerator(member, _member, _subForum))
+				return _subForum.removeModerator(member);
+			else
+				return report.DENIED_BY_POLICY;
+		}
+		else{
+			return report.IS_NOT_ADMIN;
+		}
+	}
+	
+	
 
 
 
@@ -221,9 +249,10 @@ public UserConection(ForumsManagement fs){
 		}
 		if  (_subForum.addPost(_member, title, content) == report.OK)
 			_forum.notifyNewMsgToMembers(_member, title, _subForum);
+		return report.OK;
 	}
 
-	public report writeResponsePost(String title,String content){
+	public report writeResponsePost(String title, String content){
 		if(_forum==null){
 			System.out.println("not connected to forum!");
 			return report.NO_FORUM;
@@ -240,11 +269,37 @@ public UserConection(ForumsManagement fs){
 			System.out.println("no post to response to");
 			return report.NO_POST;
 		}
-		return _subForum.postRespond(_member, _post.getIndex(), title, content);
-
+		if  (_subForum.postRespond(_member, _post.getIndex(), title, content) == report.OK)
+			_forum.notifyNewMsgToMembers(_member, title, _subForum);
+		return report.OK;
 	}
+	
+	public report postEdit(String title, String content) {
+		if(_forum == null){
+			System.out.println("not connected to forum!");
+			return report.NO_FORUM;
+		}
+		if(_subForum == null){
+			System.out.println("not connected to subforum!");
+			return report.NO_SUBFORUM;
+		}
+		if(_member == null){
+			System.out.println("user not logged!");
+			return report.NOT_LOGGED;
+		}
+		if(_post == null){
+			System.out.println("no post to response to");
+			return report.NO_POST;
+		}
+		
+		if (_subForum.postEdit(_member, _post.getIndex(), title, content) == report.OK)
+			_forum.notifyResponders(_member, title, _subForum, _post);
+		return report.OK;
+	}
+	
+	
 	/**
-	 * must be in post as moderator or owner of the post
+	 * must stand in the POLICY of the forum
 	 */
 	public report deletePost(){
 		if(_forum==null){
@@ -263,12 +318,10 @@ public UserConection(ForumsManagement fs){
 			System.out.println("no post to delete");
 			return report.NO_POST;
 		}
-		if(_member.get_userName().equals(_post.getPublisher()) //publisher delete his post
-			|| _subForum.isModerator(_member)	){ //moderator delete post 
+		if (_forum.canDeleteMessage(_member, _post, _subForum))
 			return _subForum.deletePost(_post);
-		}
+
 		return report.NOT_ALLOWED;
-			
 	}
 
 	public report addAdminToForum(String name){
