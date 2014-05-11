@@ -66,7 +66,7 @@ public class SubForum {
 		//if (allPosts.get(newPost.getIndex()) != null)
 			//return true;
 		//return false;
-		member.set_postsCounter(member.get_postsCounter()+1);
+		member.addPost(_msgCounter, newPost);
 		return report.OK;
 	}
 	/**
@@ -93,7 +93,7 @@ public class SubForum {
 		Post newPost = new Post(member, title, content, _msgCounter++, originalPost);	//creating the new respond(Post).
 		_allPosts.put(newPost.getIndex(),  newPost);										//adding the post to allPosts.
 		originalPost.addResponse(newPost.getIndex(), newPost);					//adding it and return true if succeed.
-		member.set_postsCounter(member.get_postsCounter()+1);
+		member.addPost(_msgCounter, newPost);
 		return report.OK;
 	}
 
@@ -158,8 +158,6 @@ public class SubForum {
 		return report.OK;
 	}
 
-	
-	
 	
 	/**
 	 * Show all the root post titles that has been published in the current subForum.

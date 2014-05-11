@@ -263,7 +263,7 @@ public class Forum {
 	
 	public boolean canAddModerator(Member member) {
 		if ( (_forumPolicy.getModeratorDays() <= DateManagment.getDateDiffDays(member.get_regDate(), DateManagment.getDate()))	//if this date - registration date in days > policy days
-			&& (_forumPolicy.getModeratorPosts() <= member.get_postsCounter()) )	//if member published enuf posts.
+			&& (_forumPolicy.getModeratorPosts() <= member.getPosts().size()) )	//if member published enuf posts.
 			return true;
 		return false;
 	}
@@ -277,6 +277,15 @@ public class Forum {
 		return false;
 	}
 
+	public Integer getPostNumInSubForum(String subForumName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public HashMap <Integer, Post> getListOfPostsByMember(String mNickname) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 	
@@ -333,6 +342,8 @@ public class Forum {
 	public void set_forumPolicy(ForumPolicy _forumPolicy) {
 		this._forumPolicy = _forumPolicy;
 	}
+
+
 
 
 
