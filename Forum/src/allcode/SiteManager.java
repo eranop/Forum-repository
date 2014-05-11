@@ -1,11 +1,11 @@
 package allcode;
-import java.util.Vector;
+import java.util.HashMap;
 
 
 public class SiteManager {
 
 	ForumsManagement _fm;
-	Vector<UserConection>  _connections;
+	HashMap<Integer,UserConection>  _connections;
 	/**
 	 * constructors- with or without super admin
 	 * 
@@ -13,11 +13,11 @@ public class SiteManager {
 	public SiteManager(String superAdminName, String passward, String email) {
 		_fm=new ForumsManagement();
 		_fm.setSuperAdmin(superAdminName,passward, email);
-		_connections=new Vector<UserConection>();
+		_connections=new HashMap<Integer,UserConection>();
 	}
 	public SiteManager() {
 		_fm=new ForumsManagement();
-		_connections=new Vector<UserConection>();
+		_connections=new HashMap<Integer,UserConection>();
 	}
 	public boolean setSuperAdmin(String name,String pass,String email){
 		if(name==null || pass==null || email==null){
@@ -26,25 +26,28 @@ public class SiteManager {
 		_fm.setSuperAdmin(name, pass, email);
 		return true;
 	}
-	
+
 	/**
 	 * 
 	 * functions of siteManager
 	 */
 	public UserConection openNewConnection(){
 		UserConection uc=new UserConection(_fm);
-		_connections.add(uc);
+		_connections.put(uc.getID(), uc);
 		return uc;
 	}
-	
+
 	public boolean closeConnection(int id){
-		for(UserConection c : _connections){
-			if(c.getID()==id){
-				_connections.remove(c);
-				return true;
-			}
+		UserConection uc=_connections.get(id);
+		if(uc==null){
+			return false;
 		}
-		return false;
+		_connections.remove(id);
+		return true;
+	}
+
+	public UserConection getConnectionByID(int id){
+		return _connections.get(id);
 	}
 
 }
