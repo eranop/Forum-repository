@@ -359,6 +359,16 @@ public UserConection(ForumsManagement fs){
 		return _forum.createSubForum(name, description);
 	}
 
+	public report createForum(String name,String description){
+		if(_member==null){
+			return report.NOT_LOGGED;
+		}
+		if(!_isSuperAdmin){
+			return report.NOT_ALLOWED;
+		}
+		
+		return _fs.createForum(name, description);
+	}
 
 /**
  * functions that transform objects of domain layer 
@@ -372,7 +382,14 @@ public UserConection(ForumsManagement fs){
 	*/
 
 	
-	
+	public void reset(){
+		_forum=null;
+		_subForum=null;
+		_isSuperAdmin=false;
+		_member=null;
+		_post=null;
+		
+	}
 	/**
 	 * getters
 	 */

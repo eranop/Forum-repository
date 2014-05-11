@@ -4,11 +4,10 @@ public class InitializeSystem {
 
 	
 	
-	public ForumsManagement init(String superAdminName, String password, String email){
+	public static SiteManager init(String superAdminName, String password, String email){
 
-		ForumsManagement fs= new ForumsManagement();
-		fs.setSuperAdmin(superAdminName, password, email);
-
+		SiteManager fs= new SiteManager(superAdminName, password, email);
+		
 		return fs;
 	}	
 }
