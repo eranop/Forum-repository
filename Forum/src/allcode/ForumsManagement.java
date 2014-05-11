@@ -1,6 +1,11 @@
 package allcode;
 import java.util.HashMap;
+
+import databases.*;
+
 import java.util.Vector;
+
+import org.hibernate.Session;
 
 /**
  * use by super administrator actor
@@ -32,6 +37,13 @@ public class ForumsManagement {
 		report rep=forum.register(adminName, adminPass, adminMail);
 		if(rep.equals(report.OK)){
 		_forums.add(forum);
+		ForumData forumData= new ForumData(name,description);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.save(forumData);    
+		  ss.getTransaction().commit();  
+		  ss.close();  
 		return forum.addAdminByName(adminName);
 		}
 		return rep;
@@ -48,7 +60,7 @@ public class ForumsManagement {
 	/**
 	 * 
 	 * @param name of member in forum
-	 * @param forumName name of forum
+	 * @param _forumName name of forum
 	 * 
 	 */
 

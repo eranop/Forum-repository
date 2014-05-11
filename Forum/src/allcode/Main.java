@@ -3,7 +3,10 @@ package allcode;
 public class Main {
 
 	public static void main(String[] args) {
-//here
+		
+		
+				man.createForum("sadna", "hard work", "ofer", "1111", "a@b");
+
 		Forum frm = new Forum("animals", "this forum is about animals");
 		SubForum sub = new SubForum("lion","this sub is about lions", frm);
 		Member mem1 = new Member("Moti", "1234", "moti@walla.co.il");
