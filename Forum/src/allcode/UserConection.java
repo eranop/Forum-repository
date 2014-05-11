@@ -1,5 +1,7 @@
 package allcode;
 
+import java.util.HashMap;
+
 
 public class UserConection {
 private static int IDs=0;
@@ -213,10 +215,6 @@ public UserConection(ForumsManagement fs){
 			return report.IS_NOT_ADMIN;
 		}
 	}
-	
-	
-
-
 
 	public report setFriends(String friendName){
 		if(_forum==null){
@@ -370,10 +368,36 @@ public UserConection(ForumsManagement fs){
 		return _fs.createForum(name, description);
 	}
 
-/**
+
+/*
  * functions that transform objects of domain layer 
  * to the GUI representation
  */
+	
+	
+	public Integer getPostNumInSubForum(String subForumName)
+	{
+		if (_forum == null)
+			return null;
+		if (_member == null)
+			return null;
+		if (!_forum.isAdmin(_member))
+			return null;
+		return _forum.getPostNumInSubForum(subForumName);
+	}
+	
+	public HashMap<Integer, Post> getListOfPostsByMember(String mNickname)
+	{
+		if (_forum == null)
+			return null;
+		if (_member == null)
+			return null;
+		if (!_forum.isAdmin(_member))
+			return null;
+		return _forum.getListOfPostsByMember(mNickname);
+		
+	}
+	
 	
 	/*
 	public Post getPost(int id){
