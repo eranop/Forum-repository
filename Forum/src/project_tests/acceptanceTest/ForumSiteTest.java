@@ -1,16 +1,14 @@
 
 package project_tests.acceptanceTest;
 
-import junit.framework.TestCase;
+import java.util.Vector;
 
-import org.junit.Test;
-
-import Bridge.SiteInterface;
 
 
 public class ForumSiteTest{
-	SiteInterface site;
-	
+	project_tests.Bridge.SiteInterface _site;
+	Vector<Integer> _connections;
+	private static final int connectionNumber=5;
 	/*
 	public void setTestInterface(String interfaceType){
 		if (interfaceType.equals("Real"))
@@ -23,79 +21,106 @@ public class ForumSiteTest{
 	 */
 
 
-	public ForumSiteTest(){
+	public ForumSiteTest() throws Exception{
 		super();
+		this.setUp();
 	}
 
-	protected void setUp() throws Exception {
-		this.site=Driver.getBridge();
-		this.initSuperAdmin();
-		this.createForums();
-		this.addMembers();
-		this.createSubForums();
-
+	public void setUp() throws Exception {
+		_site=Driver.getBridge();
+		init();
+		createForums();
+		createSubForums();
+		addMembers();
+		System.out.println("end setup");
 	}
 
-	private void initSuperAdmin() {
-		this.site.init("eyal", "123", "a@b");
+	private void init() {
 
+		if(_site.init("eyal", "123", "a@b")){
+			int conID=_site.openNewConnection();
+			if(conID!=-1){
+				_connections.add(conID);
+			}
+			else{
+				System.out.println("init failed");
+			}
+		}//set the first connection
+		if(!_site.switchConnection(_connections.get(0))){
+			System.out.println("init failed");
+		}
+		
+		if(!_site.loginSuperAdmin("eyal", "123")){
+			System.out.println("init failed");
+		}
+		System.out.println("init end");
 	}
 
 
 	private void createForums() {
-		this.site.loginSuperAdmin("eyal", "123");
-		this.site.addForumToSite("food1", "", "rubi1", "123", "rubi1@c");
-		this.site.addForumToSite("food2", "", "rubi2", "1234", "rubi2@c");
-		this.site.addForumToSite("food3", "", "rubi3", "1235", "rubi3@c");
-		this.site.addForumToSite("food4", "", "rubi4", "1236", "rubi4@c");
-		this.site.addForumToSite("food5", "", "rubi5", "1237", "rubi5@c");
-		this.site.logoutSuperAdmin();
-	}
-
-
-	private void addMembers() {
-		this.site.showSubforumsOfForum("food1");
-		this.site.addNewMemberToForum("food1", "eli1", "56789", "eli1@a");
-		this.site.addNewMemberToForum("food1", "eli2", "5678", "eli2@a");
-		this.site.addNewMemberToForum("food1", "eli3", "567", "eli3@a");
-		this.site.addNewMemberToForum("food1", "eli4", "56", "eli4@a");
-		this.site.addNewMemberToForum("food1", "eli5", "5", "eli5@a");
-		this.site.exitForum("food1");
-		
-		this.site.showSubforumsOfForum("food2");	
-		this.site.addNewMemberToForum("food2", "eli1", "56789", "eli1@a");
-		this.site.addNewMemberToForum("food2", "eli2", "5678", "eli2@a");
-		this.site.addNewMemberToForum("food2", "eli3", "567", "eli3@a");
-		this.site.addNewMemberToForum("food2", "eli4", "56", "eli4@a");
-		this.site.addNewMemberToForum("food2", "eli5", "5", "eli5@a");
-		this.site.exitForum("food2");
-		
+		_site.addForum("food1", "");
+		_site.addForum("food2", "");
+		//_site.addForum("food3", "");
+		//_site.addForum("food4", "");
+		System.out.println("forums create end");
 	}
 
 	private void createSubForums() {
-		this.site.showSubforumsOfForum("food1");
-		this.site.login("rubi1", "123", "food1");
-		this.site.createSubForumInForumByAdmin("food1", "steak1", "", "rubi1");
-		this.site.createSubForumInForumByAdmin("food1", "steak2", "", "rubi1");
-		this.site.createSubForumInForumByAdmin("food1", "steak3", "", "rubi1");
-		this.site.createSubForumInForumByAdmin("food1", "steak4", "", "rubi1");
-		this.site.logout();
-		this.site.showSubforumsOfForum("food2");
-		this.site.login("rubi2", "1234", "food2");
-		this.site.createSubForumInForumByAdmin("food2", "sald1", "", "rubi2");
-		this.site.createSubForumInForumByAdmin("food2", "salad2", "", "rubi2");
-		this.site.createSubForumInForumByAdmin("food2", "salad3", "", "rubi2");
-		this.site.createSubForumInForumByAdmin("food2", "salad4", "", "rubi2");
-		this.site.logout();
+		_site.enterForum("food1");
+		_site.addSubforumToForum("milk1", "", "");
+		_site.addSubforumToForum("milk2", "", "");
+		_site.addSubforumToForum("milk3", "", "");
+		_site.addSubforumToForum("milk4", "", "");
+		_site.exitForum();
 
+		_site.enterForum("food2");
+		_site.addSubforumToForum("cola1", "", "");
+		_site.addSubforumToForum("cola2", "", "");
+		_site.addSubforumToForum("cola3", "", "");
+		_site.addSubforumToForum("cola4", "", "");
+		_site.exitForum();
+
+		_site.logoutSuperAdmin();
+		System.out.println("subforum create end");
 	}
+
+
+
+
+	private void addMembers() {
+		_site.enterForum("food1");
+		_site.registerToForum("aviad", "aviad", "avi@gmail.com");
+		_site.registerToForum("tzvi", "tzvi", "tzvi@gmail.com");
+
+		_site.loginSuperAdmin("eyal", "123");
+		_site.addAdministratorToForum("aviad");
+		_site.logoutSuperAdmin();
+
+		_site.exitForum();
+
+		_site.enterForum("food2");
+		_site.registerToForum("aviad", "aviad", "avi@gmail.com");
+		_site.registerToForum("tzvi", "tzvi", "tzvi@gmail.com");
+
+		_site.loginSuperAdmin("eyal", "123");
+		_site.addAdministratorToForum("tzvi");
+		_site.logoutSuperAdmin();
+
+		_site.enterSubforum("cola1");
+		_site.login("tzvi", "tzvi");
+		_site.addModeratorTosubforum("aviad");
+		_site.logout();
+		_site.exitForum();
+		System.out.println("members create end");
+	}
+
 
 
 
 
 	protected void tearDown() throws Exception {
-		site.cleanAllData();
-		
+		_site.cleanAllData();
+
 
 	}
 

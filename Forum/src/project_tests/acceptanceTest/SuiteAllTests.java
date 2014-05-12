@@ -1,6 +1,4 @@
 package project_tests.acceptanceTest;
-import project_tests.unitTests.*;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -16,7 +14,7 @@ import org.junit.runners.Suite.SuiteClasses;
     SubForumTest.class,
 */
 //acceptance tests
-    PostsTests.class,
+    LoginTest.class,
     
 })public class SuiteAllTests
 {

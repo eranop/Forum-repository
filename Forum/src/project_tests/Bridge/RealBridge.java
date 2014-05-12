@@ -1,139 +1,290 @@
 package project_tests.Bridge;
-import java.util.HashMap;
-import java.util.Vector;
-
 import allcode.*;
 public class RealBridge implements SiteInterface {
 	private SiteManager _sm;
-
+	private int _currentConnection;
 	@Override
-	public void cleanAllData() {
-		// TODO Auto-generated method stub
-
-	}
-	@Override
-	public boolean init(String superAdminName, String passward, String email) {
-		_sm=InitializeSystem.init(superAdminName, passward, email);
+	public boolean init(String superAdminName, String password, String email) {
+		_sm=InitializeSystem.init(superAdminName, password, email);
+		_currentConnection=-1;
 		return true;
 	}
+
 	@Override
 	public int openNewConnection() {
 		UserConection uc=_sm.openNewConnection();
+		if(uc==null){
+			System.out.println("openning connection failed");
+			return -1;
+		}
+		//_currentConnection=uc.getID();
+		System.out.println("openning connection "+ uc.getID());
 		return uc.getID();
 	}
+
+
 	@Override
-	public boolean addForumToSite(int id,String name, String description,
-			String adminName, String adminPass, String adminMail) {
-		UserConection uc=_sm.getConnectionByID(id);
-		uc.reset();
-		uc.loginAsSuperAdmin(adminName, adminPass);
-		report r= uc.createForum(name, description);
+	public boolean switchConnection(int connectionID) {
+		UserConection uc=_sm.getConnectionByID(connectionID);
+		if(uc==null)
+			return false;
+		_currentConnection=connectionID;
+		return true;
+	}
+
+	@Override
+	public boolean closeConnection(int connectionID) {
+		if(_sm.closeConnection(connectionID)){  
+			if(_currentConnection==connectionID){
+				_currentConnection=-1;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean closeCurrentConnection() {
+		_currentConnection=-1;
+		return _sm.closeConnection(_currentConnection);
+	}
+
+
+	@Override
+	public boolean login(String user, String pass) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.login(user, pass);
 		if(r.equals(report.OK))
 			return true;
 		return false;
 	}
+
 	@Override
-	public boolean setAdministratorToForum(int id, String name, String forumName) {
-		UserConection uc=_sm.getConnectionByID(id);
-		uc.reset();
-		uc.enterForum(forumName);
-		
-		
+	public boolean logout() {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		uc.logout();
+		return false;
 	}
+
 	@Override
-	public boolean setSuperAdminToSite(int id, String name, String pass, String email) {
-		return fs.setSuperAdmin(name, pass, email);
+	public boolean enterForum(String forum) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		uc.enterForum(forum);
+		return false;
 	}
+
 	@Override
-	public boolean login(int id, String user, String pass, String forumName) {
-		return fs.login(user, pass, forumName);
+	public boolean exitForum() {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r= uc.exitForum();
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean logout(int id) {
-		return fs.logout();
+	public boolean enterSubforum(String subforumName) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.enterSubforum(subforumName);
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean addNewMemberToForum(int id, String forumName, String userName,
-			String password, String email) {
-		return fs.registerToForum(forumName, userName, password, email);
+	public boolean exitSubforum() {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.exitSubforum();
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean sendComplainOnModerator(int id, String user, String moderator,
-			String forumName, String subForumName, String content) {
-		return fs.complain(user, moderator, forumName, subForumName, content);
+	public boolean enterPost(int postID) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.enterPost(postID);
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean setTwoMembersFriends(int id, String forumName, String userName1,
-			String userName2) {
-		return fs.setFriends(forumName, userName1, userName2);
+	public boolean exitPost() {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.exitPost();
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean writePostInSubForum(int id, String forumName, String subForumName,
-			String username, String title, String content) {
-		
-		return fs.writePostInSubForum(forumName, subForumName, username, title, content);
+	public boolean loginSuperAdmin(String userName, String password) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.loginAsSuperAdmin(userName, password);
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean writeResponsePostInSubForum(int id, String forumName,
-			String subForumName, String username, String title, String content,
-			int postToResponseID) {
-		return fs.writeResponsePostInSubForum(forumName, subForumName, username, title, content, postToResponseID);
-		
+	public boolean logoutSuperAdmin() {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.logoutAsSuperAdmin();
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean deletePostInSubForum(int id, String forumName, String subForumName,
-			int postID, String moderator) {
-		return fs.deletePostInSubForum(forumName, subForumName, postID, moderator);
-		
+	public boolean addForum(String name, String description) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.createForum(name, description);
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean loginSuperAdmin(int id, String userName, String password) {
-		return fs.loginSuperAdmin(userName, password);
+	public boolean deleteForum(String forumName) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.deleteForum(forumName);
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean logoutSuperAdmin(int id) {
-		return fs.logoutSuperAdmin();
+	public boolean addSubforumToForum(String subForumName,
+			String description, String adminName) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.createSubforum(subForumName, description);
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean deleteSubForum(int id, String forumName, String subForumName,
-			String adminName) {
-		return fs.deleteSubForum(forumName, subForumName, adminName);
+	public boolean deleteSubForum(String subForumName) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.deleteSubForum(subForumName);
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean addModerator(int id, String forumName, String subForumName,
-			String adminName, String moderatorName) {
-		return fs.addModerator(forumName, subForumName, adminName, moderatorName);
+	public boolean registerToForum(String userName, String password,
+			String email) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.registerToForum(userName, password, email);
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public Vector<String> showSubforumsOfForum(int id, String forumName) {
-		Vector <SubForum> sf=fs.showSubforumsOfForum(forumName);
-		Vector<String> ans= new Vector<>();
-		if(sf!=null){
-			for(int i=0; i<sf.size() ; i++){
-				ans.add(sf.get(i).getName());
-			}
-				return ans;
-		}
-		return null;
-		
+	public boolean setSuperAdminToSite(String superadminName,
+			String superadminPass, String email) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.setSuperAdmin(superadminName, superadminPass, email);
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public Vector<String> showPostInSubForum(int id, String forumName,
-			String subForumName) {
-		Vector<String> ans= new Vector<>();
-		HashMap<Integer, Post> posts=fs.showPostInSubForum(int id, forumName, subForumName);
-		if(posts!=null){
-			for (int post: posts.keySet()) {
-			   ans.add(posts.get(post).getTitle());
-			}
-			return ans;
-		}
-		return null;
+	public boolean addAdministratorToForum(String name) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.addAdminToForum(name);
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
 	@Override
-	public boolean createSubForumInForumByAdmin(int id, String forumName,
-			String subForumName, String description, String adminName) {
-		return fs.createSubForumInForumByAdmin(forumName, subForumName, description, adminName);
+	public boolean addModeratorTosubforum(String name) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.addModerator(name);
+		if(r.equals(report.OK))
+			return true;
+		return false;
 	}
+
+	@Override
+	public boolean writePostInSubForum(String title, String content) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.writePost(title, content);
+		if(r.equals(report.OK))
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean writeResponsePostInSubForum(String title,
+			String content) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.writeResponsePost(title, content);
+		if(r.equals(report.OK))
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean deletePostInSubForum(int postID) {
+		UserConection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null)
+			return false;
+		report r=uc.deletePost();
+		if(r.equals(report.OK))
+			return true;
+		return false;
+		//TODO
+	}
+
+	@Override
+	public void cleanAllData() {
+	}
+
 
 }

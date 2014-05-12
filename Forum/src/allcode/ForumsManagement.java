@@ -50,6 +50,23 @@ public class ForumsManagement {
 		
 		return report.OK;
 	}
+	public report createForum(String name,String description, Member admin){
+		//description is not must
+		if(name==null){
+			return report.NULL_ARGUMENTS; 
+		}
+		if(isForumExist(name)){
+			return report.ALREADY_FORUM_EXIST;
+		}
+		Forum forum=new Forum(name,description);
+		//report rep=forum.register(adminName, adminPass, adminMail);
+		if(admin != null){
+			forum.addAdmin(admin);
+		}
+		_forums.add(forum);
+		
+		return report.OK;
+	}
 	public report deleteForum(String forumName){
 		if(isForumExist(forumName)){
 			_forums.remove(getForum(forumName));
