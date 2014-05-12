@@ -1,7 +1,5 @@
 package project_tests.Bridge;
 
-import java.util.Vector;
-
 public class ProxyBridge implements SiteInterface {
 
 	public SiteInterface real;
@@ -10,172 +8,193 @@ public class ProxyBridge implements SiteInterface {
 		this.real=null;
 	}
 
-
 	@Override
-	public boolean addForumToSite(int id, String name, String description,
-			String adminName, String adminPass, String adminMail) {
-		if(this.real!=null)
-			return real.addForumToSite(id, name, description, adminName, adminPass, adminMail);
-
+	public boolean init(String superAdminName, String passward, String email) {
+		if(real!=null)
+			return real.init(superAdminName, passward, email);
 		return false;
 	}
 
 	@Override
-	public boolean setAdministratorToForum(int id, String superadminName, String pass, 
-			String name, String forumName) {
-		if(this.real!=null)
-			return real.setAdministratorToForum(id, superadminName, pass, name, forumName);
+	public int openNewConnection() {
+		if(real!=null)
+			return real.openNewConnection();
+		return -1;
+	}
+	@Override
+	public boolean switchConnection(int connectionID){
+		if(real!=null)
+			return real.switchConnection(connectionID);
+		return false;
+	}
+	@Override
+	public boolean closeConnection(int connectionID){
+		if(real!=null)
+			return real.closeConnection(connectionID);
+		return false;
+	}
+	@Override
+	public boolean closeCurrentConnection(){
+		if(real!=null)
+			return real.closeCurrentConnection();
 		return false;
 	}
 
 	@Override
-	public boolean setSuperAdminToSite(int id, String superadminName, String superadminPass, String name,String newPass, String email) {
-		if(this.real!=null)
-			return real.setSuperAdminToSite(id, superadminName, superadminPass, name, newPass, email);
+	public boolean login(String user, String pass) {
+		if(real!=null)
+			return real.login(user, pass);
 		return false;
 	}
 
 	@Override
-	public boolean login(int id, String user, String pass, String forumName) {
-		if(this.real!=null)
-			return real.login(id, user, pass, forumName);
+	public boolean logout() {
+		if(real!=null)
+			return real.logout();
 		return false;
 	}
 
 	@Override
-	public boolean logout(int id) {
-		if(this.real!=null)
-			return real.logout(id);
+	public boolean enterForum(String forum) {
+		if(real!=null)
+			return real.enterForum(forum);
 		return false;
 	}
 
 	@Override
-	public boolean addNewMemberToForum(int id, String forumName, String userName,
-			String password, String email) {
-		if(this.real!=null)
-			return real.addNewMemberToForum(id, forumName, userName, password, email);
-		return false;
-	}
-
-
-	@Override
-	public boolean sendComplainOnModerator(int id, String user, String moderator,
-			String forumName, String subForumName, String content) {
-		if(this.real!=null)
-			return real.sendComplainOnModerator(id, user, moderator, forumName, subForumName, content);
+	public boolean exitForum() {
+		if(real!=null)
+			return real.exitForum();
 		return false;
 	}
 
 	@Override
-	public boolean setTwoMembersFriends(int id, String forumName, String userName1,
-			String userName2) {
-		if(this.real!=null)
-			return real.setTwoMembersFriends(id, forumName, userName1, userName2);	
-
+	public boolean enterSubforum(String subforumNAme) {
+		if(real!=null)
+			return real.enterSubforum(subforumNAme);
 		return false;
 	}
 
 	@Override
-	public boolean writePostInSubForum(int id, String forumName, String subForumName,
-			String username, String title, String content) {
-		if(this.real!=null)
-			return real.writePostInSubForum(id, forumName, subForumName, username, title, content);
+	public boolean exitSubforum() {
+		if(real!=null)
+			return real.exitSubforum();
 		return false;
 	}
 
 	@Override
-	public boolean writeResponsePostInSubForum(int id, String forumName,
-			String subForumName, String username, String title, String content,
-			int postToResponseID) {
-		if(this.real!=null)
-			return real.writeResponsePostInSubForum(id, forumName, subForumName, username, title, content, postToResponseID);
+	public boolean enterPost(int postID) {
+		if(real!=null)
+			return real.enterPost(postID);
 		return false;
 	}
 
 	@Override
-	public boolean deletePostInSubForum(int id, String forumName, String subForumName,
-			int postID, String moderator) {
-		if(this.real!=null)
-			return real.deletePostInSubForum(id, forumName, subForumName, postID, moderator);
+	public boolean exitPost() {
+		if(real!=null)
+			return real.exitPost();
 		return false;
 	}
 
 	@Override
-	public boolean loginSuperAdmin(int id, String userName, String password) {
-		if(this.real!=null)
-			return real.loginSuperAdmin(id, userName, password);
+	public boolean loginSuperAdmin(String userName, String password) {
+		if(real!=null)
+			return real.loginSuperAdmin(userName, password);
 		return false;
 	}
 
 	@Override
-	public boolean logoutSuperAdmin(int id) {
-		if(this.real!=null)
-			return real.logoutSuperAdmin(id);
+	public boolean logoutSuperAdmin() {
+		if(real!=null)
+			return real.logoutSuperAdmin();
+		return false;
+	}
+
+	@Override
+	public boolean addForum(String name, String description) {
+		if(real!=null)
+			return real.addForum(name, description);
+		return false;
+	}
+
+	@Override
+	public boolean deleteForum(String forumName) {
+		if(real!=null)
+			return real.deleteForum(forumName);
+		return false;
+	}
+
+	@Override
+	public boolean addSubforumToForum(String subForumName,
+			String description, String adminName) {
+		if(real!=null)
+			return real.addSubforumToForum(subForumName, description, adminName);
+		return false;
+	}
+
+	@Override
+	public boolean deleteSubForum(String subForumName) {
+		if(real!=null)
+			return real.deleteSubForum(subForumName);
+		return false;
+	}
+
+	@Override
+	public boolean registerToForum(String userName, String password,
+			String email) {
+		if(real!=null)
+			return real.registerToForum(userName, password, email);
+		return false;
+	}
+
+	@Override
+	public boolean setSuperAdminToSite(String superadminName,
+			String superadminPass, String email) {
+		if(real!=null)
+			return real.setSuperAdminToSite(superadminName, superadminPass, email);
+		return false;
+	}
+
+	@Override
+	public boolean addAdministratorToForum(String name) {
+		if(real!=null)
+			return real.addAdministratorToForum(name);
+		return false;
+	}
+
+	@Override
+	public boolean addModeratorTosubforum(String name) {
+		if(real!=null)
+			return real.addModeratorTosubforum(name);
+		return false;
+	}
+
+	@Override
+	public boolean writePostInSubForum(String title, String content) {
+		if(real!=null)
+			return real.writePostInSubForum(title, content);
+		return false;
+	}
+
+	@Override
+	public boolean writeResponsePostInSubForum(String title,
+			String content) {
+		if(real!=null)
+			return writeResponsePostInSubForum(title, content);
+		return false;
+	}
+
+	@Override
+	public boolean deletePostInSubForum(int postID) {
+		if(real!=null)
+			return real.deletePostInSubForum(postID);
 		return false;
 	}
 
 	@Override
 	public void cleanAllData() {
+		// TODO Auto-generated method stub
+		
 	}
 
-
-	
-	@Override
-	public boolean deleteSubForum(int id, String forumName, String subForumName,
-			String adminName) {
-		if(this.real!=null)
-			return real.deleteSubForum(id, forumName, subForumName, adminName);
-		return false;
-	}
-
-
-	@Override
-	public boolean addModerator(int id, String forumName, String subForumName,
-			String adminName, String moderatorName) {
-		if(this.real!=null)
-			return real.addModerator(id, forumName, subForumName, adminName, moderatorName);
-		return false;
-	}
-
-
-	@Override
-	public boolean init(String superAdminName, String passward, String email) {
-		if(this.real!=null)
-			return real.init(superAdminName, passward, email);
-		return false;
-	}
-
-
-	@Override
-	public Vector<String> showSubforumsOfForum(String forumName) {
-		if(this.real!=null)
-			return real.showSubforumsOfForum(forumName);
-		return null;
-	}
-
-
-	@Override
-	public Vector<String> showPostInSubForum(String forumName,
-			String subForumName) {
-		if(this.real!=null)
-			return real.showPostInSubForum(forumName, subForumName);
-		return null;
-	}
-
-
-	@Override
-	public boolean createSubForumInForumByAdmin(int id, String forumName,
-			String subForumName, String description, String adminName) {
-		if(this.real!=null)
-			return real.createSubForumInForumByAdmin(id, forumName, subForumName, description, adminName);
-		return false;
-	}
-
-
-	@Override
-	public int openNewConnection() {
-		if(this.real!=null)
-			return real.openNewConnection();
-		return -1;	
-	}
 }

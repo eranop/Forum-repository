@@ -170,7 +170,7 @@ public UserConection(ForumsManagement fs){
 		return _forum.deleteSubForum(subForumName, _member);
 	}
 
-	public report addModerator(String adminName,String moderatorName){
+	public report addModerator(String moderatorName){
 		if(_subForum == null){
 			System.out.println("not connected to forum!");
 			return report.NO_SUBFORUM;
@@ -364,7 +364,7 @@ public UserConection(ForumsManagement fs){
 		if(!_isSuperAdmin){
 			return report.NOT_ALLOWED;
 		}
-		
+		//return _fs.createForum(name, description, _member); 
 		return _fs.createForum(name, description);
 	}
 
@@ -419,6 +419,17 @@ public UserConection(ForumsManagement fs){
 	 */
 	public int getID(){
 		return _id;
+	}
+
+	public report deleteForum(String forumName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public report setSuperAdmin(String superadminName, String superadminPass,
+			String email) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
