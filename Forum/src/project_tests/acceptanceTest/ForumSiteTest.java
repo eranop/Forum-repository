@@ -9,20 +9,11 @@ public class ForumSiteTest{
 	project_tests.Bridge.SiteInterface _site;
 	Vector<Integer> _connections;
 	private static final int connectionNumber=5;
-	/*
-	public void setTestInterface(String interfaceType){
-		if (interfaceType.equals("Real"))
-			site = new RealBridge();
-		else if (interfaceType.equals("proxy"))
-			site = new ProxyBridge();
-		else
-		fail("Undefined interface " + interfaceType);
-		}
-	 */
-
+	
 
 	public ForumSiteTest() throws Exception{
 		super();
+		_connections=new Vector<Integer>();
 		this.setUp();
 	}
 
@@ -32,27 +23,17 @@ public class ForumSiteTest{
 		createForums();
 		createSubForums();
 		addMembers();
-		System.out.println("end setup");
 	}
 
 	private void init() {
 
-		if(_site.init("eyal", "123", "a@b")){
-			int conID=_site.openNewConnection();
-			if(conID!=-1){
-				_connections.add(conID);
-			}
-			else{
-				System.out.println("init failed");
-			}
-		}//set the first connection
-		if(!_site.switchConnection(_connections.get(0))){
-			System.out.println("init failed");
-		}
+		_site.init("eyal", "123", "a@b");
+		int conID=_site.openNewConnection();
+		_connections.add(conID);
+		//set the first connection
+		_site.switchConnection(_connections.get(0));
+		_site.loginSuperAdmin("eyal", "123");
 		
-		if(!_site.loginSuperAdmin("eyal", "123")){
-			System.out.println("init failed");
-		}
 		System.out.println("init end");
 	}
 
@@ -62,7 +43,6 @@ public class ForumSiteTest{
 		_site.addForum("food2", "");
 		//_site.addForum("food3", "");
 		//_site.addForum("food4", "");
-		System.out.println("forums create end");
 	}
 
 	private void createSubForums() {
@@ -81,7 +61,6 @@ public class ForumSiteTest{
 		_site.exitForum();
 
 		_site.logoutSuperAdmin();
-		System.out.println("subforum create end");
 	}
 
 

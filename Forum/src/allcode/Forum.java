@@ -5,6 +5,7 @@ import java.util.Vector;
 
 public class Forum {
 	//Fields
+	
 	private String _forumName;
 	private String _description;
 	private ForumPolicy _forumPolicy;

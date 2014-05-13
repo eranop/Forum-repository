@@ -8,17 +8,23 @@ import java.util.Vector;
  */
 public class ForumsManagement {
 
-	private SuperAdmin _superAdmin;
+	private Member _superAdmin;
 	private Vector<Forum> _forums;
 
 	public ForumsManagement() {
 		_forums=new Vector<Forum>();
-		_superAdmin=new SuperAdmin();
+	}
+	public ForumsManagement(String superAdminName, String password, String email) {
+		_forums=new Vector<Forum>();
+		_superAdmin= new Member(superAdminName, password, email);
 	}
 
 
 	/**
-	 * creates forum and adds admin as member to the forum and admin of the forum
+	 * 3 constructors:
+	 *  - creating new member which  will be administrator
+	 *  - forum without administrator
+	 *  - creating forum with member and add it as administrator
 	 */
 	public report createForum(String name,String description,String adminName,String adminPass,String adminMail){
 		//description is not must
@@ -60,6 +66,7 @@ public class ForumsManagement {
 		}
 		Forum forum=new Forum(name,description);
 		//report rep=forum.register(adminName, adminPass, adminMail);
+		//TODO registration with email sending
 		if(admin != null){
 			forum.addAdmin(admin);
 		}
@@ -85,9 +92,8 @@ public class ForumsManagement {
 	public boolean setSuperAdmin(String name,String pass,String email){
 		//decide if we want to replace current super administrator
 		//get member details (because he must be member in each forum)
-
 		_superAdmin.set_email(email);
-		_superAdmin.set_password(pass);
+		_superAdmin.setNewPassword(pass);
 		_superAdmin.set_userName(name);
 
 		return true;

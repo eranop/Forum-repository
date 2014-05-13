@@ -7,7 +7,7 @@ import java.rmi.registry.Registry;
 import java.util.List;
 
 import allcode.*;
-import allcode.UserConection;;
+import allcode.UserConnection;;
 
 public class RMIserver {
 
@@ -29,7 +29,7 @@ public class RMIserver {
 		}
 	}
 
-	public static void RMIforUC(UserConection uc) throws RemoteException, AlreadyBoundException{
+	public static void RMIforUC(UserConnection uc) throws RemoteException, AlreadyBoundException{
 		int tmp1 = Constants.getPort();
 		String tmp2 = Constants.getID();
 		

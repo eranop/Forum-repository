@@ -10,7 +10,9 @@ import allcode.*;
 
 
 public class UserInterface {
+	
 	private ForumsManagement _fs;
+	/*
 	public UserInterface(ForumsManagement fs) {
 		_fs = fs;
 	}
@@ -203,7 +205,7 @@ public class UserInterface {
 	}
 
 
-
+*/
 
 
 }

@@ -51,9 +51,9 @@ public class Member {
 		set_postsCounter(0);
 	}
 	
-	public static Member createSuperAdminMember(String userName){
+	public static Member createSuperAdminMember(String userName, String pass, String email){
 		String name=userName.concat("- administrator");
-		return new Member(name);
+		return new Member(name, pass, email);
 	}
 
 	public boolean addFriend(Member member){
@@ -105,8 +105,8 @@ public class Member {
 		for (int i = 0; i < _oldPasswords.size(); i++)		//checking all former passwords
 			if (_oldPasswords.get(i).equals(newPassword))
 				return report.PASSWORD_ALREADY_BEEN_USED;
-		
-		_oldPasswords.add(this._password);
+		if(this._password!=null)
+			_oldPasswords.add(this._password);
 		this._password = newPassword;
 		this._passwordDate = DateManagment.getDate();
 		return report.OK;

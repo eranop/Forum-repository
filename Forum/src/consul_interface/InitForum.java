@@ -19,7 +19,7 @@ public class InitForum {
 			
 			ForumsManagement fs= new ForumsManagement();
 			fs.setSuperAdmin(superAdminName, passward, email);
-			UserInterface GUI=new UserInterface(fs);
+			UserInterface GUI=new UserInterface();
 			
 			return GUI;
 			

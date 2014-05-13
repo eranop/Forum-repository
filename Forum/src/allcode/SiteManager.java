@@ -5,19 +5,18 @@ import java.util.HashMap;
 public class SiteManager {
 
 	ForumsManagement _fm;
-	HashMap<Integer,UserConection>  _connections;
+	HashMap<Integer,UserConnection>  _connections;
 	/**
 	 * constructors- with or without super admin
 	 * 
 	 */
 	public SiteManager(String superAdminName, String passward, String email) {
-		_fm=new ForumsManagement();
-		_fm.setSuperAdmin(superAdminName,passward, email);
-		_connections=new HashMap<Integer,UserConection>();
+		_fm=new ForumsManagement(superAdminName,passward, email);
+		_connections=new HashMap<Integer,UserConnection>();
 	}
 	public SiteManager() {
 		_fm=new ForumsManagement();
-		_connections=new HashMap<Integer,UserConection>();
+		_connections=new HashMap<Integer,UserConnection>();
 	}
 	public boolean setSuperAdmin(String name,String pass,String email){
 		if(name==null || pass==null || email==null){
@@ -31,14 +30,14 @@ public class SiteManager {
 	 * 
 	 * functions of siteManager
 	 */
-	public UserConection openNewConnection(){
-		UserConection uc=new UserConection(_fm);
+	public UserConnection openNewConnection(){
+		UserConnection uc=new UserConnection(_fm);
 		_connections.put(uc.getID(), uc);
 		return uc;
 	}
 
 	public boolean closeConnection(int id){
-		UserConection uc=_connections.get(id);
+		UserConnection uc=_connections.get(id);
 		if(uc==null){
 			return false;
 		}
@@ -46,7 +45,7 @@ public class SiteManager {
 		return true;
 	}
 
-	public UserConection getConnectionByID(int id){
+	public UserConnection getConnectionByID(int id){
 		return _connections.get(id);
 	}
 
