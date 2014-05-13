@@ -242,51 +242,6 @@ public class UserConnection extends SimpleConnection {
 		return report.NOT_ALLOWED;
 	}
 
-	public report addAdminToForum(String name){
-
-		//check that the super admin do that
-
-		if(_forum==null){
-			System.out.println("no such forum");
-			return report.NO_FORUM;
-		}
-		else{
-			Member member=_forum.getMember(name);
-			if(member!=null){
-				_forum.addAdmin(member);
-				return report.OK;
-			}
-			else{
-				System.out.println("no such member");
-				return report.NO_MEMBER;
-			}
-		}
-	}
-
-	public report createSubforum(String name,String description){
-		if(_forum==null){
-			return report.NO_FORUM;
-		}
-		if(_member==null){
-			return report.NOT_LOGGED;
-		}
-		if(!_forum.isAdmin(_member)){
-			return report.NOT_ALLOWED;
-		}
-
-		return _forum.createSubForum(name, description);
-	}
-
-	public report createForum(String name,String description){
-		if(_member==null){
-			return report.NOT_LOGGED;
-		}
-		if(!_isSuperAdmin){
-			return report.NOT_ALLOWED;
-		}
-		//return _fs.createForum(name, description, _member); 
-		return _fs.createForum(name, description);
-	}
 
 	/**
 	 * functions that transform objects of domain layer 
@@ -353,6 +308,51 @@ public report loginAsSuperAdmin(String userName, String pass){
 		_member=null;
 		System.out.println("logout administrator- ok");
 		return report.OK;
+	}
+	public report addAdminToForum(String name){
+
+		//check that the super admin do that
+
+		if(_forum==null){
+			System.out.println("no such forum");
+			return report.NO_FORUM;
+		}
+		else{
+			Member member=_forum.getMember(name);
+			if(member!=null){
+				_forum.addAdmin(member);
+				return report.OK;
+			}
+			else{
+				System.out.println("no such member");
+				return report.NO_MEMBER;
+			}
+		}
+	}
+
+	public report createSubforum(String name,String description){
+		if(_forum==null){
+			return report.NO_FORUM;
+		}
+		if(_member==null){
+			return report.NOT_LOGGED;
+		}
+		if(!_forum.isAdmin(_member)){
+			return report.NOT_ALLOWED;
+		}
+
+		return _forum.createSubForum(name, description);
+	}
+
+	public report createForum(String name,String description){
+		if(_member==null){
+			return report.NOT_LOGGED;
+		}
+		if(!_isSuperAdmin){
+			return report.NOT_ALLOWED;
+		}
+		//return _fs.createForum(name, description, _member); 
+		return _fs.createForum(name, description);
 	}
 
 
