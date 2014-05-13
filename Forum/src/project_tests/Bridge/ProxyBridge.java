@@ -191,4 +191,21 @@ public class ProxyBridge implements SiteInterface {
 		// TODO Auto-generated method stub
 
 	}
+
+	
+
+	@Override
+	public boolean isRegularConnection(int connectionID) {
+		if(real!=null)
+			return real.isRegularConnection(connectionID);
+		return false;
+	}
+
+
+	@Override
+	public int getCurrentConnectionID() {
+		if(real!=null)
+			return real.getCurrentConnectionID();
+		return -1;
+	}
 }

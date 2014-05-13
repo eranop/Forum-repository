@@ -12,6 +12,8 @@ public class LoginTest extends ForumSiteTest{
 	}
 	@Before
 	 public void initialize() {
+		getRegularConnection();
+		_site.exitForum();
 		_site.enterForum("food1");
 	}
 	@After
@@ -29,7 +31,7 @@ public class LoginTest extends ForumSiteTest{
 		assertTrue(_site.login("aviad", "aviad"));
 	}
 	
-	/*
+	
 	@Test
 	public void loginWrogDitailsTest() {
 		assertFalse(_site.login("tzvi", ""));
@@ -45,10 +47,10 @@ public class LoginTest extends ForumSiteTest{
 	
 	@Test
 	public void loginAfterSwitchForumTset() {
-		_site.login("tzvi", "tzvi");
-		_site.exitForum();
+		assertTrue(_site.login("tzvi", "tzvi"));
+		assertTrue(_site.exitForum());
 		assertTrue(_site.enterForum("food2"));
 		assertTrue(_site.login("aviad", "aviad"));
 	}
-	*/
+	
 }

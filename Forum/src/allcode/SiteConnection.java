@@ -27,6 +27,7 @@ public abstract class SiteConnection {
 		if(f==null){
 			return report.NO_SUCH_FORUM;
 		}
+		System.out.println("entering forum" + forumName);
 		_forum=f;
 		return report.OK;
 	}
@@ -35,6 +36,7 @@ public abstract class SiteConnection {
 			return report.NO_FORUM;
 		_forum=null;
 		_subForum=null;
+		_post=null;
 		return report.OK;
 	}
 	public report enterSubforum(String subforumName){

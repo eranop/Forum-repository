@@ -10,6 +10,7 @@ public interface SiteInterface {
 	public int openNewConnection();
 	public int openSuperAdminConnection();
 	
+	public boolean isRegularConnection(int connectionID);
 	public boolean switchConnection(int connectionID);
 	public boolean closeConnection(int connectionID);
 	public boolean closeCurrentConnection();
@@ -63,5 +64,6 @@ public interface SiteInterface {
 	public Vector<String> showPostInSubForum(String forumName, String subForumName);
 */	
 	public void cleanAllData();
+	int getCurrentConnectionID();
 
 }

@@ -14,7 +14,9 @@ public class UserConnection extends SiteConnection {
 	 */
 	@Override
 	public report exitForum(){
-		super.exitForum();
+		report r=super.exitForum();
+		if(!r.equals(report.OK))
+			return r; 
 		_member=null;
 		return report.OK;
 	}
@@ -22,6 +24,8 @@ public class UserConnection extends SiteConnection {
 	public report login(String userName, String pass){
 		if(_forum == null)
 			return report.NO_FORUM;
+		if(_member!=null)
+			return report.ALREADY_MEMBER_EXIST;
 		Member m= _forum.getMember(userName);
 		if(m==null)
 			return report.NO_SUCH_USER_NAME;

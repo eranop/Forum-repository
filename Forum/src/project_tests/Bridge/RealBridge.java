@@ -26,8 +26,14 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public int openSuperAdminConnection() {
-		// TODO Auto-generated method stub
-		return 0;
+		SuperAdminConnection uc=_sm.openSuperAdminConnection();
+		if(uc==null){
+			System.out.println("openning connection failed");
+			return -1;
+		}
+		//_currentConnection=uc.getID();
+		System.out.println("openning connection "+ uc.getID());
+		return uc.getID();
 	}
 
 	@Override
@@ -83,7 +89,7 @@ public class RealBridge implements SiteInterface {
 		if(uc==null)
 			return false;
 		uc.enterForum(forum);
-		return false;
+		return true;
 	}
 
 	@Override
@@ -270,6 +276,17 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public void cleanAllData() {
+	}
+
+	@Override
+	public int getCurrentConnectionID() {
+		return _currentConnection;
+	}
+
+	@Override
+	public boolean isRegularConnection(int connectionID) {
+		SiteConnection sc= _sm.getConnectionByID(connectionID);
+		return (sc instanceof UserConnection);
 	}
 
 }
