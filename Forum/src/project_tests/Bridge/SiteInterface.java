@@ -1,9 +1,5 @@
 package project_tests.Bridge;
 
-import java.util.Vector;
-
-import allcode.report;
-
 public interface SiteInterface {
 	/*
 	 * all tests are state based- every connection save its state.
@@ -12,6 +8,7 @@ public interface SiteInterface {
 	// initialize functions
 	public boolean init(String superAdminName, String passward, String email);
 	public int openNewConnection();
+	public int openSuperAdminConnection();
 	
 	public boolean switchConnection(int connectionID);
 	public boolean closeConnection(int connectionID);
@@ -26,8 +23,8 @@ public interface SiteInterface {
 	public boolean exitSubforum();
 	public boolean enterPost(int postID);
 	public boolean exitPost();
-	public boolean loginSuperAdmin(String userName, String password);
-	public boolean logoutSuperAdmin();
+	//public boolean loginSuperAdmin(String userName, String password);
+	//public boolean logoutSuperAdmin();
 	
 	//base functions
 	public boolean addForum(String name,String description);

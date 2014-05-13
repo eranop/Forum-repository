@@ -2,33 +2,26 @@ package allcode;
 /**
  * enable only flow functions
  */
-public class SimpleConnection {
+public abstract class SiteConnection {
 	protected static int IDs=0;
 	protected Forum _forum;
 	protected SubForum _subForum;
 	protected Post _post;
 	protected ForumsManagement _fs;
-	
+
 	protected int _id;
 
-public SimpleConnection(ForumsManagement fs){
+	public SiteConnection(ForumsManagement fs){
 		_fs=fs;
 		_forum=null;
 		_subForum=null;
 		_post=null;
 		_id=IDs++;
 	}
-	
-/**
- * for each state there is "in" and "out" functions
- */
-	public report exitForum(){
-		if(_forum==null)
-			return report.NO_FORUM;
-		_forum=null;
-		_subForum=null;
-		return report.OK;
-	}
+
+	/**
+	 * for each state there is "in" and "out" functions
+	 */
 	public report enterForum(String forumName){
 		Forum f= _fs.getForum(forumName);
 		if(f==null){
@@ -37,9 +30,10 @@ public SimpleConnection(ForumsManagement fs){
 		_forum=f;
 		return report.OK;
 	}
-	public report exitSubforum(){
-		if(_subForum==null)
-			return report.NO_SUBFORUM;
+	public report exitForum(){
+		if(_forum==null)
+			return report.NO_FORUM;
+		_forum=null;
 		_subForum=null;
 		return report.OK;
 	}
@@ -52,6 +46,12 @@ public SimpleConnection(ForumsManagement fs){
 			return report.NO_SUCH_SUBFORUM;
 		}
 		_subForum=sf;
+		return report.OK;
+	}
+	public report exitSubforum(){
+		if(_subForum==null)
+			return report.NO_SUBFORUM;
+		_subForum=null;
 		return report.OK;
 	}
 	public report enterPost(int id){
@@ -73,5 +73,20 @@ public SimpleConnection(ForumsManagement fs){
 		return report.OK;
 	}
 
+	public void reset(){
+		_forum=null;
+		_subForum=null;
+		_post=null;
+	}
 	
+	/**
+	 * getters
+	 */
+	public int getID(){
+		return _id;
+	}
+
+
+
+
 }

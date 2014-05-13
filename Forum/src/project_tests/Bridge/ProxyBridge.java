@@ -21,6 +21,16 @@ public class ProxyBridge implements SiteInterface {
 			return real.openNewConnection();
 		return -1;
 	}
+
+	@Override
+	public int openSuperAdminConnection() {
+		if(real!=null)
+			return real.openSuperAdminConnection();
+		return -1;
+	}
+
+
+
 	@Override
 	public boolean switchConnection(int connectionID){
 		if(real!=null)
@@ -95,21 +105,6 @@ public class ProxyBridge implements SiteInterface {
 			return real.exitPost();
 		return false;
 	}
-
-	@Override
-	public boolean loginSuperAdmin(String userName, String password) {
-		if(real!=null)
-			return real.loginSuperAdmin(userName, password);
-		return false;
-	}
-
-	@Override
-	public boolean logoutSuperAdmin() {
-		if(real!=null)
-			return real.logoutSuperAdmin();
-		return false;
-	}
-
 	@Override
 	public boolean addForum(String name, String description) {
 		if(real!=null)
@@ -194,7 +189,6 @@ public class ProxyBridge implements SiteInterface {
 	@Override
 	public void cleanAllData() {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 }

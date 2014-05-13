@@ -89,14 +89,17 @@ public class ForumsManagement {
 	 * 
 	 */
 
-	public boolean setSuperAdmin(String name,String pass,String email){
+	public report setSuperAdmin(String name,String pass,String email){
+		
+		if(email==null || pass==null || name==null)
+			return report.NULL_ARGUMENTS;
 		//decide if we want to replace current super administrator
 		//get member details (because he must be member in each forum)
 		_superAdmin.set_email(email);
 		_superAdmin.setNewPassword(pass);
 		_superAdmin.set_userName(name);
 
-		return true;
+		return report.OK;
 	}
 	//helper functions
 	public Forum getForum(String forumName){

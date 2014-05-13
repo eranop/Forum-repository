@@ -1,4 +1,6 @@
 package project_tests.Bridge;
+import org.hamcrest.core.IsInstanceOf;
+
 import allcode.*;
 public class RealBridge implements SiteInterface {
 	private SiteManager _sm;
@@ -22,10 +24,15 @@ public class RealBridge implements SiteInterface {
 		return uc.getID();
 	}
 
+	@Override
+	public int openSuperAdminConnection() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 	@Override
 	public boolean switchConnection(int connectionID) {
-		UserConnection uc=_sm.getConnectionByID(connectionID);
+		SiteConnection uc=_sm.getConnectionByID(connectionID);
 		if(uc==null)
 			return false;
 		_currentConnection=connectionID;
@@ -52,10 +59,10 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean login(String user, String pass) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof UserConnection))
 			return false;
-		report r=uc.login(user, pass);
+		report r=((UserConnection) uc).login(user, pass);
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -63,16 +70,16 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean logout() {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof UserConnection))
 			return false;
-		uc.logout();
+		((UserConnection)uc).logout();
 		return false;
 	}
 
 	@Override
 	public boolean enterForum(String forum) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
 		if(uc==null)
 			return false;
 		uc.enterForum(forum);
@@ -81,7 +88,7 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean exitForum() {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
 		if(uc==null)
 			return false;
 		report r= uc.exitForum();
@@ -92,7 +99,7 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean enterSubforum(String subforumName) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
 		if(uc==null)
 			return false;
 		report r=uc.enterSubforum(subforumName);
@@ -103,7 +110,7 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean exitSubforum() {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
 		if(uc==null)
 			return false;
 		report r=uc.exitSubforum();
@@ -114,7 +121,7 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean enterPost(int postID) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
 		if(uc==null)
 			return false;
 		report r=uc.enterPost(postID);
@@ -125,7 +132,7 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean exitPost() {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
 		if(uc==null)
 			return false;
 		report r=uc.exitPost();
@@ -134,34 +141,13 @@ public class RealBridge implements SiteInterface {
 		return false;
 	}
 
-	@Override
-	public boolean loginSuperAdmin(String userName, String password) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
-			return false;
-		report r=uc.loginAsSuperAdmin(userName, password);
-		if(r.equals(report.OK))
-			return true;
-		return false;
-	}
-
-	@Override
-	public boolean logoutSuperAdmin() {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
-			return false;
-		report r=uc.logoutAsSuperAdmin();
-		if(r.equals(report.OK))
-			return true;
-		return false;
-	}
 
 	@Override
 	public boolean addForum(String name, String description) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof SuperAdminConnection))
 			return false;
-		report r=uc.createForum(name, description);
+		report r=((SuperAdminConnection)uc).addNewForum(name, description);
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -169,10 +155,10 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean deleteForum(String forumName) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection sc=_sm.getConnectionByID(_currentConnection);
+		if(sc==null || !(sc instanceof SuperAdminConnection))
 			return false;
-		report r=uc.deleteForum(forumName);
+		report r=((SuperAdminConnection) sc).deleteForum(forumName);
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -181,10 +167,10 @@ public class RealBridge implements SiteInterface {
 	@Override
 	public boolean addSubforumToForum(String subForumName,
 			String description, String adminName) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof UserConnection))
 			return false;
-		report r=uc.createSubforum(subForumName, description);
+		report r=((UserConnection)uc).createSubforum(subForumName, description);
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -192,10 +178,10 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean deleteSubForum(String subForumName) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof UserConnection))
 			return false;
-		report r=uc.deleteSubForum(subForumName);
+		report r=((UserConnection)uc).deleteSubForum(subForumName);
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -204,10 +190,10 @@ public class RealBridge implements SiteInterface {
 	@Override
 	public boolean registerToForum(String userName, String password,
 			String email) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof UserConnection))
 			return false;
-		report r=uc.registerToForum(userName, password, email);
+		report r=((UserConnection)uc).registerToForum(userName, password, email);
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -216,10 +202,10 @@ public class RealBridge implements SiteInterface {
 	@Override
 	public boolean setSuperAdminToSite(String superadminName,
 			String superadminPass, String email) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof SuperAdminConnection))
 			return false;
-		report r=uc.setSuperAdmin(superadminName, superadminPass, email);
+		report r=((SuperAdminConnection)uc).setSuperAdmin(superadminName, superadminPass, email);
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -227,10 +213,10 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean addAdministratorToForum(String name) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof SuperAdminConnection))
 			return false;
-		report r=uc.addAdminToForum(name);
+		report r=((SuperAdminConnection)uc).addAdminToForum(name);
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -238,10 +224,10 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean addModeratorTosubforum(String name) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof UserConnection))
 			return false;
-		report r=uc.addModerator(name);
+		report r=((UserConnection)uc).addModerator(name);
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -249,10 +235,10 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean writePostInSubForum(String title, String content) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof UserConnection))
 			return false;
-		report r=uc.writePost(title, content);
+		report r=((UserConnection)uc).writePost(title, content);
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -261,10 +247,10 @@ public class RealBridge implements SiteInterface {
 	@Override
 	public boolean writeResponsePostInSubForum(String title,
 			String content) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof UserConnection))
 			return false;
-		report r=uc.writeResponsePost(title, content);
+		report r=((UserConnection)uc).writeResponsePost(title, content);
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -272,10 +258,10 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean deletePostInSubForum(int postID) {
-		UserConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null)
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof UserConnection))
 			return false;
-		report r=uc.deletePost();
+		report r=((UserConnection)uc).deletePost();
 		if(r.equals(report.OK))
 			return true;
 		return false;
@@ -285,6 +271,5 @@ public class RealBridge implements SiteInterface {
 	@Override
 	public void cleanAllData() {
 	}
-
 
 }

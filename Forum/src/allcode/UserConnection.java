@@ -1,7 +1,7 @@
 package allcode;
 
 
-public class UserConnection extends SimpleConnection {
+public class UserConnection extends SiteConnection {
 	private Member _member;
 	
 	public UserConnection(ForumsManagement fs){
@@ -12,6 +12,13 @@ public class UserConnection extends SimpleConnection {
 	/**
 	 * for each state there is "in" and "out" functions
 	 */
+	@Override
+	public report exitForum(){
+		super.exitForum();
+		_member=null;
+		return report.OK;
+	}
+
 	public report login(String userName, String pass){
 		if(_forum == null)
 			return report.NO_FORUM;
@@ -30,12 +37,6 @@ public class UserConnection extends SimpleConnection {
 		if(_member==null){
 			return report.NO_MEMBER;
 		}
-		_member=null;
-		return report.OK;
-	}
-	@Override
-	public report exitForum(){
-		super.exitForum();
 		_member=null;
 		return report.OK;
 	}
@@ -72,18 +73,7 @@ public class UserConnection extends SimpleConnection {
 	/**
 	 * the user must be logged in forum
 	 */
-	public report deleteSubForum(String subForumName){
-		if(_forum==null){
-			System.out.println("not connected to forum!");
-			return report.NO_FORUM;
-		}
-		if(_member==null){
-			System.out.println("user not logged!");
-			return report.NOT_LOGGED;
-		}
-		return _forum.deleteSubForum(subForumName, _member);
-	}
-
+	
 	public report addModerator(String moderatorName){
 		if(_subForum == null){
 			System.out.println("not connected to subforum!");
@@ -132,6 +122,25 @@ public class UserConnection extends SimpleConnection {
 		}
 	}
 
+
+	public report createSubforum(String name,String description){
+		if(_forum==null){
+			return report.NO_FORUM;
+		}
+		return _forum.createSubForum(name, description);
+	}
+
+	public report createForum(String name,String description){
+		//return _fs.createForum(name, description, _member); 
+		return _fs.createForum(name, description);
+	}
+	public report deleteSubForum(String subForumName){
+		if(_forum==null){
+			System.out.println("not connected to forum!");
+			return report.NO_FORUM;
+		}
+		return _forum.deleteSubForum(subForumName, _member);
+	}
 
 
 
@@ -254,107 +263,10 @@ public class UserConnection extends SimpleConnection {
 	}
 	 */
 
-
+	@Override
 	public void reset(){
-		_forum=null;
-		_subForum=null;
-		_isSuperAdmin=false;
+		super.reset();
 		_member=null;
-		_post=null;
-
 	}
-	/**
-	 * getters
-	 */
-	public int getID(){
-		return _id;
-	}
-
-	public report deleteForum(String forumName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public report setSuperAdmin(String superadminName, String superadminPass,
-			String email) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 }
-/*
-public report loginAsSuperAdmin(String userName, String pass){
-		if(userName==null || pass==null){
-			return report.NULL_ARGUMENTS;
-		}
-		if(_member!=null){
-			return report.ALREADY_MEMBER_EXIST;
-		}
-		if(!_fs.isValidSuperAdmin(userName, pass)){
-			return report.IS_NOT_SUPERADMIN;
-		}
-		_isSuperAdmin=true;
-		System.out.println("login administrator- ok");
-		return report.OK;
-	}
-	public report logoutAsSuperAdmin(){
-		if(!_isSuperAdmin){
-			return report.IS_NOT_SUPERADMIN;
-		}
-		if(_member==null){
-			return report.ALREADY_MEMBER_EXIST;
-		}
-		_isSuperAdmin=false;
-		_member=null;
-		System.out.println("logout administrator- ok");
-		return report.OK;
-	}
-	public report addAdminToForum(String name){
-
-		//check that the super admin do that
-
-		if(_forum==null){
-			System.out.println("no such forum");
-			return report.NO_FORUM;
-		}
-		else{
-			Member member=_forum.getMember(name);
-			if(member!=null){
-				_forum.addAdmin(member);
-				return report.OK;
-			}
-			else{
-				System.out.println("no such member");
-				return report.NO_MEMBER;
-			}
-		}
-	}
-
-	public report createSubforum(String name,String description){
-		if(_forum==null){
-			return report.NO_FORUM;
-		}
-		if(_member==null){
-			return report.NOT_LOGGED;
-		}
-		if(!_forum.isAdmin(_member)){
-			return report.NOT_ALLOWED;
-		}
-
-		return _forum.createSubForum(name, description);
-	}
-
-	public report createForum(String name,String description){
-		if(_member==null){
-			return report.NOT_LOGGED;
-		}
-		if(!_isSuperAdmin){
-			return report.NOT_ALLOWED;
-		}
-		//return _fs.createForum(name, description, _member); 
-		return _fs.createForum(name, description);
-	}
-
-
-
-*/
