@@ -118,7 +118,10 @@ public class SubForum {
 	
 	
 	/**
-	 * deleting a post from subforum
+	 * deleting a post from sub forum and all its responses if have any
+	 * @return report.OK if succeed
+	 * @return report.NO_POST if got null argument
+	 * @return report.NO_SUCH_POST if there's not such post in the sub forum
 	 */
 	public report deletePost(Post post)
 	{
@@ -150,12 +153,12 @@ public class SubForum {
 
 	
 	/**
-	 * adding moderator to the subforum
+	 * adding moderator to the sub forum
 	 * @param member moderator we want to add
 	 */
 	public report addModerator(Member member, Member promoter)
 	{
-		member.message("you've been added as modarator in bla bla\n");
+		member.message("you've been added as modarator in " + this.getName());
 		_moderators.add(member);
 		member.setPromoter(promoter);
 		return report.OK;
@@ -261,7 +264,7 @@ public class SubForum {
 	
 	public report complain(Member member, Member moderator, String complain)
 	{
-		if (!isModerator(moderator))		//case isnt moderator.
+		if (!isModerator(moderator))		//case isn't moderator.
 			return report.IS_NOT_MODERATOR;
 		Complain newComplain = new Complain(member, moderator, complain);
 		_complains.add(newComplain);

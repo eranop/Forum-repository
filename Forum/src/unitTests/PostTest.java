@@ -5,8 +5,11 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import allcode.Member;
+import allcode.Post;
+
 public class PostTest {
-/*
+
 
 	Member mem1 = new Member("Moti", "1234", "moti@walla.co.il");
 	Member mem2 = new Member("David", "4321", "david@walla.co.il");
@@ -64,5 +67,5 @@ public class PostTest {
 		assertFalse(post1.areResponsesEmpty());
 		assertFalse(post2.areResponsesEmpty());
 	}
-	*/
+	
 }

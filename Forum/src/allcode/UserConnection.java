@@ -97,7 +97,7 @@ public class UserConnection extends SiteConnection {
 			}
 			if (_forum.canAddModerator(member)){
 				System.out.println("add moderator " + member.get_userName());
-				return _subForum.addModerator(member, _member);
+				return _subForum.addModerator(member, _member);		//member = the member we want to add. _member = the admin
 			}
 			else
 				return report.DENIED_BY_POLICY;
