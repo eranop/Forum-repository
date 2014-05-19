@@ -43,6 +43,7 @@ public class LoginTest extends ForumSiteTest{
 	public void loginTwiceTset() {
 		assertTrue(_site.login("tzvi", "tzvi"));
 		assertFalse(_site.login("tzvi", "tzvi"));
+		assertFalse(_site.login("aviad", "aviad"));
 	}
 	
 	@Test

@@ -49,8 +49,8 @@ public interface SiteInterface {
 	 */
 	
 	//post functions
-	public boolean writePostInSubForum(String title,String content);
-	public boolean writeResponsePostInSubForum(String title,String content);
+	public int writePostInSubForum(String title,String content);
+	public int writeResponsePostInSubForum(String title,String content);
 	public boolean deletePostInSubForum(int postID);
 	
 	/*

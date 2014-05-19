@@ -1,9 +1,11 @@
 package allcode;
 
+import java.util.HashMap;
+
 
 public class UserConnection extends SiteConnection {
 	private Member _member;
-	
+
 	public UserConnection(ForumsManagement fs){
 		super(fs);
 		_member=null;		
@@ -44,9 +46,9 @@ public class UserConnection extends SiteConnection {
 		_member=null;
 		return report.OK;
 	}
-	
 
-		/**
+
+	/**
 	 * functions that "set" in domain layer
 	 * return only report, not objects
 	 */
@@ -77,7 +79,7 @@ public class UserConnection extends SiteConnection {
 	/**
 	 * the user must be logged in forum
 	 */
-	
+
 	public report addModerator(String moderatorName){
 		if(_subForum == null){
 			System.out.println("not connected to subforum!");
@@ -182,6 +184,23 @@ public class UserConnection extends SiteConnection {
 			_forum.notifyNewMsgToMembers(_member, title, _subForum);
 		return report.OK;
 	}
+	public Post writePostAndGetIt(String title,String content){
+		if(_forum==null){
+			System.out.println("not connected to forum!");
+			return null;
+		}
+		if(_subForum==null){
+			System.out.println("not connected to subforum!");
+			return null;
+		}
+		if(_member==null){
+			System.out.println("user not logged!");
+			return null;
+		}
+		if  (_subForum.addPost(_member, title, content) == report.OK)
+			_forum.notifyNewMsgToMembers(_member, title, _subForum);
+		return report.OK;
+	}
 
 	public report writeResponsePost(String title, String content){
 		if(_forum==null){
@@ -267,10 +286,34 @@ public class UserConnection extends SiteConnection {
 	}
 	 */
 
-	@Override
-	public void reset(){
-		super.reset();
-		_member=null;
-	}
-	
+
+	public HashMap<Integer, Post> getListOfPostsByMember(String mNickname) 
+	{ 
+		if (_forum == null) 
+			return null; 
+		if (_member == null) 
+			return null; 
+		if (!_forum.isAdmin(_member)) 
+			return null; 
+		return _forum.getListOfPostsByMember(mNickname); 
+
+	} 
+
+	public Integer getPostNumInSubForum(String subForumName) 
+	{ 
+		if (_forum == null) 
+			return null; 
+		if (_member == null) 
+			return null; 
+		if (!_forum.isAdmin(_member)) 
+			return null; 
+		return _forum.getPostNumInSubForum(subForumName); 
+	} 			
+
+@Override
+public void reset(){
+	super.reset();
+	_member=null;
+}
+
 }

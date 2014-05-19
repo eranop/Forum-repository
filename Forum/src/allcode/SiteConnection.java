@@ -1,4 +1,7 @@
 package allcode;
+
+import java.util.HashMap;
+
 /**
  * enable only flow functions
  */
@@ -80,15 +83,12 @@ public abstract class SiteConnection {
 		_subForum=null;
 		_post=null;
 	}
-	
+
 	/**
 	 * getters
 	 */
 	public int getID(){
 		return _id;
 	}
-
-
-
 
 }
