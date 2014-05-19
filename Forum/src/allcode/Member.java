@@ -7,19 +7,15 @@ import java.util.HashMap;
 public class Member {
 
 	private Date _regDate;
-	private Date _passwordDate;
-	
-	private String _passQuestion;
-	private String _passAnswer;
-	
+
 	private String _userName;
-	private String _password;
+	private Password _password;
 	private String _email;
 	
 	private Member promoter;
 	private MemberType _type;
 	private Vector <Member> _friends;
-	private Vector <String> _oldPasswords;
+	private Vector <Password> _oldPasswords;
 	private HashMap <Integer, Post> _posts;
 	private HashMap <Integer, Message> _messages;
 	private int _msgCounter;
@@ -28,9 +24,8 @@ public class Member {
 	public Member(String userName, String password, String email) {
 
 		_regDate = DateManagment.getDate();
-		_passwordDate = DateManagment.getDate();
 		this._userName = userName;
-		this._password = password;
+		this._password = new Password(password);
 		this._email = email;
 		_friends = new Vector <Member>();
 		_messages = new HashMap <Integer, Message>();
@@ -80,7 +75,7 @@ public class Member {
 	
 	public report answerPasswordQuestion(String answer)
 	{
-		if (this._passAnswer.equals(answer))
+		if (_password.get_passAnswer().equals(answer))
 			return report.OK;
 		else
 			return report.WRONG_PASSWORD_ANSWER;
@@ -101,12 +96,11 @@ public class Member {
 
 	public report setNewPassword(String newPassword) {
 		for (int i = 0; i < _oldPasswords.size(); i++)		//checking all former passwords
-			if (_oldPasswords.get(i).equals(newPassword))
+			if (_oldPasswords.get(i).get_pass().equals(newPassword))
 				return report.PASSWORD_ALREADY_BEEN_USED;
 		
 		_oldPasswords.add(this._password);
-		this._password = newPassword;
-		this._passwordDate = DateManagment.getDate();
+		this._password.set_pass(newPassword);
 		return report.OK;
 	}
 	
@@ -121,7 +115,7 @@ public class Member {
 		this._userName = userName;
 	}
 
-	public String get_password() {
+	public Password get_password() {
 		return _password;
 	}
 
@@ -148,25 +142,7 @@ public class Member {
 		return _regDate;
 	}
 	
-	public Date get_passwordDate() {
-		return _passwordDate;
-	}
 
-	public int daysSinceLastPassword() {
-		return DateManagment.getDateDiffDays(_passwordDate, DateManagment.getDate());
-	}
-	public String get_passQuestion() {
-		return _passQuestion;
-	}
-	public void set_passQuestion(String passQuestion) {
-		this._passQuestion = passQuestion;
-	}
-	public String get_passAnswer() {
-		return _passAnswer;
-	}
-	public void set_passAnswer(String passAnswer) {
-		this._passAnswer = passAnswer;
-	}
 	
 	/* 
 	 * END getters and setters
