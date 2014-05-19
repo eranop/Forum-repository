@@ -1,6 +1,7 @@
 package project_tests.Bridge;
 import org.hamcrest.core.IsInstanceOf;
 
+import services.report;
 import allcode.*;
 public class RealBridge implements SiteInterface {
 	private SiteManager _sm;

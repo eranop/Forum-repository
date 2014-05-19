@@ -4,6 +4,9 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.HashMap;
 
+import services.Complain;
+import services.report;
+
 public class SubForum {
 	
 	private int _msgCounter;					//will count the messages and arrange thier indexes.

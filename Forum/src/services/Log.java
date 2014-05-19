@@ -1,4 +1,5 @@
-package allcode;
+package services;
+
 
 public class Log {
 	private report LogReport;

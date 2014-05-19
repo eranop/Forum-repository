@@ -3,6 +3,9 @@ import java.util.Date;
 import java.util.Vector;
 import java.util.HashMap;
 
+import services.Message;
+import services.report;
+
 
 public class Member {
 

@@ -1,10 +1,11 @@
 package rmi;
 import rmi.remoteInterface;
+import services.report;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import allcode.UserConnection;
-import allcode.report;
 
 public class RemoteImpl extends UnicastRemoteObject implements remoteInterface{
 	

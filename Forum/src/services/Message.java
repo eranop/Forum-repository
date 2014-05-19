@@ -1,4 +1,4 @@
-package allcode;
+package services;
 
 public class Message {
 

@@ -2,6 +2,8 @@ package allcode;
 
 import java.util.HashMap;
 
+import services.report;
+
 
 public class UserConnection extends SiteConnection {
 	private Member _member;

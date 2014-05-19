@@ -2,6 +2,8 @@ package allcode;
 import java.util.HashMap;
 import java.util.Vector;
 
+import services.report;
+
 
 public class Forum {
 	//Fields

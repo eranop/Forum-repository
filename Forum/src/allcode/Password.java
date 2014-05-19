@@ -2,6 +2,8 @@ package allcode;
 
 import java.util.Date;
 
+import services.report;
+
 public class Password {
 	
 	private String _pass;

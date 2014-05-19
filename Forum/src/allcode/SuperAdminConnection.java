@@ -1,5 +1,7 @@
 package allcode;
 
+import services.report;
+
 public class SuperAdminConnection extends SiteConnection{
 
 	public SuperAdminConnection(ForumsManagement fs) {
