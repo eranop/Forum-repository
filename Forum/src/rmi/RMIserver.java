@@ -28,7 +28,7 @@ public class RMIserver {
                 Constants.setPort(200);
         }
  
-        public static  RMIforUC(UserConnection uc, int i) throws RemoteException, AlreadyBoundException{
+        public blabala RMIforUC(UserConnection uc, int i) throws RemoteException, AlreadyBoundException{
                 RemoteImpl ri = new RemoteImpl(uc);
                 Registry reg = LocateRegistry.createRegistry(i);
                 reg.bind(Constants.getID(),ri);
