@@ -247,8 +247,8 @@ public class RealBridge implements SiteInterface {
 			return -1;
 		report r=((UserConnection)uc).writePost(title, content);
 		if(r.equals(report.OK))
-			return true;
-		return false;
+			return 0;
+		return -1;
 	}
 
 	@Override
@@ -256,11 +256,11 @@ public class RealBridge implements SiteInterface {
 			String content) {
 		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
 		if(uc==null || !( uc instanceof UserConnection))
-			return false;
+			return -1;
 		report r=((UserConnection)uc).writeResponsePost(title, content);
 		if(r.equals(report.OK))
-			return true;
-		return false;
+			return 1;
+		return 1;
 	}
 
 	@Override
