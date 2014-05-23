@@ -5,6 +5,7 @@ import java.util.Vector;
 import java.util.HashMap;
 
 import services.Complain;
+import services.Response;
 import services.report;
 
 public class SubForum {
@@ -58,10 +59,10 @@ public class SubForum {
 	/**
 	 * adding post by the following parameters to the posts vector.
 	 */
-	public report addPost(Member member, String title, String content)
+	public Response addPost(Member member, String title, String content)
 	{
 		if(member==null || title==null || content==null){
-			return report.NULL_ARGUMENTS;
+			return new Response(report.NULL_ARGUMENTS);
 		}
 		Post newPost = new Post(member, title, content, _msgCounter++);
 		_rootPosts.put(newPost.getIndex(), newPost);
@@ -70,8 +71,9 @@ public class SubForum {
 			//return true;
 		//return false;
 		member.addPost(_msgCounter, newPost);
-		return report.OK;
+		return new Response(report.OK, newPost);
 	}
+	
 	/**
 	 *  return post by its index
 	 */
@@ -84,20 +86,20 @@ public class SubForum {
 	 * @param member composer of the respond
 	 * @param orgPostIndx the post index u want to replay on
 	 */
-	public report postRespond(Member member, int orgPostIndx, String title, String content)
+	public Response postRespond(Member member, int orgPostIndx, String title, String content)
 	{
 		if(member==null || title==null || content==null){
-			return report.NULL_ARGUMENTS;
+			return new Response(report.NULL_ARGUMENTS);
 		}
 		Post originalPost = _allPosts.get(orgPostIndx);									//getting the original post we want to respond to by index
 		if(originalPost==null){
-			return report.NO_SUCH_POST;
+			return new Response(report.NO_SUCH_POST);
 		}
 		Post newPost = new Post(member, title, content, _msgCounter++, originalPost);	//creating the new respond(Post).
 		_allPosts.put(newPost.getIndex(),  newPost);										//adding the post to allPosts.
 		originalPost.addResponse(newPost.getIndex(), newPost);					//adding it and return true if succeed.
 		member.addPost(_msgCounter, newPost);
-		return report.OK;
+		return new Response(report.OK, newPost);
 	}
 
 	public report postEdit(Member member, int orgPostIndx, String title, String content)

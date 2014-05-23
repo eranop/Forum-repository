@@ -2,6 +2,7 @@ package allcode;
 
 import java.util.HashMap;
 
+import services.Response;
 import services.report;
 
 
@@ -169,62 +170,48 @@ public class UserConnection extends SiteConnection {
 		return _forum.setFriends(_member, friend);
 	}
 
-	public report writePost(String title,String content){
+	public Response writePost(String title,String content){
 		if(_forum==null){
 			System.out.println("not connected to forum!");
-			return report.NO_FORUM;
+			return new Response(report.NO_FORUM);
 		}
 		if(_subForum==null){
 			System.out.println("not connected to subforum!");
-			return report.NO_SUBFORUM;
+			return new Response(report.NO_SUBFORUM);
 		}
 		if(_member==null){
 			System.out.println("user not logged!");
-			return report.NOT_LOGGED;
+			return new Response(report.NOT_LOGGED);
 		}
-		if  (_subForum.addPost(_member, title, content) == report.OK)
+		Response post=_subForum.addPost(_member, title, content);
+		if  (post.getReport() == report.OK)
 			_forum.notifyNewMsgToMembers(_member, title, _subForum);
-		return report.OK;
-	}
-	public Post writePostAndGetIt(String title,String content){
-		if(_forum==null){
-			System.out.println("not connected to forum!");
-			return null;
-		}
-		if(_subForum==null){
-			System.out.println("not connected to subforum!");
-			return null;
-		}
-		if(_member==null){
-			System.out.println("user not logged!");
-			return null;
-		}
-		if  (_subForum.addPost(_member, title, content) == report.OK)
-			_forum.notifyNewMsgToMembers(_member, title, _subForum);
-		return report.OK;
+		return post;
 	}
 
-	public report writeResponsePost(String title, String content){
+	public Response writeResponsePost(String title, String content){
 		if(_forum==null){
 			System.out.println("not connected to forum!");
-			return report.NO_FORUM;
+			return new Response(report.NO_FORUM);
 		}
 		if(_subForum==null){
 			System.out.println("not connected to subforum!");
-			return report.NO_SUBFORUM;
+			return new Response(report.NO_SUBFORUM);
 		}
 		if(_member==null){
 			System.out.println("user not logged!");
-			return report.NOT_LOGGED;
+			return  new Response(report.NOT_LOGGED);
 		}
 		if(_post==null){
 			System.out.println("no post to response to");
-			return report.NO_POST;
+			return new Response(report.NO_POST);
 		}
-		if  (_subForum.postRespond(_member, _post.getIndex(), title, content) == report.OK)
+		Response post= _subForum.postRespond(_member, _post.getIndex(), title, content);
+		if  (post.getReport() == report.OK)
 			_forum.notifyNewMsgToMembers(_member, title, _subForum);
-		return report.OK;
+		return post;
 	}
+
 
 	public report postEdit(String title, String content) {
 		if(_forum == null){

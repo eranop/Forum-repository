@@ -1,6 +1,7 @@
 package project_tests.Bridge;
 import org.hamcrest.core.IsInstanceOf;
 
+import services.Response;
 import services.report;
 import allcode.*;
 public class RealBridge implements SiteInterface {
@@ -245,9 +246,9 @@ public class RealBridge implements SiteInterface {
 		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
 		if(uc==null || !( uc instanceof UserConnection))
 			return -1;
-		report r=((UserConnection)uc).writePost(title, content);
-		if(r.equals(report.OK))
-			return 0;
+		Response post=((UserConnection)uc).writePost(title, content);
+		if(post.getReport()==report.OK)
+			return ((Post)post.getMe()).getIndex();
 		return -1;
 	}
 
@@ -257,10 +258,10 @@ public class RealBridge implements SiteInterface {
 		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
 		if(uc==null || !( uc instanceof UserConnection))
 			return -1;
-		report r=((UserConnection)uc).writeResponsePost(title, content);
-		if(r.equals(report.OK))
-			return 1;
-		return 1;
+		Response post=((UserConnection)uc).writeResponsePost(title, content);
+		if(post.getReport()==report.OK)
+			return ((Post)post.getMe()).getIndex();
+		return -1;
 	}
 
 	@Override

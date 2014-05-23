@@ -165,18 +165,18 @@ public class ProxyBridge implements SiteInterface {
 	}
 
 	@Override
-	public boolean writePostInSubForum(String title, String content) {
+	public int writePostInSubForum(String title, String content) {
 		if(real!=null)
 			return real.writePostInSubForum(title, content);
-		return false;
+		return -1;
 	}
 
 	@Override
-	public boolean writeResponsePostInSubForum(String title,
+	public int writeResponsePostInSubForum(String title,
 			String content) {
 		if(real!=null)
 			return writeResponsePostInSubForum(title, content);
-		return false;
+		return -1;
 	}
 
 	@Override
