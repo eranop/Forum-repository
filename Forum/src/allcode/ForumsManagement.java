@@ -28,7 +28,7 @@ public class ForumsManagement {
 	 *  - forum without administrator
 	 *  - creating forum with member and add it as administrator
 	 */
-	public report createForum(String name,String description,String adminName,String adminPass,String adminMail){
+	public report createForum(String name,String description,String adminName,String adminPass,String adminMail, String amdinQuestion, String adminAnswer){
 		//description is not must
 		if(name==null || adminName==null || adminPass==null || adminMail==null){
 			return report.NULL_ARGUMENTS; 
@@ -37,7 +37,7 @@ public class ForumsManagement {
 			return report.ALREADY_FORUM_EXIST;
 		}
 		Forum forum=new Forum(name,description);
-		report rep=forum.register(adminName, adminPass, adminMail);
+		report rep= forum.register(adminName, adminPass, adminMail, amdinQuestion, adminAnswer);
 		if(rep.equals(report.OK)){
 		_forums.add(forum);
 		return forum.addAdminByName(adminName);

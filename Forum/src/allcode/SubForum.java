@@ -13,7 +13,7 @@ public class SubForum {
 	private int _msgCounter;					//will count the messages and arrange thier indexes.
 	private String _name;						//Sub forum name
 	private String _description;				//Sub forum description
-	private ForumPolicy _forumPolicy;			//Moderators policy
+	private ForumPolicy _forumPolicy;			//Forum policy
 	private String _userPolicy;					//Users policy
 	private Forum _forum;						//The main forum above this sub.
 	private Vector <Member> _moderators;		//List of moderatos (maybe should be set so the same user cannot be added twice)
@@ -140,7 +140,7 @@ public class SubForum {
 		}
 		//
 		if (post.getRoot() == null) // a root post
-			_rootPosts.remove(post);
+			_rootPosts.remove(post.getIndex());
 		return report.OK;
 	}
 	

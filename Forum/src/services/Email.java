@@ -10,9 +10,11 @@ import javax.activation.*;
 
 
 public class Email {
+	
 	private String _email;
 	private final String FORUM_MAIL="sadna12c@gmail.com";
 	private final String PASSWORD="oferhagever";
+	
 	public Email(String email) {
 		if(isValidEmail(email))
 			_email=email;
@@ -53,7 +55,7 @@ public class Email {
 	        InternetAddress from = new InternetAddress(FORUM_MAIL);
 	        message.setSubject(title);
 	        message.setFrom(from);
-	        message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(_email));
+	        message.addRecipients(Message.InnerMessage.TO, InternetAddress.parse(_email));
 
 	        // Create a multi-part to combine the parts
 	        Multipart multipart = new MimeMultipart("alternative");

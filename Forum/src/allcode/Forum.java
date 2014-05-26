@@ -44,7 +44,7 @@ public class Forum {
 			user2.addFriend(user1);
 			return report.OK;	
 	}
-	public report register(String name,String pass,String email){
+	public report register(String name, String pass, String email, String question, String answer){
 		//add fields
 		//do delegation to member constructor
 		//have to check if this user is already exists
@@ -57,7 +57,7 @@ public class Forum {
 			return report.ALREADY_EMAIL_EXIST;
 		}
 		else{
-			Member newMember= new Member(name,pass,email);
+			Member newMember= new Member(name, pass, email, question, answer);
 			System.out.println("registered, an email will be sent");
 			insertNewMember(newMember);
 

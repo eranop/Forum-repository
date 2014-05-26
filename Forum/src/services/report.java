@@ -30,6 +30,5 @@ public enum report {
 	NOT_ALLOWED,
 	DENIED_BY_POLICY,
 	
-	
 	FAIL,
 }

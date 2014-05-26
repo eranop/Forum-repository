@@ -55,12 +55,12 @@ public class UserConnection extends SiteConnection {
 	 * functions that "set" in domain layer
 	 * return only report, not objects
 	 */
-	public report registerToForum(String userName,String password,String email){
+	public report registerToForum(String userName, String password, String email, String question, String answer){
 		if(_forum==null){
 			System.out.println("not in forum");
 			return report.NO_FORUM;
 		}
-		return _forum.register(userName, password, email);
+		return _forum.register(userName, password, email, question, answer);
 	}
 
 	public report complain(String moderator,String content){

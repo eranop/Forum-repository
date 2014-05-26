@@ -1,11 +1,11 @@
 package services;
 
-public class Message {
+public class InnerMessage {
 
 	private String composer;
 	private String content;
 	
-	public Message (String composer, String content)
+	public InnerMessage (String composer, String content)
 	{
 		this.composer = composer;
 		this.content = content;

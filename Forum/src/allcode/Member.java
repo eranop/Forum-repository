@@ -3,8 +3,9 @@ import java.util.Date;
 import java.util.Vector;
 import java.util.HashMap;
 
-import services.Message;
+import services.InnerMessage;
 import services.report;
+import services.Email;
 
 
 public class Member {
@@ -13,25 +14,37 @@ public class Member {
 
 	private String _userName;
 	private Password _password;
-	private String _email;
+	private Email _email;
 	
 	private Member promoter;
 	private MemberType _type;
 	private Vector <Member> _friends;
 	private Vector <Password> _oldPasswords;
 	private HashMap <Integer, Post> _posts;
-	private HashMap <Integer, Message> _messages;
+	private HashMap <Integer, InnerMessage> _messages;
 	private int _msgCounter;
 	
-
 	public Member(String userName, String password, String email) {
 
 		_regDate = DateManagment.getDate();
 		this._userName = userName;
 		this._password = new Password(password);
-		this._email = email;
+		this._email = new Email(email);
 		_friends = new Vector <Member>();
-		_messages = new HashMap <Integer, Message>();
+		_messages = new HashMap <Integer, InnerMessage>();
+		_posts = new HashMap <Integer, Post> ();
+		promoter = null;
+		_msgCounter = 0;
+	}
+
+	public Member(String userName, String password, String email, String question, String answer) {
+
+		_regDate = DateManagment.getDate();
+		this._userName = userName;
+		this._password = new Password(password, question, answer);
+		this._email = new Email(email);
+		_friends = new Vector <Member>();
+		_messages = new HashMap <Integer, InnerMessage>();
 		_posts = new HashMap <Integer, Post> ();
 		promoter = null;
 		_msgCounter = 0;
@@ -39,10 +52,11 @@ public class Member {
 	/**
 	 * constructor for superAdmin membership
 	 */
+	@SuppressWarnings("unused")
 	private Member(String userName) {
 		this._userName = userName;
 		_friends = new Vector<Member>();
-		_messages = new HashMap<Integer, Message>();
+		_messages = new HashMap<Integer, InnerMessage>();
 		_posts = new HashMap <Integer, Post> ();
 		_msgCounter = 0;
 	}
@@ -85,13 +99,13 @@ public class Member {
 	}	
 	
 	public void message(String message) {
-		Message newMessage = new Message("System message", message);
+		InnerMessage newMessage = new InnerMessage("System message", message);
 		_messages.put(_msgCounter, newMessage);
 		_msgCounter++;
 	}
 
 	public void message(String sender,String message){
-		Message newMessage = new Message(sender,message);
+		InnerMessage newMessage = new InnerMessage(sender,message);
 		_messages.put(_msgCounter, newMessage);
 		_msgCounter++;
 
@@ -122,17 +136,17 @@ public class Member {
 		return _password;
 	}
 
-	public String get_email() {
+	public Email get_email() {
 		return _email;
 	}
-	public void set_email(String _email) {
-		this._email = _email;
+	public void set_email(String email) {
+		this._email = new Email(email);
 	}
 	public MemberType get_type() {
 		return _type;
 	}
-	public void set_type(MemberType _type) {
-		this._type = _type;
+	public void set_type(MemberType type) {
+		this._type = type;
 	}
 	public Vector<Member> getFriends() {
 		return _friends;

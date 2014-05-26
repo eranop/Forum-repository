@@ -5,8 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import services.report;
+import com.sun.mail.iap.Response;
 
+import services.report;
 import allcode.Forum;
 import allcode.Member;
 import allcode.SubForum;
@@ -56,23 +57,23 @@ public class SubForumTest {
 	}
 	@Test
 	public void testPostsDelete() {
-		assertFalse(sub.deletePost(10) != report.OK);
+		assertFalse(sub.deletePost(10) == report.OK);
 		assertTrue(sub.deletePost(5) == report.OK);
 		assertTrue(sub.getAllPosts().size() == 8);
 		assertTrue(sub.getRootPosts().size() == 4);
 	}
 	@Test
 	public void testPostsCreate() {
-		assertTrue(sub.addPost(mem2, "newtitle", "content") == report.OK);
+		assertTrue(sub.addPost(mem2, "newtitle", "content").getReport() == report.OK);
 		assertTrue(sub.getRootPosts().size() == 6);
-		assertTrue(sub.postRespond(mem3, 9, "title", "content") == report.OK);
+		assertTrue(sub.postRespond(mem3, 9, "title", "content").getReport() == report.OK);
 		assertTrue(sub.getRootPosts().size() == 6);
 		assertTrue(sub.getAllPosts().size() == 11);
 	}
 	
 	@Test
 	public void testDeleteUnexistedPost() {
-		assertFalse(sub.deletePost(2) != report.OK);
+		assertFalse(sub.deletePost(2) == report.OK);
 		assertTrue(sub.getRootPosts().size() == 5);
 		assertTrue(sub.getAllPosts().size() == 9);
 	}
@@ -87,7 +88,7 @@ public class SubForumTest {
 	
 	@Test
 	public void testUnexistedModeratorsDelete() {
-		assertFalse(sub.removeModerator(mem1) != report.OK);		
+		assertFalse(sub.removeModerator(mem1) == report.OK);		
 	}
 	
 	@Test

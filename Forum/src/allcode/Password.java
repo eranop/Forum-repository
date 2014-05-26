@@ -17,6 +17,14 @@ public class Password {
 		_passwordDate = DateManagment.getDate();
 	}
 	
+	public Password (String password, String question, String answer)
+	{
+		this.set_pass(password);
+		this._passQuestion = question;
+		this._passAnswer = answer;
+		_passwordDate = DateManagment.getDate();
+	}
+	
 	public report answerPasswordQuestion(String answer)
 	{
 		if (this._passAnswer.equals(answer))
