@@ -275,34 +275,80 @@ public class UserConnection extends SiteConnection {
 	}
 	 */
 
-
-	public HashMap<Integer, Post> getListOfPostsByMember(String mNickname) 
+	/**
+	 * Report function for admin user.
+	 * admin enters a membername and gets a list of all his posts.
+	 * @param mNickname is member's nickname
+	 * @return Response(report.OK, HashMap <Integer, Post>)
+	 */
+	public Response getListOfPostsByMember(String mNickname) 
 	{ 
-		if (_forum == null) 
-			return null; 
-		if (_member == null) 
-			return null; 
-		if (!_forum.isAdmin(_member)) 
-			return null; 
-		return _forum.getListOfPostsByMember(mNickname); 
-
+		if(_forum==null){
+			System.out.println("not connected to forum!");
+			return new Response(report.NO_FORUM);
+		}
+		if(_member==null){
+			System.out.println("user not logged!");
+			return new Response(report.NOT_LOGGED);
+		}
+		if (!_forum.isAdmin(_member)){
+			System.out.println("no admin premission!");
+			return new Response(report.IS_NOT_ADMIN);
+		}
+		return _forum.getListOfPostsByMember(mNickname);
 	} 
 
-	public Integer getPostNumInSubForum(String subForumName) 
+	/**
+	 * Report function for admin user.
+	 * admin enters a sub forum name and gets the number of posts in a sub forum.
+	 * @param subForumName is sub forum's name
+	 * @return Response (report.OK, Integer)
+	 */
+	public Response getPostNumInSubForum(String subForumName) 
 	{ 
-		if (_forum == null) 
-			return null; 
-		if (_member == null) 
-			return null; 
-		if (!_forum.isAdmin(_member)) 
-			return null; 
+		if(_forum==null){
+			System.out.println("not connected to forum!");
+			return new Response(report.NO_FORUM);
+		}
+		if(_member==null){
+			System.out.println("user not logged!");
+			return new Response(report.NOT_LOGGED);
+		}
+		if (!_forum.isAdmin(_member)){
+			System.out.println("no admin premission!");
+			return new Response(report.IS_NOT_ADMIN);
+		}
 		return _forum.getPostNumInSubForum(subForumName); 
 	} 			
+	
+	/**
+	 * Report function for admin user.
+	 * admin enters a sub forum name and gets Vector of all his moderatos.
+	 * information need to be parsed: List of mods. Who apointed them. When and to which subForum. thier posts.
+	 * @param subForumName is sub forum's name
+	 * @return Response (report.OK, Vector <Member>) which are moderators. inside theres access for all information needed)
+	 */
+	public Response getListOfModeratorsInSubForum(String subForumName)
+	{
+		if(_forum==null){
+			System.out.println("not connected to forum!");
+			return new Response(report.NO_FORUM);
+		}
+		if(_member==null){
+			System.out.println("user not logged!");
+			return new Response(report.NOT_LOGGED);
+		}
+		if (!_forum.isAdmin(_member)){
+			System.out.println("no admin premission!");
+			return new Response(report.IS_NOT_ADMIN);
+		}
+		return _forum.getListOfModeratorsInSubForum(subForumName);
+	}
 
-@Override
-public void reset(){
-	super.reset();
-	_member=null;
-}
+	@Override
+	public void reset(){
+		super.reset();
+		_member=null;
+	}
 
 }

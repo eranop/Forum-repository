@@ -127,6 +127,11 @@ public class ForumsManagement {
 		}
 		return false;
 	}
+	
+	public Vector <Forum> getForums()
+	{
+		return this._forums;
+	}
 
 
 

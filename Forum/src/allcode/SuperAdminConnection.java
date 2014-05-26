@@ -1,5 +1,6 @@
 package allcode;
 
+import services.Response;
 import services.report;
 
 public class SuperAdminConnection extends SiteConnection{
@@ -32,6 +33,20 @@ public class SuperAdminConnection extends SiteConnection{
 				return report.NO_MEMBER;
 			}
 		}
+	}
+	
+	/**
+	 * report function for Admin.
+	 * gettin the number of forums in the system.
+	 * @return Response(report.ok, int) 
+	 */
+	public Response getNumberOfForums()
+	{
+		if(_forum==null){
+			System.out.println("not connected to forum!");
+			return new Response(report.NO_FORUM);
+		}
+		return new Response(report.OK, _fs.getForums().size());
 	}
 
 	public report setSuperAdmin(String superadminName, String superadminPass,

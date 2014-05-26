@@ -2,6 +2,7 @@ package allcode;
 import java.util.HashMap;
 import java.util.Vector;
 
+import services.Response;
 import services.report;
 
 
@@ -279,15 +280,26 @@ public class Forum {
 			return true;
 		return false;
 	}
-
-	public Integer getPostNumInSubForum(String subForumName) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public Response getPostNumInSubForum(String subForumName) {
+		if (this.findSubforum(subForumName))
+			return new Response(report.OK, this.getSubForum(subForumName).getAllPosts().size());
+		else
+			return new Response(report.NO_SUCH_SUBFORUM);
 	}
 
-	public HashMap <Integer, Post> getListOfPostsByMember(String mNickname) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response getListOfPostsByMember(String mNickname) {
+		if (this.isMember(mNickname))
+			return new Response(report.OK, this.getMember(mNickname).getPosts());
+		else
+			return new Response(report.NO_SUCH_USER_NAME);
+	}
+
+	public Response getListOfModeratorsInSubForum(String subForumName) {
+		if (this.findSubforum(subForumName))
+			return new Response(report.OK, this.getSubForum(subForumName).getModerators());
+		else
+			return new Response(report.NO_SUCH_SUBFORUM);
 	}
 	
 	public report addMember(Member member)
@@ -301,10 +313,6 @@ public class Forum {
 		}
 	}
 
-	
-	
-	
-	
 	//getters and setters
 
 	public String get_forumName() {
@@ -356,6 +364,7 @@ public class Forum {
 	public void set_forumPolicy(ForumPolicy _forumPolicy) {
 		this._forumPolicy = _forumPolicy;
 	}
+
 
 
 
