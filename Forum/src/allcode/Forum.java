@@ -256,7 +256,7 @@ public class Forum {
 	}
 	
 	
-	public boolean canDeleteMessage(Member member, Post post, SubForum subforum) {
+	public boolean canDeletePost(Member member, Post post, SubForum subforum) {
 		if ( (_forumPolicy.isDeleteMessagePublisher() && member.equals(post.getMember()))		//if member is owner and policy allows
 				|| (_forumPolicy.isDeleteMessageAdmin() && this.isAdmin(member))				//if member is admin and policy allows
 				|| (_forumPolicy.isDeleteMessageModerator() && subforum.isModerator(member)))	//if member is moder and policy allows
@@ -288,6 +288,17 @@ public class Forum {
 	public HashMap <Integer, Post> getListOfPostsByMember(String mNickname) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public report addMember(Member member)
+	{
+		if (_members.contains(member))
+			return report.MEMBER_ALREADY_IN_FORUM;
+		else
+		{
+			_members.add(member);
+			return report.OK;
+		}
 	}
 
 	

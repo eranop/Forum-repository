@@ -257,7 +257,7 @@ public class UserConnection extends SiteConnection {
 			System.out.println("no post to delete");
 			return report.NO_POST;
 		}
-		if (_forum.canDeleteMessage(_member, _post, _subForum))
+		if (_forum.canDeletePost(_member, _post, _subForum))
 			return _subForum.deletePost(_post);
 
 		return report.NOT_ALLOWED;

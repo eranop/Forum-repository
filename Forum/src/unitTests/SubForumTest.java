@@ -63,6 +63,12 @@ public class SubForumTest {
 		assertTrue(sub.getRootPosts().size() == 4);
 	}
 	@Test
+	public void testDeleteRootPostWithReponses() {
+		sub.deletePost(1);
+		assertTrue(sub.getRootPosts().size() == 4);
+		assertTrue(sub.getAllPosts().size() == 6);
+	}
+	@Test
 	public void testPostsCreate() {
 		assertTrue(sub.addPost(mem2, "newtitle", "content").getReport() == report.OK);
 		assertTrue(sub.getRootPosts().size() == 6);
