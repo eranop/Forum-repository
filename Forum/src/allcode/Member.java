@@ -6,7 +6,7 @@ import java.util.HashMap;
 import services.InnerMessage;
 import services.report;
 import services.Email;
-
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class Member {
 
@@ -15,6 +15,7 @@ public class Member {
 	private String _userName;
 	private Password _password;
 	private Email _email;
+	private String _verificationCode;
 	
 	private Member promoter;
 	private MemberType _type;
@@ -35,6 +36,7 @@ public class Member {
 		_posts = new HashMap <Integer, Post> ();
 		promoter = null;
 		_msgCounter = 0;
+		_verificationCode=null;
 	}
 
 	public Member(String userName, String password, String email, String question, String answer) {
@@ -48,6 +50,7 @@ public class Member {
 		_posts = new HashMap <Integer, Post> ();
 		promoter = null;
 		_msgCounter = 0;
+		_verificationCode=null;
 	}
 	/**
 	 * constructor for superAdmin membership
@@ -187,7 +190,20 @@ public class Member {
 		
 	}
 
-
-
+	public String getVerificationPassword(){
+		return _verificationCode;
+	}
+	public void setVerification(String code){
+		_verificationCode=code;
+	}
+	public boolean isValidVerificationCode(String code){
+		return _verificationCode.equals(code);
+	}
+	public String setRandomVerification(){
+		 _verificationCode= RandomStringUtils.randomAlphanumeric(8);
+		 return _verificationCode;
+	}
+	
+	
 
 }

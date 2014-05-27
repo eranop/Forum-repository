@@ -8,12 +8,11 @@ import javax.activation.*;
 
 
 
-
 public class Email {
 	
 	private String _email;
-	private final String FORUM_MAIL="sadna12c@gmail.com";
-	private final String PASSWORD="oferhagever";
+	private static final String FORUM_MAIL="sadna12c@gmail.com";
+	private static final String PASSWORD="oferhagever";
 	
 	public Email(String email) {
 		if(isValidEmail(email))
@@ -55,7 +54,7 @@ public class Email {
 	        InternetAddress from = new InternetAddress(FORUM_MAIL);
 	        message.setSubject(title);
 	        message.setFrom(from);
-	        message.addRecipients(Message.InnerMessage.TO, InternetAddress.parse(_email));
+	        message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(_email));
 
 	        // Create a multi-part to combine the parts
 	        Multipart multipart = new MimeMultipart("alternative");
@@ -95,52 +94,5 @@ public class Email {
 	    }
 	}
 
-/**
- * 
- * 
-		// Recipient's email ID needs to be mentioned.
-		String to = "aviadelitzur@gmail.com";
-
-		// Sender's email ID needs to be mentioned
-		String from = "aviadelitzur@gmail.com";
-
-		// Assuming you are sending email from localhost
-		String host = "localhost";
-
-		// Get system properties
-		Properties properties = System.getProperties();
-
-		// Setup mail server
-		properties.setProperty("mail.smtp.host", host);
-
-		// Get the default Session object.
-		Session session = Session.getDefaultInstance(properties);
-
-		try{
-			// Create a default MimeMessage object.
-			MimeMessage message = new MimeMessage(session);
-
-			// Set From: header field of the header.
-			message.setFrom(new InternetAddress(from));
-
-			// Set To: header field of the header.
-			message.addRecipient(Message.RecipientType.TO,
-					new InternetAddress(to));
-
-			// Set Subject: header field
-			message.setSubject("This is the Subject Line!");
-
-			// Now set the actual message
-			message.setText("This is actual message");
-
-			// Send message
-			Transport.send(message);
-			System.out.println("Sent message successfully....");
-		}catch (MessagingException mex) {
-			mex.printStackTrace();
-		}
-
- * 
- */
 
 }
