@@ -8,6 +8,7 @@ public class Main {
 
 		Member mem=new Member("tzvi","shapira","a@b");
 		Post post= new Post(mem, "hi","im here",1);
+		System.out.println("im doing database!");
 		Session ss=DataBaseInit.sf.openSession();  
 		  ss.beginTransaction();  
 		 //saving objects to session  
