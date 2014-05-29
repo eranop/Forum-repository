@@ -1,11 +1,13 @@
 package allcode;
 
+import org.hibernate.Session;
+
 public class Main {
 
 	public static void main(String[] args) {
 //here
 		//bla
-		Forum frm = new Forum("animals", "this forum is about animals");
+		/*Forum frm = new Forum("animals", "this forum is about animals");
 		SubForum sub = new SubForum("lion","this sub is about lions", frm);
 		Member mem1 = new Member("Moti", "1234", "moti@walla.co.il");
 		Member mem2 = new Member("Dani", "4321", "dani@walla.co.il");
@@ -33,7 +35,15 @@ public class Main {
 		
 		System.out.println("");
 		sub.unfoldPost(1);
-		
+		*/
+		Member mem=new Member("tzvi","shapira","a@b");
+		Post post= new Post(mem, "hi","im here",1);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.save(post);   
+		  ss.getTransaction().commit();  
+		  ss.close();  
 		
 
 	}
