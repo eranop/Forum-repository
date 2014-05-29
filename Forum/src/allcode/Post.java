@@ -3,14 +3,42 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+import org.hibernate.Session;
+
+@Entity
+@Table(name = "Post")
 public class Post {
 	
+	@ManyToOne
+	@JoinColumn(name="root_post")
 	private Post _root;
+	
 	private Member _publisher;
+	
+	@Column (name="post_title")
 	private String _title;
+	
+	@Column (name="post_content")
 	private String _content;
+	
+	@Id
+	@Column(name = "post_index")
 	private int _index;
+	
+	@OneToMany
+	@MapKey
 	private HashMap <Integer, Post> _responses;
 	/**
 	 * new post 
@@ -23,6 +51,7 @@ public class Post {
 		this._publisher = publisher;
 		this._index = index;
 		this._responses = new HashMap <Integer, Post>();
+		 
 	}
 	/**
 	 * response post

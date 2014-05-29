@@ -19,7 +19,12 @@ public class DataBaseInit {
 	}
 	public static void initialize(){
 		configuration=new Configuration();  
-		configuration.configure();  
+
+		 
+
+		configuration.configure(); 
+		System.out.println("im initializing!");
+
 		serviceRegistry = 
 				new StandardServiceRegistryBuilder().applySettings( configuration.getProperties() ).build(); 
 
