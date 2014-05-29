@@ -2,23 +2,18 @@ package allcode;
 
 import org.hibernate.Session;
 
-public class DataTest {
+public class Main {
 
 	public static void main(String[] args) {
-
-		Member mem=new Member("tzvi","shapira","a@b");
-		Post post= new Post(mem, "hi","im here",1);
-		System.out.println("im doing database!");
+		Member mem=new Member("tzvi","shap","a@b");
+		Post post=new Post(mem,"hi","here",1);
 		Session ss=DataBaseInit.sf.openSession();  
 		  ss.beginTransaction();  
 		 //saving objects to session  
-		  ss.save(post);   
+		  ss.save(post);  
 		  ss.getTransaction().commit();  
 		  ss.close();  
-		
 
 	}
-
-}
 
 }
