@@ -39,11 +39,11 @@ public class Member {
 		_verificationCode=null;
 	}
 
-	public Member(String userName, String password, String email, String question, String answer) {
+	public Member(String userName, String password, String email, String answer) {
 
 		_regDate = DateManagment.getDate();
 		this._userName = userName;
-		this._password = new Password(password, question, answer);
+		this._password = new Password(password, answer);
 		this._email = new Email(email);
 		_friends = new Vector <Member>();
 		_messages = new HashMap <Integer, InnerMessage>();

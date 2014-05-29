@@ -37,7 +37,7 @@ public class ForumsManagement {
 			return report.ALREADY_FORUM_EXIST;
 		}
 		Forum forum=new Forum(name,description);
-		report rep= forum.register(adminName, adminPass, adminMail, amdinQuestion, adminAnswer);
+		report rep= forum.register(adminName, adminPass, adminMail, adminAnswer);
 		if(rep.equals(report.OK)){
 		_forums.add(forum);
 		return forum.addAdminByName(adminName);
