@@ -2,6 +2,7 @@ package allcode;
 import java.util.HashMap;
 import java.util.Vector;
 
+import services.Email;
 import services.Response;
 import services.report;
 
@@ -49,6 +50,9 @@ public class Forum {
 		//add fields
 		//do delegation to member constructor
 		//have to check if this user is already exists
+		if(name==null || pass == null || email==null || question==null || answer==null)
+			return report.NULL_ARGUMENTS;
+		
 		if(isMember(name)){
 			System.out.println("member already exists");
 			return report.ALREADY_MEMBER_EXIST;
@@ -58,11 +62,14 @@ public class Forum {
 			return report.ALREADY_EMAIL_EXIST;
 		}
 		else{
-			Member newMember= new Member(name, pass, email, question, answer);
-			System.out.println("registered, an email will be sent");
-			insertNewMember(newMember);
-
-			//wait for confirmation email?
+			if(Email.isValidEmail(email)){
+				Member newMember= new Member(name, pass, email, question, answer);
+				System.out.println("registered, an email will be sent");
+				insertNewMember(newMember);
+			}
+			else{
+				return report.INVALID_EMAIL_PATTERN;
+			}
 		}
 
 		return report.OK;
