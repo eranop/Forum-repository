@@ -37,7 +37,7 @@ public class SiteManager {
 	}
 
 	public SuperAdminConnection openSuperAdminConnection(){
-		SuperAdminConnection uc=new SuperAdminConnection(_fm);
+		SuperAdminConnection uc = new SuperAdminConnection(_fm);
 		_connections.put(uc.getID(), uc);
 		return uc;
 	}

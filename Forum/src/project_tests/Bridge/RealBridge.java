@@ -28,7 +28,7 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public int openSuperAdminConnection() {
-		SuperAdminConnection uc=_sm.openSuperAdminConnection();
+		SuperAdminConnection uc = _sm.openSuperAdminConnection();
 		if(uc==null){
 			System.out.println("openning connection failed");
 			return -1;
@@ -87,7 +87,7 @@ public class RealBridge implements SiteInterface {
 
 	@Override
 	public boolean enterForum(String forum) {
-		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		SiteConnection uc = _sm.getConnectionByID(_currentConnection);
 		if(uc==null)
 			return false;
 		uc.enterForum(forum);
@@ -196,12 +196,11 @@ public class RealBridge implements SiteInterface {
 	}
 
 	@Override
-	public boolean registerToForum(String userName, String password,
-			String email) {
-		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
-		if(uc==null || !( uc instanceof UserConnection))
+	public boolean registerToForum(String userName, String password, String email, String answer) {
+		SiteConnection uc = _sm.getConnectionByID(_currentConnection);
+		if(uc == null || !( uc instanceof UserConnection))
 			return false;
-		report r=((UserConnection)uc).registerToForum(userName, password, email);
+		report r = ((UserConnection)uc).registerToForum(userName, password, email, answer);
 		if(r.equals(report.OK))
 			return true;
 		return false;

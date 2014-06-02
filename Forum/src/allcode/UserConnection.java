@@ -14,6 +14,28 @@ public class UserConnection extends SiteConnection {
 		_member=null;		
 	}
 
+	
+	public Response getForums()
+	{
+		return new Response(report.OK, _fs.getForums());
+	}
+	
+	public Response getSubForums()
+	{
+		if (_forum == null)
+			return new Response(report.NO_FORUM);
+		return new Response(report.OK, _forum.get_subForums());
+	}
+	
+	public Response getPosts()
+	{
+		if (_forum == null)
+			return new Response(report.NO_FORUM);
+		if (_subForum == null)
+			return new Response(report.NO_SUBFORUM);
+		return new Response(report.OK, _subForum.getRootPosts());
+	}
+	
 	/**
 	 * for each state there is "in" and "out" functions
 	 */
@@ -344,6 +366,8 @@ public class UserConnection extends SiteConnection {
 		}
 		return _forum.getListOfModeratorsInSubForum(subForumName);
 	}
+	
+	
 
 	@Override
 	public void reset(){
