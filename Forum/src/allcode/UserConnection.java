@@ -13,28 +13,6 @@ public class UserConnection extends SiteConnection {
 		super(fs);
 		_member=null;		
 	}
-
-	
-	public Response getForums()
-	{
-		return new Response(report.OK, _fs.getForums());
-	}
-	
-	public Response getSubForums()
-	{
-		if (_forum == null)
-			return new Response(report.NO_FORUM);
-		return new Response(report.OK, _forum.get_subForums());
-	}
-	
-	public Response getPosts()
-	{
-		if (_forum == null)
-			return new Response(report.NO_FORUM);
-		if (_subForum == null)
-			return new Response(report.NO_SUBFORUM);
-		return new Response(report.OK, _subForum.getRootPosts());
-	}
 	
 	/**
 	 * for each state there is "in" and "out" functions
@@ -57,7 +35,7 @@ public class UserConnection extends SiteConnection {
 		if(m==null)
 			return report.NO_SUCH_USER_NAME;
 		//TODO set canLogin method in forum
-		if(m.get_password().equals(pass)){
+		if(m.get_password().get_pass().equals(pass)){
 			_member=m;
 			return report.OK;
 		}	
@@ -367,7 +345,41 @@ public class UserConnection extends SiteConnection {
 		return _forum.getListOfModeratorsInSubForum(subForumName);
 	}
 	
+	/**
+	 * get list of all forums
+	 * @return reponse(ok, forums)
+	 */
 	
+	public Response getForums()
+	{
+		return new Response(report.OK, _fs.getForums());
+	}
+	
+	/**
+	 * get list of subforums in a forum
+	 * @return response(ok, subForums)
+	 */
+	
+	public Response getSubForums()
+	{
+		if (_forum == null)
+			return new Response(report.NO_FORUM);
+		return new Response(report.OK, _forum.get_subForums());
+	}
+	
+	/**
+	 * get list of all ROOT posts in a sub forum (post responds are in the post object
+	 * @return response(ok, posts)
+	 */
+	
+	public Response getPosts()
+	{
+		if (_forum == null)
+			return new Response(report.NO_FORUM);
+		if (_subForum == null)
+			return new Response(report.NO_SUBFORUM);
+		return new Response(report.OK, _subForum.getRootPosts());
+	}
 
 	@Override
 	public void reset(){
