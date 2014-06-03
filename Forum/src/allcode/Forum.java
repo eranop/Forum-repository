@@ -8,7 +8,7 @@ import services.report;
 
 public class Forum {
 	//Fields
-	
+
 	private String _forumName;
 	private String _description;
 	private ForumPolicy _forumPolicy;
@@ -41,9 +41,9 @@ public class Forum {
 	//functionality
 
 	public report setFriends(Member user1,Member user2){
-			user1.addFriend(user2);
-			user2.addFriend(user1);
-			return report.OK;	
+		user1.addFriend(user2);
+		user2.addFriend(user1);
+		return report.OK;	
 	}
 	public report register(String name, String pass, String email, String answer){
 		//add fields
@@ -57,15 +57,27 @@ public class Forum {
 			System.out.println("email adress already exists in forum");
 			return report.ALREADY_EMAIL_EXIST;
 		}
+
 		else{
-			Member newMember= new Member(name, pass, email, answer);
+			if(Email.isValidEmail(email)){
+			}
+			Member newMember= new Member(name, pass, email, question, answer);
 			System.out.println("registered, an email will be sent");
 			insertNewMember(newMember);
-
-			//wait for confirmation email?
 		}
+		else{
+			return report.INVALID_EMAIL_PATTERN;
+		}
+		=======
+				else{
+					Member newMember= new Member(name, pass, email, answer);
+					System.out.println("registered, an email will be sent");
+					insertNewMember(newMember);
 
-		return report.OK;
+					//wait for confirmation email?
+				}
+
+				return report.OK;
 	}
 
 
@@ -246,7 +258,7 @@ public class Forum {
 					". Title: " + title + ". Posted by: " + member.get_userName() + 
 					". In: " + DateManagment.dateFormat.format(DateManagment.getDate()));
 	}
-	
+
 	public void notifyResponders(Member member, String title, SubForum subforum, Post post)
 	{
 		for (int i = 0; i < post.getResponds().size(); i++)
@@ -255,8 +267,8 @@ public class Forum {
 					". New title is: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
 					". Changed in " + DateManagment.dateFormat.format(DateManagment.getDate()));
 	}
-	
-	
+
+
 	public boolean canDeletePost(Member member, Post post, SubForum subforum) {
 		if ( (_forumPolicy.isDeleteMessagePublisher() && member.equals(post.getMember()))		//if member is owner and policy allows
 				|| (_forumPolicy.isDeleteMessageAdmin() && this.isAdmin(member))				//if member is admin and policy allows
@@ -264,23 +276,23 @@ public class Forum {
 			return true;
 		return false;
 	}
-	
+
 	public boolean canAddModerator(Member member) {
 		if ( (_forumPolicy.getModeratorDays() <= DateManagment.getDateDiffDays(member.get_regDate(), DateManagment.getDate()))	//if this date - registration date in days > policy days
-			&& (_forumPolicy.getModeratorPosts() <= member.getPosts().size()) )	//if member published enuf posts.
+				&& (_forumPolicy.getModeratorPosts() <= member.getPosts().size()) )	//if member published enuf posts.
 			return true;
 		return false;
 	}
-	
+
 	public boolean canRemoveModerator(Member member, Member admin, SubForum subForum) {
 		if ( ((_forumPolicy.isDeleteModeratorOnlyByRankingAdmin() && admin.equals(member.getPromoter()) )	//only promoter admin can delete mod and admin is the promoter
-			||	(!_forumPolicy.isDeleteModeratorOnlyByRankingAdmin()))	//if all admins can delete the mod
-			&& (_forumPolicy.isDeleteLastModerator()					//if can delete last mod
-					|| (!_forumPolicy.isDeleteLastModerator() && subForum.getModerators().size() > 1)))	//if canNOT delete last mod but num of mods > 1
+				||	(!_forumPolicy.isDeleteModeratorOnlyByRankingAdmin()))	//if all admins can delete the mod
+				&& (_forumPolicy.isDeleteLastModerator()					//if can delete last mod
+						|| (!_forumPolicy.isDeleteLastModerator() && subForum.getModerators().size() > 1)))	//if canNOT delete last mod but num of mods > 1
 			return true;
 		return false;
 	}
-	
+
 	public Response getPostNumInSubForum(String subForumName) {
 		if (this.findSubforum(subForumName))
 			return new Response(report.OK, this.getSubForum(subForumName).getAllPosts().size());
@@ -301,7 +313,7 @@ public class Forum {
 		else
 			return new Response(report.NO_SUCH_SUBFORUM);
 	}
-	
+
 	public report addMember(Member member)
 	{
 		if (_members.contains(member))
@@ -445,8 +457,8 @@ public boolean addModerator(String subForumName, String adminName,
 		return false;
 	}
 	return subForum.addModerator(moderator);
-	
+
 }
-*/
+ */
 
 
