@@ -83,7 +83,7 @@ public class Logger2 {
 		case FAIL:
 			return "failed";
 		default:
-			return "report is not supportted yet";
+			return "report " + r.toString() +" is not supportted yet";
 		}
 	}
 	
