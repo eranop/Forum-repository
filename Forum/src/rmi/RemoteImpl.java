@@ -34,7 +34,7 @@ public class RemoteImpl extends UnicastRemoteObject implements remoteInterface{
 	@Override
 	public report registerToForum(String userName, String password,
 			String email, String question, String answer) {
-		return this.uc.registerToForum(userName, password, email, question, answer);
+		return this.uc.registerToForum(userName, password, email,  answer);
 	}
 
 	@Override
