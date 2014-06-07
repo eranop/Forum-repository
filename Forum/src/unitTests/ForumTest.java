@@ -57,10 +57,11 @@ public class ForumTest {
 		Member member2=initMember2();
 		forum.register(member2.get_userName(), member2.get_password().get_pass(), member2.get_email().getEmailString(),member2.get_password().get_passAnswer());
 		Vector<Member> admins = forum.get_administrators();
-		admins.add(member);
+		admins.add(member2);
 		forum.set_administrators(admins);
 		forum.createSubForum("soccer", "fans");
 		SubForum sub = forum.getSubForum("soccer");
+		sub.addModerator(member2, member2);
 		assertTrue(sub.complain(member, member2, "he is stupid")==report.OK);
 	}
 
@@ -89,13 +90,13 @@ public class ForumTest {
 	public void testCreateSubForum() {
 		Forum forum=initForum();
 		Member member=initMember();
-		assertFalse(forum.createSubForum("soccer", "fans")==report.OK);
+		assertTrue(forum.createSubForum("soccer", "fans")==report.OK);
 		forum.register(member.get_userName(), member.get_password().get_pass(), member.get_email().getEmailString(),member.get_password().get_passAnswer());
-		assertFalse(forum.createSubForum("soccer", "fans")==report.OK);
+		assertTrue(forum.createSubForum("soccer", "fans")==report.ALREADY_SUBFORUM_EXIST);
 		Vector<Member> admins = forum.get_administrators();
 		admins.add(member);
 		forum.set_administrators(admins);
-		assertTrue(forum.createSubForum("soccer", "fans")==report.OK);
+		assertTrue(forum.createSubForum("soccer", "fans")==report.ALREADY_SUBFORUM_EXIST);
 		assertTrue(forum.getSubForum("soccer")!=null);
 		
 	}
@@ -210,7 +211,7 @@ public class ForumTest {
 		Forum forum=initForum();
 		Member member=initMember();
 		forum.register(member.get_userName(), member.get_password().get_pass(), member.get_email().getEmailString(),member.get_password().get_passAnswer());
-		assertTrue(forum.deleteSubForum("soccer", member)==report.NO_SUCH_SUBFORUM);
+		assertTrue(forum.deleteSubForum("soccer", member)==report.IS_NOT_ADMIN);
 		Vector<Member> admins = forum.get_administrators();
 		admins.add(member);
 		forum.set_administrators(admins);
@@ -228,11 +229,10 @@ public class ForumTest {
 		forum.createSubForum("soccer", "fans");
 		SubForum sub = forum.getSubForum("soccer");
 		assertTrue(sub.addModerator(member, member2)==report.NOT_ALLOWED);
-		Vector<Member> admins = forum.get_administrators();
-		admins.add(member);
-		forum.set_administrators(admins);
-		assertTrue(sub.addModerator(member, member2)==report.NOT_ALLOWED);
 		forum.register(member2.get_userName(), member2.get_password().get_pass(), member2.get_email().getEmailString(),member2.get_password().get_passAnswer());
+		Vector<Member> admins = forum.get_administrators();
+		admins.add(member2);
+		forum.set_administrators(admins);
 		assertTrue(sub.addModerator(member, member2)==report.OK);
 		
 	}
