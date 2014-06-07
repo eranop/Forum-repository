@@ -8,10 +8,12 @@ import services.report;
 
 public class UserConnection extends SiteConnection {
 	private Member _member;
+	private services.Logger2 _log;
 
 	public UserConnection(ForumsManagement fs){
 		super(fs);
-		_member=null;		
+		_member=null;
+		_log=null;
 	}
 	
 	/**
@@ -37,6 +39,12 @@ public class UserConnection extends SiteConnection {
 		//TODO set canLogin method in forum
 		if(m.get_password().get_pass().equals(pass)){
 			_member=m;
+			try{
+			_log = new services.Logger2(_member.get_userName()+"-"+_forum.get_forumName());
+			}
+			catch (Exception exc){
+				System.out.println("ERROR SETTING UP LOGGER");
+			}
 			return report.OK;
 		}	
 		return report.INVALID_PASSWORD;
@@ -47,6 +55,7 @@ public class UserConnection extends SiteConnection {
 			return report.NO_MEMBER;
 		}
 		_member=null;
+		_log=null;
 		return report.OK;
 	}
 
@@ -58,24 +67,39 @@ public class UserConnection extends SiteConnection {
 	public report registerToForum(String userName, String password, String email, String answer){
 		if(_forum==null){
 			System.out.println("not in forum");
+			_log.writeToLog("registerToForum",report.NO_FORUM);
 			return report.NO_FORUM;
 		}
-		return _forum.register(userName, password, email, answer);
+		report rep = _forum.register(userName, password, email, answer);
+		if(rep != report.OK){
+			_log.writeToLog("registerToForum",rep);
+		}
+		else _log.writeToLog("registerToForum");
+		return rep;
 	}
 
 	public report complain(String moderator,String content){
 		if(_forum==null){
 			System.out.println("not connected to forum!");
+			_log.writeToLog("complain",report.NO_FORUM);
 			return report.NO_FORUM;
 		}
 		if(_subForum==null){
 			System.out.println("not connected to subforum!");
+			_log.writeToLog("complain",report.NO_SUBFORUM);
 			return report.NO_SUBFORUM;
 		}
 		Member m=_forum.getMember(moderator);
-		if(m==null)
+		if(m==null){
+			_log.writeToLog("complain",report.NO_SUCH_USER_NAME);
 			return report.NO_SUCH_USER_NAME;
-		return _subForum.complain(_member, m, content);
+		}
+		report rep =_subForum.complain(_member, m, content);
+		if(rep != report.OK){
+			_log.writeToLog("registerToForum",rep);
+		}
+		else _log.writeToLog("registerToForum");
+		return rep;
 	}
 
 
@@ -86,24 +110,35 @@ public class UserConnection extends SiteConnection {
 	public report addModerator(String moderatorName){
 		if(_subForum == null){
 			System.out.println("not connected to subforum!");
+			_log.writeToLog("complain",report.NO_SUBFORUM);
 			return report.NO_SUBFORUM;
 		}
 		if(_member == null){
+			_log.writeToLog("complain",report.NOT_LOGGED);
 			return report.NOT_LOGGED;
 		}
 		if(_forum.isAdmin(_member)){
 			Member member =_forum.getMember(moderatorName);
 			if(member == null){
+				_log.writeToLog("complain",report.NO_SUCH_USER_NAME);
 				return report.NO_SUCH_USER_NAME;
 			}
 			if (_forum.canAddModerator(member)){
 				System.out.println("add moderator " + member.get_userName());
-				return _subForum.addModerator(member, _member);		//member = the member we want to add. _member = the admin
+				report rep = _subForum.addModerator(member, _member);//member = the member we want to add. _member = the admin
+				if(rep != report.OK){
+					_log.writeToLog("addModerator",rep);
+				}
+				else _log.writeToLog("addModerator");
+				return rep;		
 			}
-			else
+			else{
+				_log.writeToLog("addModerator",report.DENIED_BY_POLICY);
 				return report.DENIED_BY_POLICY;
+			}
 		}
 		else{
+			_log.writeToLog("addModerator",report.IS_NOT_ADMIN);
 			return report.IS_NOT_ADMIN;
 		}
 	}
@@ -111,22 +146,34 @@ public class UserConnection extends SiteConnection {
 	public report removeModerator(String adminName,String moderatorName){
 		if(_subForum == null){
 			System.out.println("not connected to forum!");
+			_log.writeToLog("complain",report.NO_SUBFORUM);
 			return report.NO_SUBFORUM;
 		}
 		if(_member == null){
+			_log.writeToLog("complain",report.NOT_LOGGED);
 			return report.NOT_LOGGED;
 		}
 		if(_forum.isAdmin(_member)){
 			Member member =_forum.getMember(moderatorName);
 			if(member == null){
+				_log.writeToLog("complain",report.NO_SUCH_USER_NAME);
 				return report.NO_SUCH_USER_NAME;
 			}
-			if (_forum.canRemoveModerator(member, _member, _subForum))
-				return _subForum.removeModerator(member);
-			else
+			if (_forum.canRemoveModerator(member, _member, _subForum)){
+				report rep =  _subForum.removeModerator(member);
+				if(rep != report.OK){
+					_log.writeToLog("removeModerator",rep);
+				}
+				else _log.writeToLog("removeModerator");
+				return rep;
+			}
+			else{
+				_log.writeToLog("removeModerator",report.DENIED_BY_POLICY);
 				return report.DENIED_BY_POLICY;
+			}
 		}
 		else{
+			_log.writeToLog("removeModerator",report.IS_NOT_ADMIN);
 			return report.IS_NOT_ADMIN;
 		}
 	}
@@ -134,21 +181,39 @@ public class UserConnection extends SiteConnection {
 
 	public report createSubforum(String name,String description){
 		if(_forum==null){
+			_log.writeToLog("createSubforum",report.NO_FORUM);
 			return report.NO_FORUM;
 		}
-		return _forum.createSubForum(name, description);
+		report rep =_forum.createSubForum(name, description);
+		if(rep != report.OK){
+			_log.writeToLog("createSubforum",rep);
+		}
+		else _log.writeToLog("createSubforum");
+		return rep;
 	}
 
 	public report createForum(String name,String description){
 		//return _fs.createForum(name, description, _member); 
-		return _fs.createForum(name, description);
+		report rep = _fs.createForum(name, description);
+		if(rep != report.OK){
+			_log.writeToLog("createForum",rep);
+		}
+		else _log.writeToLog("createForum");
+		return rep;
 	}
+	
 	public report deleteSubForum(String subForumName){
 		if(_forum==null){
 			System.out.println("not connected to forum!");
+			_log.writeToLog("deleteSubForum",report.NO_FORUM);
 			return report.NO_FORUM;
 		}
-		return _forum.deleteSubForum(subForumName, _member);
+		report rep =_forum.deleteSubForum(subForumName, _member);
+		if(rep != report.OK){
+			_log.writeToLog("deleteSubForum",rep);
+		}
+		else _log.writeToLog("deleteSubForum");
+		return rep;
 	}
 
 
@@ -157,58 +222,83 @@ public class UserConnection extends SiteConnection {
 	public report setFriends(String friendName){
 		if(_forum==null){
 			System.out.println("not connected to forum!");
+			_log.writeToLog("setFriends",report.NO_FORUM);
 			return report.NO_FORUM;
 		}
 		if(_member==null){
 			System.out.println("user not logged!");
+			_log.writeToLog("setFriends",report.NOT_LOGGED);
 			return report.NOT_LOGGED;
 		}
 		Member friend=_forum.getMember(friendName);
 		if(friend==null){
+			_log.writeToLog("setFriends",report.NO_SUCH_USER_NAME);
 			return report.NO_SUCH_USER_NAME;
 		}
-		return _forum.setFriends(_member, friend);
+		report rep =_forum.setFriends(_member, friend);
+		if(rep != report.OK){
+			_log.writeToLog("setFriends",rep);
+		}
+		else _log.writeToLog("setFriends");
+		return rep;
 	}
 
 	public Response writePost(String title,String content){
 		if(_forum==null){
 			System.out.println("not connected to forum!");
+			_log.writeToLog("writePost",report.NO_FORUM);
 			return new Response(report.NO_FORUM);
 		}
 		if(_subForum==null){
 			System.out.println("not connected to subforum!");
+			_log.writeToLog("writePost",report.NO_SUBFORUM);
 			return new Response(report.NO_SUBFORUM);
 		}
 		if(_member==null){
 			System.out.println("user not logged!");
+			_log.writeToLog("writePost",report.NOT_LOGGED);
 			return new Response(report.NOT_LOGGED);
 		}
 		Response post = _subForum.addPost(_member, title, content);
-		if  (post.getReport() == report.OK)
+		if  (post.getReport() == report.OK){
+			_log.writeToLog("writePost");
 			_forum.notifyNewMsgToMembers(_member, title, _subForum);
+		}
+		else{
+			_log.writeToLog("writePost",post.getReport());
+		}
 		return post;
 	}
 
 	public Response writeResponsePost(String title, String content){
 		if(_forum==null){
 			System.out.println("not connected to forum!");
+			_log.writeToLog("writeResponsePost",report.NO_FORUM);
 			return new Response(report.NO_FORUM);
 		}
 		if(_subForum==null){
 			System.out.println("not connected to subforum!");
+			_log.writeToLog("writeResponsePost",report.NO_SUBFORUM);
 			return new Response(report.NO_SUBFORUM);
 		}
 		if(_member==null){
 			System.out.println("user not logged!");
+			_log.writeToLog("writeResponsePost",report.NOT_LOGGED);
 			return  new Response(report.NOT_LOGGED);
 		}
 		if(_post==null){
 			System.out.println("no post to response to");
+			_log.writeToLog("writeResponsePost",report.NO_POST);
 			return new Response(report.NO_POST);
 		}
 		Response post= _subForum.postRespond(_member, _post.getIndex(), title, content);
-		if  (post.getReport() == report.OK)
+		if  (post.getReport() == report.OK){
+			_log.writeToLog("writeResponsePost");
 			_forum.notifyNewMsgToMembers(_member, title, _subForum);
+		}
+		else{
+			_log.writeToLog("writeResponsePost",post.getReport());
+		}
 		return post;
 	}
 
@@ -216,24 +306,34 @@ public class UserConnection extends SiteConnection {
 	public report postEdit(String title, String content) {
 		if(_forum == null){
 			System.out.println("not connected to forum!");
+			_log.writeToLog("postEdit",report.NO_FORUM);
 			return report.NO_FORUM;
 		}
 		if(_subForum == null){
 			System.out.println("not connected to subforum!");
+			_log.writeToLog("postEdit",report.NO_SUBFORUM);
 			return report.NO_SUBFORUM;
 		}
 		if(_member == null){
 			System.out.println("user not logged!");
+			_log.writeToLog("postEdit",report.NOT_LOGGED);
 			return report.NOT_LOGGED;
 		}
 		if(_post == null){
 			System.out.println("no post to response to");
+			_log.writeToLog("postEdit",report.NO_POST);
 			return report.NO_POST;
 		}
-
-		if (_subForum.postEdit(_member, _post.getIndex(), title, content) == report.OK)
+		report rep = _subForum.postEdit(_member, _post.getIndex(), title, content);
+		if (rep == report.OK){
+			_log.writeToLog("postEdit");
 			_forum.notifyResponders(_member, title, _subForum, _post);
-		return report.OK;
+			return report.OK;
+		}
+		else{
+			_log.writeToLog("postEdit",rep);
+			return rep;
+		}
 	}
 
 
@@ -243,23 +343,33 @@ public class UserConnection extends SiteConnection {
 	public report deletePost(){
 		if(_forum==null){
 			System.out.println("not connected to forum!");
+			_log.writeToLog("deletePost",report.NO_FORUM);
 			return report.NO_FORUM;
 		}
 		if(_subForum==null){
 			System.out.println("not connected to subforum!");
+			_log.writeToLog("deletePost",report.NO_SUBFORUM);
 			return report.NO_SUBFORUM;
 		}
 		if(_member==null){
 			System.out.println("user not logged!");
+			_log.writeToLog("deletePost",report.NOT_LOGGED);
 			return report.NOT_LOGGED;
 		}
 		if(_post==null){
 			System.out.println("no post to delete");
+			_log.writeToLog("deletePost",report.NO_POST);
 			return report.NO_POST;
 		}
-		if (_forum.canDeletePost(_member, _post, _subForum))
-			return _subForum.deletePost(_post);
-
+		if (_forum.canDeletePost(_member, _post, _subForum)){
+			report rep = _subForum.deletePost(_post);
+			if(rep!=report.OK){
+				_log.writeToLog("deletePost",rep);
+			}
+			else _log.writeToLog("deletePost");
+			return rep;
+		}
+		_log.writeToLog("deletePost",report.NOT_ALLOWED);
 		return report.NOT_ALLOWED;
 	}
 
@@ -285,17 +395,27 @@ public class UserConnection extends SiteConnection {
 	{ 
 		if(_forum==null){
 			System.out.println("not connected to forum!");
+			_log.writeToLog("getListOfPostsByMember",report.NO_FORUM);
 			return new Response(report.NO_FORUM);
 		}
 		if(_member==null){
 			System.out.println("user not logged!");
+			_log.writeToLog("getListOfPostsByMember",report.NOT_LOGGED);
 			return new Response(report.NOT_LOGGED);
 		}
 		if (!_forum.isAdmin(_member)){
 			System.out.println("no admin premission!");
+			_log.writeToLog("getListOfPostsByMember",report.IS_NOT_ADMIN);
 			return new Response(report.IS_NOT_ADMIN);
 		}
-		return _forum.getListOfPostsByMember(mNickname);
+		Response res = _forum.getListOfPostsByMember(mNickname);
+		if(res.getReport()!=report.OK){
+			_log.writeToLog("getListOfPostsByMember",res.getReport());
+		}
+		else{
+			_log.writeToLog("getListOfPostsByMember");
+		}
+		return res;
 	} 
 
 	/**
@@ -308,17 +428,27 @@ public class UserConnection extends SiteConnection {
 	{ 
 		if(_forum==null){
 			System.out.println("not connected to forum!");
+			_log.writeToLog("getPostNumInSubForum",report.NO_FORUM);
 			return new Response(report.NO_FORUM);
 		}
 		if(_member==null){
 			System.out.println("user not logged!");
+			_log.writeToLog("getPostNumInSubForum",report.NOT_LOGGED);
 			return new Response(report.NOT_LOGGED);
 		}
 		if (!_forum.isAdmin(_member)){
 			System.out.println("no admin premission!");
+			_log.writeToLog("getPostNumInSubForum",report.IS_NOT_ADMIN);
 			return new Response(report.IS_NOT_ADMIN);
 		}
-		return _forum.getPostNumInSubForum(subForumName); 
+		Response res = _forum.getPostNumInSubForum(subForumName); 
+		if(res.getReport()!=report.OK){
+			_log.writeToLog("getPostNumInSubForum",res.getReport());
+		}
+		else{
+			_log.writeToLog("getPostNumInSubForum");
+		}
+		return res;
 	} 			
 	
 	/**
@@ -332,17 +462,27 @@ public class UserConnection extends SiteConnection {
 	{
 		if(_forum==null){
 			System.out.println("not connected to forum!");
+			_log.writeToLog("getListOfModeratorsInSubForum",report.NO_FORUM);
 			return new Response(report.NO_FORUM);
 		}
 		if(_member==null){
 			System.out.println("user not logged!");
+			_log.writeToLog("getListOfModeratorsInSubForum",report.NOT_LOGGED);
 			return new Response(report.NOT_LOGGED);
 		}
 		if (!_forum.isAdmin(_member)){
 			System.out.println("no admin premission!");
+			_log.writeToLog("getListOfModeratorsInSubForum",report.IS_NOT_ADMIN);
 			return new Response(report.IS_NOT_ADMIN);
 		}
-		return _forum.getListOfModeratorsInSubForum(subForumName);
+		Response res = _forum.getListOfModeratorsInSubForum(subForumName);
+		if(res.getReport()!=report.OK){
+			_log.writeToLog("getPostNumInSubForum",res.getReport());
+		}
+		else{
+			_log.writeToLog("getPostNumInSubForum");
+		}
+		return res;
 	}
 	
 	/**
@@ -352,6 +492,7 @@ public class UserConnection extends SiteConnection {
 	
 	public Response getForums()
 	{
+		_log.writeToLog("getForums");
 		return new Response(report.OK, _fs.getForums());
 	}
 	
@@ -362,8 +503,11 @@ public class UserConnection extends SiteConnection {
 	
 	public Response getSubForums()
 	{
-		if (_forum == null)
+		if (_forum == null){
+			_log.writeToLog("getSubForums", report.NO_FORUM);
 			return new Response(report.NO_FORUM);
+		}
+		_log.writeToLog("getSubForums");
 		return new Response(report.OK, _forum.get_subForums());
 	}
 	
@@ -374,10 +518,15 @@ public class UserConnection extends SiteConnection {
 	
 	public Response getPosts()
 	{
-		if (_forum == null)
+		if (_forum == null){
+			_log.writeToLog("getPosts", report.NO_FORUM);
 			return new Response(report.NO_FORUM);
-		if (_subForum == null)
+		}
+		if (_subForum == null){
+			_log.writeToLog("getPosts", report.NO_SUBFORUM);
 			return new Response(report.NO_SUBFORUM);
+		}
+		_log.writeToLog("getPosts");
 		return new Response(report.OK, _subForum.getRootPosts());
 	}
 
@@ -385,6 +534,7 @@ public class UserConnection extends SiteConnection {
 	public void reset(){
 		super.reset();
 		_member=null;
+		_log.writeToLog("reset");
 	}
 
 }
