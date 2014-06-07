@@ -160,10 +160,13 @@ public class SubForum {
 	 */
 	public report addModerator(Member member, Member promoter)
 	{
-		member.message("you've been added as modarator in " + this.getName());
-		_moderators.add(member);
-		member.setPromoter(promoter);
-		return report.OK;
+		if(_forum.isAdmin(promoter)){
+			member.message("you've been added as modarator in " + this.getName());
+			_moderators.add(member);
+			member.setPromoter(promoter);
+			return report.OK;
+		}
+		else return report.NOT_ALLOWED;
 	}
 
 	
