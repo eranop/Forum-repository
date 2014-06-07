@@ -183,7 +183,7 @@ public class UserConnection extends SiteConnection {
 			System.out.println("user not logged!");
 			return new Response(report.NOT_LOGGED);
 		}
-		Response post=_subForum.addPost(_member, title, content);
+		Response post = _subForum.addPost(_member, title, content);
 		if  (post.getReport() == report.OK)
 			_forum.notifyNewMsgToMembers(_member, title, _subForum);
 		return post;

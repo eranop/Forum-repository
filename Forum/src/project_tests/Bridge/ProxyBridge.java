@@ -174,7 +174,7 @@ public class ProxyBridge implements SiteInterface {
 	public int writeResponsePostInSubForum(String title,
 			String content) {
 		if(real!=null)
-			return writeResponsePostInSubForum(title, content);
+			return real.writeResponsePostInSubForum(title, content);
 		return -1;
 	}
 

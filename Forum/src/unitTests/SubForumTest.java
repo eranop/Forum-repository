@@ -23,9 +23,17 @@ public class SubForumTest {
 	Member mem5 = new Member("pumba", "1111", "pumba@walla.co.il");
 	Member mem6 = new Member("timon", "1111", "timon@walla.co.il");
 	
+	
 	@Before
 	public void setUp() throws Exception {
+		frm.addMember(mem1);
+		frm.addMember(mem2);
+		frm.addMember(mem3);
+		frm.addMember(mem4);
+		frm.addMember(mem5);
+		frm.addMember(mem6);
 		frm.addAdmin(mem6);
+		
 		sub.addPost(mem1, "the lion1", "lion 1 is bla 1");	//1
 		sub.addPost(mem2, "the lion2", "lion 2 is bla 2");	//2
 		sub.addPost(mem2, "the lion3", "lion 3 is bla 3");	//3

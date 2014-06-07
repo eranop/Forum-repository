@@ -64,6 +64,8 @@ public class SubForum {
 		if(member==null || title==null || content==null){
 			return new Response(report.NULL_ARGUMENTS);
 		}
+		if (title.equals("") || content.equals(""))
+				return new Response(report.EMPTY_FIELD);
 		Post newPost = new Post(member, title, content, _msgCounter++);
 		_rootPosts.put(newPost.getIndex(), newPost);
 		_allPosts.put(newPost.getIndex(), newPost);

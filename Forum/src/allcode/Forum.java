@@ -50,13 +50,33 @@ public class Forum {
 		//add fields
 		//do delegation to member constructor
 		//have to check if this user is already exists
-		if(isMember(name)){
+		if (name == null || pass == null || email == null || answer == null)
+		{
+			System.out.println("Error in register: One of the fields is EMPTY!");
+			return report.NULL_FIELD;
+		}
+		else if (name.equals("") || pass.equals("") || email.equals("") || answer.equals(""))
+		{
+			System.out.println("Error in register: One of the fields is EMPTY!");
+			return report.EMPTY_FIELD;
+		}
+		else if(isMember(name)){
 			System.out.println("member already exists");
 			return report.ALREADY_MEMBER_EXIST;
 		}
 		else if(isEmail(email)){
 			System.out.println("email adress already exists in forum");
 			return report.ALREADY_EMAIL_EXIST;
+		}
+		else if(!nameStartWithLetter(name))
+		{
+			System.out.println("Invalid user name: User name must start with a letter.");
+			return report.INVALID_USER_NAME;
+		}
+		else if(nameContainsTags(name))
+		{
+			System.out.println("Invalid user name: User name cannot contains tags.");
+			return report.INVALID_USER_NAME;
 		}
 
 		else{
@@ -70,9 +90,26 @@ public class Forum {
 				return report.INVALID_EMAIL_PATTERN;
 			}
 		}
-			return report.OK;
-		}
+		return report.OK;
+	}
 
+
+	private boolean nameContainsTags(String name) {
+		String[] tags = {"!", "@", "#", "$", "%", "^", "&",  "*", "(", ")", "[", "]", ":", "~", "\\", "{", "}", "+", "|", "<", 
+				">", ".", ";", "\"", "`"};
+		for (String i : tags) 
+			if (name.contains(i))
+				return true;
+		return false;
+	}
+
+	private boolean nameStartWithLetter(String name) 
+	{
+		char c = name.charAt(0);
+		if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+			return true;
+		return false;
+	}
 
 		//needs some work - when to return false? - when he is already admin?
 		public report addAdminByName(String member){
@@ -194,7 +231,7 @@ public class Forum {
 		 */
 		private boolean isEmail(String email) {
 			for(int i=0;i<_members.size();i++){
-				if(_members.elementAt(i).get_email().equals(email))
+				if(_members.elementAt(i).get_email().getEmailString().equals(email))
 					return true;
 			}
 			return false;
