@@ -8,27 +8,56 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class Logger2 {
-	private PrintWriter writer;
+	private static PrintWriter writer;
+	private static Logger2 _logUser;
+	private static Logger2 _logSystem;
 	
-	public Logger2(String fileName) throws Exception, UnsupportedEncodingException {
+	private Logger2(String fileName) throws Exception, UnsupportedEncodingException {
 		writer=new PrintWriter(fileName, "UTF-8");
 	}
-	
+	public static void initLogUser(){
+		if(_logUser==null){
+			try{
+				_logUser= new Logger2("userlog");
+			}
+			catch(Exception e){
+				System.out.println("Error initializing userlog");
+			}
+		}
+	}
+	public static void initLogSystem(){
+		if(_logUser==null){
+			try{
+				_logSystem= new Logger2("systemlog");
+			}
+			catch(Exception e){
+				System.out.println("Error initializing systemlog");
+			}
+		}
+	}
+	public static Logger2 getLogUser(){
+		return _logUser;
+	}
+	public static Logger2 getLogSystem(){
+		return _logSystem;
+	}
 	//for bad reports
-	public void writeToLog(String function, report r){
+	public static void writeToLog(String function, report r){
 		DateFormat date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String report= reportSwitch(r);
 		writer.write(date.toString() + "> "+ function + ": " + report);
+		writer.flush();
 	}
 	// for good reports
-	public void writeToLog(String function){
+	public static void writeToLog(String function){
 		DateFormat date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		//String report= reportSwitch(r);
 		writer.println(date.toString() + "> "+ function + ": " + "Done");
+		writer.flush();
 	}
 	
 	//convert reports to message for log
-	private String reportSwitch(report r){
+	private static String reportSwitch(report r){
 		switch(r){
 		case OK:
 			return "Done";
