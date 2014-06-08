@@ -1,45 +1,57 @@
 package allcode;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.Session;
 
 @Entity
 @Table(name = "Post")
-public class Post {
+public class Post implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name="root_post")
 	private Post _root;
 	
+	@ManyToOne
+	@JoinColumn(name="member_id")
 	private Member _publisher;
 	
-	@Column (name="post_title")
+	@Column (name="post_title",length=8000)
 	private String _title;
 	
-	@Column (name="post_content")
+	@Column (name="post_content",length=8000)
 	private String _content;
 	
 	@Id
 	@Column(name = "post_index")
 	private int _index;
 	
-	@OneToMany
-	@MapKey
-	private HashMap <Integer, Post> _responses;
+	
+	@ElementCollection(fetch=FetchType.EAGER)
+	  @MapKeyColumn(name="_index")
+	@Column(name="respond_post")
+	@CollectionTable(name="responds",joinColumns={@JoinColumn(name="original_post_index")})
+	private Map <Integer, Post> _responses;
 	/**
 	 * new post 
 	 */
@@ -65,6 +77,10 @@ public class Post {
 		this._index = index;
 		this._responses = new HashMap <Integer, Post>();
 	}
+	
+	public Post(){
+		
+	}
 
 	public Set<Integer> getResponsesIndex(){
 		return _responses.keySet();
@@ -78,6 +94,7 @@ public class Post {
 	public boolean addResponse(int index, Post post)
 	{
 		_responses.put(index, post);
+		
 		return true;
 	}
 	
@@ -154,7 +171,7 @@ public class Post {
 		return _publisher;
 	}
 	
-	public HashMap <Integer, Post> getResponds()
+	public Map <Integer, Post> getResponds()
 	{
 		return this._responses;
 	}

@@ -1,41 +1,88 @@
 package allcode;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import services.Response;
 import services.report;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
-public class Forum {
+import org.hibernate.Session;
+
+
+@Entity
+@Table (name="Forums")
+public class Forum implements Serializable{
 	//Fields
 	
+	@Id
+	@Column(name="forumName")
 	private String _forumName;
+	
+	@Column(name="description")
 	private String _description;
+	
+	@Embedded
 	private ForumPolicy _forumPolicy;
-	private Vector<Member> _members;
-	private Vector<SubForum> _subForums;
-	private Vector<Member> _administrators;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
+	 @JoinTable(name="members_in_forum",
+	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="member_id")})
+	private List<Member> _members;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
+	 @JoinTable(name="subForums_Of_Forum",
+	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="subForum_id")})
+	private List<SubForum> _subForums;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
+	 @JoinTable(name="admins_in_forum",
+	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="admin_id")})
+	private List<Member> _administrators;
 
 	//constructors
 	public Forum(String forumName,String description){
 		_forumName=forumName;
 		_description=description;
 		_forumPolicy = new ForumPolicy();
-		_members=new Vector<Member>();
-		_subForums=new Vector<SubForum>();
-		_administrators=new Vector<Member>();
+		_members=new ArrayList<Member>();
+		_subForums=new ArrayList<SubForum>();
+		_administrators=new ArrayList<Member>();
 	}
 
 	public Forum(String forumName,String description,Member admin){
 		_forumName=forumName;
 		_description=description;
 		_forumPolicy = new ForumPolicy();
-		_members=new Vector<Member>();
-		_subForums=new Vector<SubForum>();
-		_administrators=new Vector<Member>();
+		_members=new ArrayList<Member>();
+		_subForums=new ArrayList<SubForum>();
+		_administrators=new ArrayList<Member>();
 		insertNewMember(admin);
 		_administrators.add(admin);
 
+	}
+	
+	public Forum(){
+		
 	}
 
 	//functionality
@@ -58,10 +105,16 @@ public class Forum {
 			return report.ALREADY_EMAIL_EXIST;
 		}
 		else{
-			Member newMember= new Member(name, pass, email, question, answer);
+			Member newMember= new Member(name, pass, email, question, answer,this);
 			System.out.println("registered, an email will be sent");
-			insertNewMember(newMember);
-
+			
+			Session ss=DataBaseInit.sf.openSession();  
+			  ss.beginTransaction();  
+			 //saving objects to session  
+			  ss.saveOrUpdate(newMember);  
+			  ss.getTransaction().commit();
+			  ss.close(); 
+			  insertNewMember(newMember);
 			//wait for confirmation email?
 		}
 
@@ -71,16 +124,29 @@ public class Forum {
 
 	//needs some work - when to return false? - when he is already admin?
 	public report addAdminByName(String member){
-		if(isMember(member))
+		if(!isMember(member))
 			return report.NO_SUCH_USER_NAME;
 		Member m=getMember(member);
+		
 		_administrators.add(m);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.update(this);
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return report.OK;
 	}
 
 	public report addAdmin(Member member) {
 		if(isMember(member)){
 			_administrators.add(member);
+			Session ss=DataBaseInit.sf.openSession();  
+			  ss.beginTransaction();  
+			 //saving objects to session  
+			  ss.update(this);
+			  ss.getTransaction().commit();  
+			  ss.close(); 
 			return report.OK;
 		}
 		return report.NO_SUCH_USER_NAME;
@@ -89,12 +155,22 @@ public class Forum {
 	public report createSubForum(String name,String description){
 		//add fields
 		//delegation to Subforum constructor
+		
+		
 		if(findSubforum(name)){
 			System.out.println("sub forum already exists!");
 			return report.ALREADY_SUBFORUM_EXIST;
 		}
+		
 		SubForum sub = new SubForum(name, description, this);
 		_subForums.add(sub);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.saveOrUpdate(sub);  
+		  ss.update(this);
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return report.OK;
 	}
 
@@ -123,6 +199,13 @@ public class Forum {
 			return report.NO_SUCH_SUBFORUM;
 		}
 		_subForums.remove(sf);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.update(sf);
+		  ss.update(this);
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return report.OK;
 	}
 	/**
@@ -131,17 +214,17 @@ public class Forum {
 	 */
 	private Member assureMember(String userName,String password) {
 		for(int i=0;i<_members.size();i++){
-			if(_members.elementAt(i).get_userName().equals(userName) &&
-					_members.elementAt(i).get_password().equals(password))
-				return _members.elementAt(i);
+			if(  _members.get(i).get_userName().equals(userName) &&
+					 _members.get(i).get_password().equals(password))
+				return  _members.get(i);
 		}
 		return null;
 	}
 
 	public Member getMember(String name){
 		for(int i=0;i<_members.size();i++){
-			if(_members.elementAt(i).get_userName().equals(name))
-				return _members.elementAt(i);
+			if( _members.get(i).get_userName().equals(name))
+				return  _members.get(i);
 		}
 		return null;
 	}
@@ -152,14 +235,14 @@ public class Forum {
 	 */
 	public boolean isMember(String userName) {
 		for(int i=0;i<_members.size();i++){
-			if(_members.elementAt(i).get_userName().equals(userName))
+			if( _members.get(i).get_userName().equals(userName))
 				return true;
 		}
 		return false;
 	}
 
 	public boolean isMember(Member m) {
-		if( _members.indexOf(m) == -1)
+		if(  _members.indexOf(m) == -1)
 			return false;
 		return true;
 	}
@@ -172,13 +255,13 @@ public class Forum {
 	 */
 	public boolean isAdmin(String userName) {
 		for(int i=0;i<_administrators.size();i++){
-			if(_administrators.elementAt(i).get_userName().equals(userName))
+			if( _administrators.get(i).get_userName().equals(userName))
 				return true;
 		}
 		return false;
 	}
 	public boolean isAdmin(Member m) {
-		if(_administrators.indexOf(m)!=-1)
+		if( _administrators.indexOf(m)!=-1)
 			return true;
 		return false;
 	}
@@ -189,7 +272,7 @@ public class Forum {
 	 */
 	private boolean isEmail(String email) {
 		for(int i=0;i<_members.size();i++){
-			if(_members.elementAt(i).get_email().equals(email))
+			if( _members.get(i).get_email().equals(email))
 				return true;
 		}
 		return false;
@@ -202,7 +285,9 @@ public class Forum {
 	 */
 	private boolean findSubforum(String name) {
 		for(int i=0;i<_subForums.size();i++){
-			if(_subForums.elementAt(i).getName().equals(name))
+			
+			if( _subForums.get(i).getName().equals(name))
+				
 				return true;
 		}
 		return false;
@@ -210,8 +295,8 @@ public class Forum {
 
 	public SubForum getSubForum(String name){
 		for(int i=0;i<_subForums.size();i++){
-			if(_subForums.elementAt(i).getName().equals(name))
-				return _subForums.elementAt(i);
+			if( _subForums.get(i).getName().equals(name))
+				return ( _subForums.get(i));
 		}
 		return null;
 	}
@@ -226,7 +311,7 @@ public class Forum {
 		else{
 			StringBuilder ans=new StringBuilder();
 			for(int i=0;i<_subForums.size();i++){
-				ans.append(_subForums.elementAt(i).getName());
+				ans.append( _subForums.get(i).getName());
 				ans.append("\n");
 			}
 			return ans.toString();
@@ -236,6 +321,12 @@ public class Forum {
 
 	private void insertNewMember(Member newMember) {
 		_members.add(newMember);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.update(this);  
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 	}
 
 	public void notifyNewMsgToMembers(Member member, String title, SubForum subforum)
@@ -309,6 +400,12 @@ public class Forum {
 		else
 		{
 			_members.add(member);
+			Session ss=DataBaseInit.sf.openSession();  
+			  ss.beginTransaction();  
+			 //saving objects to session  
+			  ss.update(this);  
+			  ss.getTransaction().commit();  
+			  ss.close(); 
 			return report.OK;
 		}
 	}
@@ -323,27 +420,27 @@ public class Forum {
 		this._forumName = _forumName;
 	}
 
-	public Vector<Member> get_members() {
-		return _members;
+	public List<Member> get_members() {
+		return  _members;
 	}
 
 	public void set_members(Vector<Member> _members) {
 		this._members = _members;
 	}
 
-	public Vector<SubForum> get_subForums() {
-		return _subForums;
+	public List<SubForum> get_subForums() {
+		return  _subForums;
 	}
 
-	public void set_subForums(Vector<SubForum> _subForums) {
+	public void set_subForums(ArrayList<SubForum> _subForums) {
 		this._subForums = _subForums;
 	}
 
-	public Vector<Member> get_administrators() {
-		return _administrators;
+	public List<Member> get_administrators() {
+		return  _administrators;
 	}
 
-	public void set_administrators(Vector<Member> _administrators) {
+	public void set_administrators(ArrayList<Member> _administrators) {
 		this._administrators = _administrators;
 	}
 	public String get_description() {

@@ -30,9 +30,15 @@
         <property name="show_sql">true</property>  
   
         <!-- Drop and re-create the database schema on startup -->  
-        <property name="hbm2ddl.auto">create</property>  
+        <property name="hbm2ddl.auto">none</property>  
   
-        <mapping class="allcode.Post"></mapping>  
+        <mapping class="allcode.Post"></mapping>
+        <mapping class="allcode.Forum"></mapping>
+        <mapping class="allcode.SubForum"></mapping>
+        <mapping class="allcode.Member"></mapping>
+        <mapping class="allcode.ForumsManagement"></mapping>
+        <mapping class="allcode.ForumPolicy"></mapping>
+        <mapping class="services.InnerMessage"></mapping>  
   
     </session-factory>  
   

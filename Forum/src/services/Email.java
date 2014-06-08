@@ -1,18 +1,32 @@
 package services;
 
+import java.io.Serializable;
 import java.util.*;
+
 import javax.mail.*;
 import javax.mail.internet.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 import javax.activation.*;
 
 
 
-
-public class Email {
+@Embeddable
+public class Email implements Serializable{
 	
+	@Column(name="email")
 	private String _email;
+	
+	@Transient
 	private static final String FORUM_MAIL="sadna12c@gmail.com";
+	
+	@Transient
 	private static final String PASSWORD="oferhagever";
+	
+	public Email(){
+		
+	}
 	
 	public Email(String email) {
 		if(isValidEmail(email))

@@ -1,15 +1,31 @@
 package allcode;
 
+import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 import services.report;
 
-public class Password {
+@Embeddable
+public class Password implements Serializable{
 	
+	@Column(name="password")
 	private String _pass;
+	
+	@Column(name="password_date")
 	private Date _passwordDate;
+	
+	@Column(name="password_question")
 	private String _passQuestion;
+	
+	@Column(name="password_answer")
 	private String _passAnswer;
+	
+	public Password(){
+		_pass=null;
+	}
 	
 	public Password (String password)
 	{

@@ -27,7 +27,9 @@ public class DataBaseInit {
 
 		serviceRegistry = 
 				new StandardServiceRegistryBuilder().applySettings( configuration.getProperties() ).build(); 
-
+		System.out.println("didnt pass yet");
 		sf = configuration.buildSessionFactory(serviceRegistry);
+		System.out.println("passed it!");
+		
 	}
 }

@@ -1,5 +1,9 @@
 package allcode;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.HashMap;
@@ -9,34 +13,89 @@ import services.Response;
 import services.report;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
+import javax.persistence.MapKeyClass;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.Session;
 
 @Entity
-@Table(name="sub-forum")
-public class SubForum {
+
+@Table(name="subForum")
+public class SubForum implements Serializable{
 	
+	@Id
+	@GeneratedValue
+	@Column(name="subForum_id")
+	private int subForumID;
+	
+	
+	@Column (name="message_counter")
 	private int _msgCounter;					//will count the messages and arrange thier indexes.
+	
+	
+	@Column(name="subForum_name")
 	private String _name;						//Sub forum name
+	
+	@Column(name="description")
 	private String _description;				//Sub forum description
+	
+	@Embedded
 	private ForumPolicy _forumPolicy;			//Forum policy
+	
+	@Column (name="users_policy")
 	private String _userPolicy;					//Users policy
+	
+	
+	@OneToOne
+	@JoinColumn(name="father_forum")
 	private Forum _forum;						//The main forum above this sub.
-	private Vector <Member> _moderators;		//List of moderatos (maybe should be set so the same user cannot be added twice)
-	private HashMap <Integer, Post> _allPosts;	//List of all posts
-	private HashMap <Integer, Post> _rootPosts;	//List of root posts
-	private Vector <Complain> _complains;		//list of complains (by members on moderators)
+	
+	@OneToMany(fetch=FetchType.EAGER)
+	@JoinTable 
+	(
+			name="subForum_moderators",
+			joinColumns={ @JoinColumn(name="subForum_id")},
+			inverseJoinColumns = { @JoinColumn(name="member_id")}
+			
+	)
+	private List <Member> _moderators;		//List of moderatos (maybe should be set so the same user cannot be added twice)
+	
+	@ElementCollection(fetch=FetchType.EAGER)
+	  @MapKeyColumn(name="_index")
+	@Column(name="post")
+	@CollectionTable(name="all_posts",joinColumns={@JoinColumn(name="subForum_index")})
+	
+	private Map <Integer, Post> _allPosts;	//List of all posts
+	
+	@ElementCollection(fetch=FetchType.EAGER)
+	  @MapKeyColumn(name="_index")
+	@Column(name="post")
+	@CollectionTable(name="root_posts",joinColumns={@JoinColumn(name="subForum_index")})
+	private Map <Integer, Post> _rootPosts;	//List of root posts
+	
+	@Transient //to implement
+	private List <Complain> _complains;		//list of complains (by members on moderators)
 	
 	@SuppressWarnings("unused")
-	private Vector <Member> bannedUsers;		//List of banned member (who cannot enter the forum) NOT IMPLEMENTED YET.
+	@Transient
+	private List <Member> bannedUsers;		//List of banned member (who cannot enter the forum) NOT IMPLEMENTED YET.
 	
 	public SubForum (String name, String desc, Forum forum) 
 	{
@@ -45,11 +104,11 @@ public class SubForum {
 		this._description = desc;
 		this.set_forum(forum);
 		this._forumPolicy = forum.get_forumPolicy();
-		this._moderators = new Vector <Member>();
+		this._moderators = new ArrayList <Member>();
 		this._allPosts = new HashMap <Integer, Post>();
 		this._rootPosts = new HashMap <Integer, Post>();
-		this._complains = new Vector <Complain>();
-		this.bannedUsers = new Vector <Member>();
+		this._complains = new ArrayList <Complain>();
+		this.bannedUsers = new ArrayList <Member>();
 	}
 	
 	/**
@@ -62,12 +121,16 @@ public class SubForum {
 		this._description = desc;
 		this.set_forum(forum);
 		this._forumPolicy = forum.get_forumPolicy();
-		this._moderators = new Vector <Member>();
+		this._moderators = new ArrayList <Member>();
 		this._allPosts = new HashMap <Integer, Post>();
 		this._rootPosts = new HashMap <Integer, Post>();
-		this._complains = new Vector <Complain>();
+		this._complains = new ArrayList <Complain>();
 		this._moderators.add(moderator);
-		this.bannedUsers = new Vector <Member>();
+		this.bannedUsers = new ArrayList <Member>();
+	}
+	
+	public SubForum(){
+		
 	}
 	
 	/**
@@ -84,7 +147,16 @@ public class SubForum {
 		//if (allPosts.get(newPost.getIndex()) != null)
 			//return true;
 		//return false;
+		
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		ss.saveOrUpdate(newPost);
 		member.addPost(_msgCounter, newPost);
+		  ss.update(this);
+		  ss.update(member);
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return new Response(report.OK, newPost);
 	}
 	
@@ -113,6 +185,15 @@ public class SubForum {
 		_allPosts.put(newPost.getIndex(),  newPost);										//adding the post to allPosts.
 		originalPost.addResponse(newPost.getIndex(), newPost);					//adding it and return true if succeed.
 		member.addPost(_msgCounter, newPost);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.saveOrUpdate(newPost);
+		  ss.update(this);
+		  ss.update(originalPost);
+		  ss.update(member);
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return new Response(report.OK, newPost);
 	}
 
@@ -129,6 +210,12 @@ public class SubForum {
 		
 		post.setTitle(title);
 		post.setContent(content);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.saveOrUpdate(post);  
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return report.OK;
 	}
 	
@@ -155,6 +242,12 @@ public class SubForum {
 		//
 		if (post.getRoot() == null) // a root post
 			_rootPosts.remove(post.getIndex());
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.saveOrUpdate(p);  
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return report.OK;
 	}
 	
@@ -177,6 +270,12 @@ public class SubForum {
 		member.message("you've been added as modarator in " + this.getName());
 		_moderators.add(member);
 		member.setPromoter(promoter);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.saveOrUpdate(this);  
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return report.OK;
 	}
 
@@ -265,7 +364,14 @@ public class SubForum {
 			if (_moderators.remove(member))
 			{
 				member.message("Moderator premission has been removed from " + this.getName());
+				Session ss=DataBaseInit.sf.openSession();  
+				  ss.beginTransaction();  
+				 //saving objects to session  
+				  ss.saveOrUpdate(this);  
+				  ss.getTransaction().commit();  
+				  ss.close(); 
 				return report.OK;
+				
 			}
 		return report.IS_NOT_MODERATOR;
 	}
@@ -284,6 +390,13 @@ public class SubForum {
 			return report.IS_NOT_MODERATOR;
 		Complain newComplain = new Complain(member, moderator, complain);
 		_complains.add(newComplain);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.saveOrUpdate(newComplain);  
+		  ss.update(this);
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return report.OK;
 	}
 	
@@ -320,19 +433,19 @@ public class SubForum {
 	public void setUserPolicy(String userPolicy) {
 		this._userPolicy = userPolicy;
 	}
-	public HashMap <Integer, Post> getAllPosts() {
+	public Map <Integer, Post> getAllPosts() {
 		return _allPosts;
 	}
 
-	public HashMap <Integer, Post> getRootPosts() {
+	public Map <Integer, Post> getRootPosts() {
 		return _rootPosts;
 	}
 	
-	public Vector <Complain> getComplains() {
+	public List <Complain> getComplains() {
 		return _complains;
 	}
 	
-	public Vector <Member> getModerators(){
+	public List <Member> getModerators(){
 		return _moderators;
 	}
 	
