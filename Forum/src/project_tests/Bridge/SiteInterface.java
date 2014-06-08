@@ -34,7 +34,7 @@ public interface SiteInterface {
 	public boolean addSubforumToForum(String subForumName, String description, String adminName);
 	public boolean deleteSubForum(String subForumName);
 	
-	public boolean registerToForum(String userName,String password,String email);
+	public boolean registerToForum(String userName, String password, String email, String answer);
 	//public boolean deleteMemberFromForum(int id, String userName);
 	
 	//the new super administrator is not exist- create new one

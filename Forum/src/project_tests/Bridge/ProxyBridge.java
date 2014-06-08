@@ -135,10 +135,9 @@ public class ProxyBridge implements SiteInterface {
 	}
 
 	@Override
-	public boolean registerToForum(String userName, String password,
-			String email) {
+	public boolean registerToForum(String userName, String password, String email, String answer) {
 		if(real!=null)
-			return real.registerToForum(userName, password, email);
+			return real.registerToForum(userName, password, email, answer);
 		return false;
 	}
 
@@ -175,7 +174,7 @@ public class ProxyBridge implements SiteInterface {
 	public int writeResponsePostInSubForum(String title,
 			String content) {
 		if(real!=null)
-			return writeResponsePostInSubForum(title, content);
+			return real.writeResponsePostInSubForum(title, content);
 		return -1;
 	}
 

@@ -141,6 +141,8 @@ public class SubForum implements Serializable{
 		if(member==null || title==null || content==null){
 			return new Response(report.NULL_ARGUMENTS);
 		}
+		if (title.equals("") || content.equals(""))
+				return new Response(report.EMPTY_FIELD);
 		Post newPost = new Post(member, title, content, _msgCounter++);
 		_rootPosts.put(newPost.getIndex(), newPost);
 		_allPosts.put(newPost.getIndex(), newPost);
@@ -267,6 +269,7 @@ public class SubForum implements Serializable{
 	 */
 	public report addModerator(Member member, Member promoter)
 	{
+<<<<<<< HEAD
 		member.message("you've been added as modarator in " + this.getName());
 		_moderators.add(member);
 		member.setPromoter(promoter);
@@ -277,6 +280,15 @@ public class SubForum implements Serializable{
 		  ss.getTransaction().commit();  
 		  ss.close(); 
 		return report.OK;
+=======
+		if(_forum.isAdmin(promoter)){
+			member.message("you've been added as modarator in " + this.getName());
+			_moderators.add(member);
+			member.setPromoter(promoter);
+			return report.OK;
+		}
+		else return report.NOT_ALLOWED;
+>>>>>>> refs/heads/version3.6
 	}
 
 	

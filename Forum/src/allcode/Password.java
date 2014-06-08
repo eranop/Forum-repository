@@ -2,25 +2,41 @@ package allcode;
 
 import java.io.Serializable;
 import java.util.Date;
+<<<<<<< HEAD
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+=======
+import java.util.Vector;
+>>>>>>> refs/heads/version3.6
 
 import services.report;
 
 @Embeddable
 public class Password implements Serializable{
 	
+<<<<<<< HEAD
 	@Column(name="password")
+=======
+	static String question1 = "What is the name of your first pet";
+	static String question2 = "What is your favorate movie";
+	static String question3 = "What size is your underpants";
+	
+	public static Vector <String> questions;
+	
+>>>>>>> refs/heads/version3.6
 	private String _pass;
 	
 	@Column(name="password_date")
 	private Date _passwordDate;
+<<<<<<< HEAD
 	
 	@Column(name="password_question")
 	private String _passQuestion;
 	
 	@Column(name="password_answer")
+=======
+>>>>>>> refs/heads/version3.6
 	private String _passAnswer;
 	
 	public Password(){
@@ -33,12 +49,18 @@ public class Password implements Serializable{
 		_passwordDate = DateManagment.getDate();
 	}
 	
-	public Password (String password, String question, String answer)
+	public Password (String password, String answer)
 	{
 		this.set_pass(password);
-		this._passQuestion = question;
 		this._passAnswer = answer;
 		_passwordDate = DateManagment.getDate();
+	}
+	
+	public void setQuestions()
+	{
+		questions.add(question1);
+		questions.add(question2);
+		questions.add(question3);
 	}
 	
 	public report answerPasswordQuestion(String answer)
@@ -55,12 +77,7 @@ public class Password implements Serializable{
 	public int daysSinceLastPassword() {
 		return DateManagment.getDateDiffDays(_passwordDate, DateManagment.getDate());
 	}
-	public String get_passQuestion() {
-		return _passQuestion;
-	}
-	public void set_passQuestion(String passQuestion) {
-		this._passQuestion = passQuestion;
-	}
+
 	public String get_passAnswer() {
 		return _passAnswer;
 	}

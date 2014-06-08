@@ -19,7 +19,7 @@ public class RMIserver {
          */
        
         public static void main(String[] args) throws RemoteException, AlreadyBoundException {
-                SiteManager sm = InitializeSystem.init("avi","123","a@b");
+                SiteManager sm = InitializeSystem.init("avi","123","aviadelitzur@gmail.com");
                 int i=200;
                 while(i<210){
                         RMIforUC(sm.openNewConnection(), i);

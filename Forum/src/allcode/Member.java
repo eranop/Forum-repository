@@ -125,11 +125,15 @@ public class Member implements Serializable{
 		_verificationCode=null;
 	}
 
+<<<<<<< HEAD
 	public Member(String userName, String password, String email, String question, String answer,Forum forum) {
+=======
+	public Member(String userName, String password, String email, String answer) {
+>>>>>>> refs/heads/version3.6
 
 		_regDate = DateManagment.getDate();
 		this._userName = userName;
-		this._password = new Password(password, question, answer);
+		this._password = new Password(password, answer);
 		this._email = new Email(email);
 		_friends = new ArrayList <Member>();
 		_messages = new HashMap <Integer, InnerMessage>();
