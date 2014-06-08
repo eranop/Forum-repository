@@ -1,23 +1,58 @@
 package allcode;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import services.report;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.Session;
 /**
  * use by super administrator actor
  * contains super administrator operations
  */
+
+
 public class ForumsManagement {
 
+	
 	private Member _superAdmin;
-	private Vector<Forum> _forums;
+	
+	private List<Forum> _forums;
 
 	public ForumsManagement() {
-		_forums=new Vector<Forum>();
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  _forums=ss.createQuery("from allcode.Forum").list(); 
+		  ss.getTransaction().commit();
+		  ss.close(); 
+		if(_forums==null)  
+			_forums=new ArrayList<Forum>();
 	}
 	public ForumsManagement(String superAdminName, String password, String email) {
-		_forums=new Vector<Forum>();
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  _forums=ss.createQuery("from allcode.Forum").list(); 
+		  ss.getTransaction().commit();
+		  ss.close(); 
+		if(_forums==null)  
+			_forums=new ArrayList<Forum>();
 		_superAdmin= new Member(superAdminName, password, email);
 	}
 
@@ -40,6 +75,12 @@ public class ForumsManagement {
 		report rep= forum.register(adminName, adminPass, adminMail, adminAnswer);
 		if(rep.equals(report.OK)){
 		_forums.add(forum);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.saveOrUpdate(forum);  
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return forum.addAdminByName(adminName);
 		}
 		return rep;
@@ -55,7 +96,12 @@ public class ForumsManagement {
 		Forum forum=new Forum(name,description);
 		//report rep=forum.register(adminName, adminPass, adminMail);
 		_forums.add(forum);
-		
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.saveOrUpdate(forum);  
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return report.OK;
 	}
 	public report createForum(String name,String description, Member admin){
@@ -73,12 +119,24 @@ public class ForumsManagement {
 			forum.addAdmin(admin);
 		}
 		_forums.add(forum);
-		
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.saveOrUpdate(forum);  
+		  ss.getTransaction().commit();  
+		  ss.close(); 
 		return report.OK;
 	}
 	public report deleteForum(String forumName){
 		if(isForumExist(forumName)){
-			_forums.remove(getForum(forumName));
+			Forum forum=getForum(forumName);
+			_forums.remove(forum);
+			Session ss=DataBaseInit.sf.openSession();  
+			  ss.beginTransaction();  
+			 //saving objects to session  
+			  ss.delete(forum);  
+			  ss.getTransaction().commit();  
+			  ss.close(); 
 			return report.OK;
 		}
 		return report.NO_SUCH_FORUM;
@@ -106,15 +164,15 @@ public class ForumsManagement {
 	//helper functions
 	public Forum getForum(String forumName){
 		for(int i=0;i<_forums.size();i++){
-			if(_forums.elementAt(i).get_forumName().equals(forumName)){
-				return _forums.elementAt(i);
+			if( _forums.get(i).get_forumName().equals(forumName)){
+				return  _forums.get(i);
 			}
 		}
 		return null;
 	}
 	public boolean isForumExist(String forumName){
 		for(int i=0;i<_forums.size();i++){
-			if(_forums.elementAt(i).get_forumName().equals(forumName)){
+			if( _forums.get(i).get_forumName().equals(forumName)){
 				return true;
 			}
 		}
@@ -128,9 +186,9 @@ public class ForumsManagement {
 		return false;
 	}
 	
-	public Vector <Forum> getForums()
+	public List<Forum> getForums()
 	{
-		return this._forums;
+		return  this._forums;
 	}
 
 

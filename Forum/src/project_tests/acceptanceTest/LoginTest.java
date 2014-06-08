@@ -1,9 +1,12 @@
 package project_tests.acceptanceTest;
 import static org.junit.Assert.*;
 
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import allcode.DataBaseInit;
 
 public class LoginTest extends ForumSiteTest{
 
@@ -19,8 +22,11 @@ public class LoginTest extends ForumSiteTest{
 	@After
 	public void after() {
 		_site.logout(); 
+		//StandardServiceRegistryBuilder.destroy(DataBaseInit.serviceRegistry);
+		DataBaseInit.sf.close();
+
 		_site.exitForum();
-   }
+		   }
 
 	@Test
 	public void loginSimpleTest() {
@@ -53,5 +59,9 @@ public class LoginTest extends ForumSiteTest{
 		assertTrue(_site.enterForum("food2"));
 		assertTrue(_site.login("aviad", "aviad"));
 	}
+	
+	
+	
+	
 	
 }
