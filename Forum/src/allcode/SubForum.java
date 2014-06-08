@@ -269,26 +269,23 @@ public class SubForum implements Serializable{
 	 */
 	public report addModerator(Member member, Member promoter)
 	{
-<<<<<<< HEAD
-		member.message("you've been added as modarator in " + this.getName());
-		_moderators.add(member);
-		member.setPromoter(promoter);
-		Session ss=DataBaseInit.sf.openSession();  
-		  ss.beginTransaction();  
-		 //saving objects to session  
-		  ss.saveOrUpdate(this);  
-		  ss.getTransaction().commit();  
-		  ss.close(); 
-		return report.OK;
-=======
+
+		
+
 		if(_forum.isAdmin(promoter)){
 			member.message("you've been added as modarator in " + this.getName());
 			_moderators.add(member);
 			member.setPromoter(promoter);
+			Session ss=DataBaseInit.sf.openSession();  
+			  ss.beginTransaction();  
+			 //saving objects to session  
+			  ss.saveOrUpdate(this);  
+			  ss.getTransaction().commit();  
+			  ss.close(); 
 			return report.OK;
 		}
 		else return report.NOT_ALLOWED;
->>>>>>> refs/heads/version3.6
+
 	}
 
 	

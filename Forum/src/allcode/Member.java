@@ -125,11 +125,10 @@ public class Member implements Serializable{
 		_verificationCode=null;
 	}
 
-<<<<<<< HEAD
-	public Member(String userName, String password, String email, String question, String answer,Forum forum) {
-=======
-	public Member(String userName, String password, String email, String answer) {
->>>>>>> refs/heads/version3.6
+
+	
+	public Member(String userName, String password, String email, String answer,Forum forum) {
+
 
 		_regDate = DateManagment.getDate();
 		this._userName = userName;

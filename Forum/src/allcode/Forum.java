@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import services.Email;
 import services.Response;
 import services.report;
 
@@ -92,11 +93,22 @@ public class Forum implements Serializable{
 			user2.addFriend(user1);
 			return report.OK;	
 	}
-	public report register(String name, String pass, String email, String question, String answer){
+	public report register(String name, String pass, String email, String answer){
 		//add fields
 		//do delegation to member constructor
 		//have to check if this user is already exists
-		if(isMember(name)){
+		
+		if (name == null || pass == null || email == null || answer == null)
+		{
+			System.out.println("Error in register: One of the fields is EMPTY!");
+			return report.NULL_FIELD;
+		}
+		else if (name.equals("") || pass.equals("") || email.equals("") || answer.equals(""))
+		{
+			System.out.println("Error in register: One of the fields is EMPTY!");
+			return report.EMPTY_FIELD;
+		}
+		else if(isMember(name)){
 			System.out.println("member already exists");
 			return report.ALREADY_MEMBER_EXIST;
 		}
@@ -104,8 +116,19 @@ public class Forum implements Serializable{
 			System.out.println("email adress already exists in forum");
 			return report.ALREADY_EMAIL_EXIST;
 		}
+		else if(!nameStartWithLetter(name))
+		{
+			System.out.println("Invalid user name: User name must start with a letter.");
+			return report.INVALID_USER_NAME;
+		}
+		else if(nameContainsTags(name))
+		{
+			System.out.println("Invalid user name: User name cannot contains tags.");
+			return report.INVALID_USER_NAME;
+		}
 		else{
-			Member newMember= new Member(name, pass, email, question, answer,this);
+			if(Email.isValidEmail(email)){
+			Member newMember= new Member(name, pass, email, answer,this);
 			System.out.println("registered, an email will be sent");
 			
 			Session ss=DataBaseInit.sf.openSession();  
@@ -116,9 +139,30 @@ public class Forum implements Serializable{
 			  ss.close(); 
 			  insertNewMember(newMember);
 			//wait for confirmation email?
+			}
+			else{
+				return report.INVALID_EMAIL_PATTERN;
+			}
 		}
 
 		return report.OK;
+	}
+	
+	private boolean nameContainsTags(String name) {
+		String[] tags = {"!", "@", "#", "$", "%", "^", "&",  "*", "(", ")", "[", "]", ":", "~", "\\", "{", "}", "+", "|", "<", 
+				">", ".", ";", "\"", "`"};
+		for (String i : tags) 
+			if (name.contains(i))
+				return true;
+		return false;
+	}
+
+	private boolean nameStartWithLetter(String name) 
+	{
+		char c = name.charAt(0);
+		if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+			return true;
+		return false;
 	}
 
 
