@@ -1,7 +1,10 @@
 package unitTests;
 
 import static org.junit.Assert.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import org.junit.Test;
@@ -56,9 +59,10 @@ public class ForumTest {
 		forum.register(member.get_userName(), member.get_password().get_pass(), member.get_email().getEmailString(),member.get_password().get_passAnswer());
 		Member member2=initMember2();
 		forum.register(member2.get_userName(), member2.get_password().get_pass(), member2.get_email().getEmailString(),member2.get_password().get_passAnswer());
-		Vector<Member> admins = forum.get_administrators();
+		List<Member> admins=new ArrayList<Member>();
+		admins= forum.get_administrators();
 		admins.add(member2);
-		forum.set_administrators(admins);
+		forum.set_administrators((ArrayList<Member>) admins);
 		forum.createSubForum("soccer", "fans");
 		SubForum sub = forum.getSubForum("soccer");
 		sub.addModerator(member2, member2);

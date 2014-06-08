@@ -3,6 +3,11 @@ package project_tests.acceptanceTest;
 
 import java.util.Vector;
 
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.junit.After;
+
+import allcode.DataBaseInit;
+
 
 
 public class ForumSiteTest {
@@ -122,7 +127,10 @@ public class ForumSiteTest {
 		}
 	}
 
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
+		System.out.println("ending tests");
+		StandardServiceRegistryBuilder.destroy(DataBaseInit.serviceRegistry);
 		_site.cleanAllData();
 	}
 	

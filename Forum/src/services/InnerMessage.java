@@ -26,6 +26,9 @@ public class InnerMessage {
 		this.composer = composer;
 		this.content = content;
 	}
+	public InnerMessage(){
+		
+	}
 
 	public String getComposer() 
 	{

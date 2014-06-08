@@ -55,9 +55,10 @@ public class Forum implements Serializable{
 	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="subForum_id")})
 	private List<SubForum> _subForums;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
+	/*@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
 	 @JoinTable(name="admins_in_forum",
-	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="admin_id")})
+	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="admin_id")})*/
+	@Transient
 	private List<Member> _administrators;
 
 	//constructors
@@ -83,7 +84,7 @@ public class Forum implements Serializable{
 	}
 	
 	public Forum(){
-		
+		_administrators=new ArrayList<Member>();
 	}
 
 	//functionality
