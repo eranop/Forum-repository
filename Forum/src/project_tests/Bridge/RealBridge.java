@@ -290,4 +290,13 @@ public class RealBridge implements SiteInterface {
 		return (sc instanceof UserConnection);
 	}
 
+	@Override
+	public Member getMember() {
+		SiteConnection uc=_sm.getConnectionByID(_currentConnection);
+		if(uc==null || !( uc instanceof UserConnection))
+			return null;
+		Member member = ((UserConnection)uc).getMember();
+		return member;
+	}
+
 }

@@ -283,10 +283,11 @@ public class Forum {
 		public void notifyNewMsgToMembers(Member member, String title, SubForum subforum)
 		{
 			for (int i = 0; i < this.get_members().size(); i++)
-				this.get_members().get(i).message(
-						"A new post has been added in: " + subforum.getName() + 
-						". Title: " + title + ". Posted by: " + member.get_userName() + 
-						". In: " + DateManagment.dateFormat.format(DateManagment.getDate()));
+				if (!this.get_members().get(i).equals(member))
+					this.get_members().get(i).message(
+							"A new post has been added in: " + subforum.getName() + 
+							". Title: " + title + ". Posted by: " + member.get_userName() + 
+							". In: " + DateManagment.dateFormat.format(DateManagment.getDate()));
 		}
 
 		public void notifyResponders(Member member, String title, SubForum subforum, Post post)

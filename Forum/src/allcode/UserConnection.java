@@ -539,4 +539,8 @@ public class UserConnection extends SiteConnection {
 		_log.writeToLog("reset");
 	}
 
+	public Member getMember() {
+		return _member;
+	}
+
 }

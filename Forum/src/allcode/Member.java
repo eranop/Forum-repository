@@ -25,8 +25,8 @@ public class Member {
 	private HashMap <Integer, InnerMessage> _messages;
 	private int _msgCounter;
 	
-	public Member(String userName, String password, String email) {
-
+	public Member(String userName, String password, String email) 
+	{
 		_regDate = DateManagment.getDate();
 		this._userName = userName;
 		this._password = new Password(password);
@@ -39,8 +39,8 @@ public class Member {
 		_verificationCode=null;
 	}
 
-	public Member(String userName, String password, String email, String answer) {
-
+	public Member(String userName, String password, String email, String answer) 
+	{
 		_regDate = DateManagment.getDate();
 		this._userName = userName;
 		this._password = new Password(password, answer);
@@ -160,6 +160,10 @@ public class Member {
 	
 	public Date get_regDate() {
 		return _regDate;
+	}
+	
+	public HashMap <Integer, InnerMessage> getMessages() {
+		return this._messages;
 	}
 	
 
