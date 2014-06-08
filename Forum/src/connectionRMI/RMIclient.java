@@ -20,13 +20,15 @@ public class RMIclient {
 	/*
 	 * use factory to get different objects of connections (because it use state)
 	 */
-	public static ConnectionInterface getConnectionByFactory(int id, String name){
+	public static ConnectionInterface getConnectionByFactory(){
 		try {
 			Registry registry = LocateRegistry.getRegistry(200);
-
-			ConnectionFactory serviceFactory =
+			
+			ConnectionFactory connectionFactory =
 					(ConnectionFactory) registry.lookup("aviad_elitzur_connections");
-			ConnectionInterface c= serviceFactory.createConnection(id, name);
+			System.out.println("registry start2");
+			ConnectionInterface c= connectionFactory.createConnection();
+			System.out.println("registry start3");
 			return c;
 		} catch (RemoteException | NotBoundException e) {
 			System.out.println(e.getMessage());

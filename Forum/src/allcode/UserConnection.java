@@ -531,7 +531,7 @@ public class UserConnection extends SiteConnection {
 	}
 
 	@Override
-	public void reset(){
+	public void reset() {
 		super.reset();
 		_member=null;
 		_log.writeToLog("reset");

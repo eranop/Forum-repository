@@ -14,15 +14,10 @@ public class RMItest {
      */
     public static void main(String[] args) throws RemoteException, NotBoundException {
  
-    ConnectionInterface c1= RMIclient.getConnectionByFactory(1, "david");
-    ConnectionInterface c2= RMIclient.getConnectionByFactory(2, "moshe");
-    ConnectionInterface c3= RMIclient.getConnectionByFactory(3, "omer");
+    ConnectionInterface c1= RMIclient.getConnectionByFactory();
+    ConnectionInterface c2= RMIclient.getConnectionByFactory();
+    ConnectionInterface c3= RMIclient.getConnectionByFactory();
     
-    c1.setName("aviad");
-    c2.setName("tzvi");
-    
-    System.out.println(c1.getName());
-    System.out.println(c3.getName());
     
     
     
