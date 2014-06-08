@@ -1,55 +1,104 @@
 package allcode;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import services.Email;
 import services.Response;
 import services.report;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
-public class Forum {
+import org.hibernate.Session;
+
+
+@Entity
+@Table (name="Forums")
+public class Forum implements Serializable{
 	//Fields
-
+	
+	@Id
+	@Column(name="forumName")
 	private String _forumName;
+	
+	@Column(name="description")
 	private String _description;
+	
+	@Embedded
 	private ForumPolicy _forumPolicy;
-	private Vector<Member> _members;
-	private Vector<SubForum> _subForums;
-	private Vector<Member> _administrators;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
+	 @JoinTable(name="members_in_forum",
+	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="member_id")})
+	private List<Member> _members;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
+	 @JoinTable(name="subForums_Of_Forum",
+	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="subForum_id")})
+	private List<SubForum> _subForums;
+	
+	/*@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
+	 @JoinTable(name="admins_in_forum",
+	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="admin_id")})*/
+	@Transient
+	private List<Member> _administrators;
 
 	//constructors
 	public Forum(String forumName,String description){
 		_forumName=forumName;
 		_description=description;
 		_forumPolicy = new ForumPolicy();
-		_members=new Vector<Member>();
-		_subForums=new Vector<SubForum>();
-		_administrators=new Vector<Member>();
+		_members=new ArrayList<Member>();
+		_subForums=new ArrayList<SubForum>();
+		_administrators=new ArrayList<Member>();
 	}
 
 	public Forum(String forumName,String description,Member admin){
 		_forumName=forumName;
 		_description=description;
 		_forumPolicy = new ForumPolicy();
-		_members=new Vector<Member>();
-		_subForums=new Vector<SubForum>();
-		_administrators=new Vector<Member>();
+		_members=new ArrayList<Member>();
+		_subForums=new ArrayList<SubForum>();
+		_administrators=new ArrayList<Member>();
 		insertNewMember(admin);
 		_administrators.add(admin);
 
+	}
+	
+	public Forum(){
+		_administrators=new ArrayList<Member>();
 	}
 
 	//functionality
 
 	public report setFriends(Member user1,Member user2){
-		user1.addFriend(user2);
-		user2.addFriend(user1);
-		return report.OK;	
+			user1.addFriend(user2);
+			user2.addFriend(user1);
+			return report.OK;	
 	}
 	public report register(String name, String pass, String email, String answer){
 		//add fields
 		//do delegation to member constructor
 		//have to check if this user is already exists
+		
 		if (name == null || pass == null || email == null || answer == null)
 		{
 			System.out.println("Error in register: One of the fields is EMPTY!");
@@ -78,22 +127,28 @@ public class Forum {
 			System.out.println("Invalid user name: User name cannot contains tags.");
 			return report.INVALID_USER_NAME;
 		}
-
 		else{
 			if(Email.isValidEmail(email)){
-
-				Member newMember= new Member(name, pass, email, answer);
-				System.out.println("registered, an email will be sent");
-				insertNewMember(newMember);
+			Member newMember= new Member(name, pass, email, answer,this);
+			System.out.println("registered, an email will be sent");
+			
+			Session ss=DataBaseInit.sf.openSession();  
+			  ss.beginTransaction();  
+			 //saving objects to session  
+			  ss.saveOrUpdate(newMember);  
+			  ss.getTransaction().commit();
+			  ss.close(); 
+			  insertNewMember(newMember);
+			//wait for confirmation email?
 			}
 			else{
 				return report.INVALID_EMAIL_PATTERN;
 			}
 		}
+
 		return report.OK;
 	}
-
-
+	
 	private boolean nameContainsTags(String name) {
 		String[] tags = {"!", "@", "#", "$", "%", "^", "&",  "*", "(", ")", "[", "]", ":", "~", "\\", "{", "}", "+", "|", "<", 
 				">", ".", ";", "\"", "`"};
@@ -111,311 +166,355 @@ public class Forum {
 		return false;
 	}
 
-		//needs some work - when to return false? - when he is already admin?
-		public report addAdminByName(String member){
-			if(isMember(member))
-				return report.NO_SUCH_USER_NAME;
-			Member m=getMember(member);
-			_administrators.add(m);
-			return report.OK;
-		}
 
-		public report addAdmin(Member member) {
-			if(isMember(member)){
-				_administrators.add(member);
-				return report.OK;
-			}
+	//needs some work - when to return false? - when he is already admin?
+	public report addAdminByName(String member){
+		if(!isMember(member))
 			return report.NO_SUCH_USER_NAME;
-		}
+		Member m=getMember(member);
+		
+		_administrators.add(m);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.update(this);
+		  ss.getTransaction().commit();  
+		  ss.close(); 
+		return report.OK;
+	}
 
-		public report createSubForum(String name,String description){
-			//add fields
-			//delegation to Subforum constructor
-			if(findSubforum(name)){
-				System.out.println("sub forum already exists!");
-				return report.ALREADY_SUBFORUM_EXIST;
-			}
-			SubForum sub = new SubForum(name, description, this);
-			_subForums.add(sub);
+	public report addAdmin(Member member) {
+		if(isMember(member)){
+			_administrators.add(member);
+			Session ss=DataBaseInit.sf.openSession();  
+			  ss.beginTransaction();  
+			 //saving objects to session  
+			  ss.update(this);
+			  ss.getTransaction().commit();  
+			  ss.close(); 
 			return report.OK;
 		}
+		return report.NO_SUCH_USER_NAME;
+	}
 
-
-		public String viewSubForums(){
-			String ans=subForumString();
-			//do i need to print??
-
-			return ans;
+	public report createSubForum(String name,String description){
+		//add fields
+		//delegation to Subforum constructor
+		
+		
+		if(findSubforum(name)){
+			System.out.println("sub forum already exists!");
+			return report.ALREADY_SUBFORUM_EXIST;
 		}
+		
+		SubForum sub = new SubForum(name, description, this);
+		_subForums.add(sub);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.saveOrUpdate(sub);  
+		  ss.update(this);
+		  ss.getTransaction().commit();  
+		  ss.close(); 
+		return report.OK;
+	}
 
-		//need to understand how to do - part of registration
-		public boolean sendIdentificationByEmail(String email, Member member){
+
+	public String viewSubForums(){
+		String ans=subForumString();
+		//do i need to print??
+
+		return ans;
+	}
+
+	//need to understand how to do - part of registration
+	public boolean sendIdentificationByEmail(String email, Member member){
 
 
+		return false;
+	}
+	public report deleteSubForum(String subForumName, Member admin) {
+		if(!isAdmin(admin)){
+			System.out.println("not admin!");
+			return report.IS_NOT_ADMIN;
+		}
+		SubForum sf=getSubForum(subForumName);
+		if(sf==null){
+			System.out.println("no such sub-forum!");
+			return report.NO_SUCH_SUBFORUM;
+		}
+		_subForums.remove(sf);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.update(sf);
+		  ss.update(this);
+		  ss.getTransaction().commit();  
+		  ss.close(); 
+		return report.OK;
+	}
+	/**
+	 * validates that the member exists and that his password is correct
+	 * @return the member if validated and null otherwise
+	 */
+	private Member assureMember(String userName,String password) {
+		for(int i=0;i<_members.size();i++){
+			if(  _members.get(i).get_userName().equals(userName) &&
+					 _members.get(i).get_password().equals(password))
+				return  _members.get(i);
+		}
+		return null;
+	}
+
+	public Member getMember(String name){
+		for(int i=0;i<_members.size();i++){
+			if( _members.get(i).get_userName().equals(name))
+				return  _members.get(i);
+		}
+		return null;
+	}
+
+	/**
+	 * check if the member exists
+	 * @return true if members exists in the forum
+	 */
+	public boolean isMember(String userName) {
+		for(int i=0;i<_members.size();i++){
+			if( _members.get(i).get_userName().equals(userName))
+				return true;
+		}
+		return false;
+	}
+
+	public boolean isMember(Member m) {
+		if(  _members.indexOf(m) == -1)
 			return false;
-		}
-		public report deleteSubForum(String subForumName, Member admin) {
-			if(!isAdmin(admin)){
-				System.out.println("not admin!");
-				return report.IS_NOT_ADMIN;
-			}
-			SubForum sf=getSubForum(subForumName);
-			if(sf==null){
-				System.out.println("no such sub-forum!");
-				return report.NO_SUCH_SUBFORUM;
-			}
-			_subForums.remove(sf);
-			return report.OK;
-		}
-		/**
-		 * validates that the member exists and that his password is correct
-		 * @return the member if validated and null otherwise
-		 */
-		private Member assureMember(String userName,String password) {
-			for(int i=0;i<_members.size();i++){
-				if(_members.elementAt(i).get_userName().equals(userName) &&
-						_members.elementAt(i).get_password().equals(password))
-					return _members.elementAt(i);
-			}
-			return null;
-		}
+		return true;
+	}
 
-		public Member getMember(String name){
-			for(int i=0;i<_members.size();i++){
-				if(_members.elementAt(i).get_userName().equals(name))
-					return _members.elementAt(i);
-			}
-			return null;
-		}
 
-		/**
-		 * check if the member exists
-		 * @return true if members exists in the forum
-		 */
-		public boolean isMember(String userName) {
-			for(int i=0;i<_members.size();i++){
-				if(_members.elementAt(i).get_userName().equals(userName))
-					return true;
-			}
-			return false;
+	/**
+	 * check if the admin exists
+	 * @param userName
+	 * @return true if members exists in the forum
+	 */
+	public boolean isAdmin(String userName) {
+		for(int i=0;i<_administrators.size();i++){
+			if( _administrators.get(i).get_userName().equals(userName))
+				return true;
 		}
-
-		public boolean isMember(Member m) {
-			if( _members.indexOf(m) == -1)
-				return false;
+		return false;
+	}
+	public boolean isAdmin(Member m) {
+		if( _administrators.indexOf(m)!=-1)
 			return true;
-		}
-
-
-		/**
-		 * check if the admin exists
-		 * @param userName
-		 * @return true if members exists in the forum
-		 */
-		public boolean isAdmin(String userName) {
-			for(int i=0;i<_administrators.size();i++){
-				if(_administrators.elementAt(i).get_userName().equals(userName))
-					return true;
-			}
-			return false;
-		}
-		public boolean isAdmin(Member m) {
-			if(_administrators.indexOf(m)!=-1)
+		return false;
+	}
+	/**
+	 * check if the email adress exists in the forum
+	 * @param email
+	 * @return true if exists
+	 */
+	private boolean isEmail(String email) {
+		for(int i=0;i<_members.size();i++){
+			if( _members.get(i).get_email().equals(email))
 				return true;
-			return false;
 		}
-		/**
-		 * check if the email adress exists in the forum
-		 * @param email
-		 * @return true if exists
-		 */
-		private boolean isEmail(String email) {
-			for(int i=0;i<_members.size();i++){
-				if(_members.elementAt(i).get_email().getEmailString().equals(email))
-					return true;
-			}
-			return false;
-		}
+		return false;
+	}
 
-		/**
-		 * check if the subforum exists in the forum
-		 * @param name
-		 * @return true if subforum exists
-		 */
-		private boolean findSubforum(String name) {
+	/**
+	 * check if the subforum exists in the forum
+	 * @param name
+	 * @return true if subforum exists
+	 */
+	private boolean findSubforum(String name) {
+		for(int i=0;i<_subForums.size();i++){
+			
+			if( _subForums.get(i).getName().equals(name))
+				
+				return true;
+		}
+		return false;
+	}
+
+	public SubForum getSubForum(String name){
+		for(int i=0;i<_subForums.size();i++){
+			if( _subForums.get(i).getName().equals(name))
+				return ( _subForums.get(i));
+		}
+		return null;
+	}
+
+	/**
+	 * string representation of the sub forums
+	 * @return
+	 */
+	private String subForumString() {
+		if (_subForums.isEmpty())
+			return "no sub-forums in this forum!";
+		else{
+			StringBuilder ans=new StringBuilder();
 			for(int i=0;i<_subForums.size();i++){
-				if(_subForums.elementAt(i).getName().equals(name))
-					return true;
+				ans.append( _subForums.get(i).getName());
+				ans.append("\n");
 			}
-			return false;
+			return ans.toString();
 		}
-
-		public SubForum getSubForum(String name){
-			for(int i=0;i<_subForums.size();i++){
-				if(_subForums.elementAt(i).getName().equals(name))
-					return _subForums.elementAt(i);
-			}
-			return null;
-		}
-
-		/**
-		 * string representation of the sub forums
-		 * @return
-		 */
-		private String subForumString() {
-			if (_subForums.isEmpty())
-				return "no sub-forums in this forum!";
-			else{
-				StringBuilder ans=new StringBuilder();
-				for(int i=0;i<_subForums.size();i++){
-					ans.append(_subForums.elementAt(i).getName());
-					ans.append("\n");
-				}
-				return ans.toString();
-			}
-
-		}
-
-		private void insertNewMember(Member newMember) {
-			_members.add(newMember);
-		}
-
-		public void notifyNewMsgToMembers(Member member, String title, SubForum subforum)
-		{
-			for (int i = 0; i < this.get_members().size(); i++)
-				if (!this.get_members().get(i).equals(member))
-					this.get_members().get(i).message(
-							"A new post has been added in: " + subforum.getName() + 
-							". Title: " + title + ". Posted by: " + member.get_userName() + 
-							". In: " + DateManagment.dateFormat.format(DateManagment.getDate()));
-		}
-
-		public void notifyResponders(Member member, String title, SubForum subforum, Post post)
-		{
-			for (int i = 0; i < post.getResponds().size(); i++)
-				post.getResponds().get(i).getMember().message(
-						"a former post that you've replaied has changed in: " + subforum.getName() + 
-						". New title is: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
-						". Changed in " + DateManagment.dateFormat.format(DateManagment.getDate()));
-		}
-
-
-		public boolean canDeletePost(Member member, Post post, SubForum subforum) {
-			if ( (_forumPolicy.isDeleteMessagePublisher() && member.equals(post.getMember()))		//if member is owner and policy allows
-					|| (_forumPolicy.isDeleteMessageAdmin() && this.isAdmin(member))				//if member is admin and policy allows
-					|| (_forumPolicy.isDeleteMessageModerator() && subforum.isModerator(member)))	//if member is moder and policy allows
-				return true;
-			return false;
-		}
-
-		public boolean canAddModerator(Member member) {
-			if ( (_forumPolicy.getModeratorDays() <= DateManagment.getDateDiffDays(member.get_regDate(), DateManagment.getDate()))	//if this date - registration date in days > policy days
-					&& (_forumPolicy.getModeratorPosts() <= member.getPosts().size()) )	//if member published enuf posts.
-				return true;
-			return false;
-		}
-
-		public boolean canRemoveModerator(Member member, Member admin, SubForum subForum) {
-			if ( ((_forumPolicy.isDeleteModeratorOnlyByRankingAdmin() && admin.equals(member.getPromoter()) )	//only promoter admin can delete mod and admin is the promoter
-					||	(!_forumPolicy.isDeleteModeratorOnlyByRankingAdmin()))	//if all admins can delete the mod
-					&& (_forumPolicy.isDeleteLastModerator()					//if can delete last mod
-							|| (!_forumPolicy.isDeleteLastModerator() && subForum.getModerators().size() > 1)))	//if canNOT delete last mod but num of mods > 1
-				return true;
-			return false;
-		}
-
-		public Response getPostNumInSubForum(String subForumName) {
-			if (this.findSubforum(subForumName))
-				return new Response(report.OK, this.getSubForum(subForumName).getAllPosts().size());
-			else
-				return new Response(report.NO_SUCH_SUBFORUM);
-		}
-
-		public Response getListOfPostsByMember(String mNickname) {
-			if (this.isMember(mNickname))
-				return new Response(report.OK, this.getMember(mNickname).getPosts());
-			else
-				return new Response(report.NO_SUCH_USER_NAME);
-		}
-
-		public Response getListOfModeratorsInSubForum(String subForumName) {
-			if (this.findSubforum(subForumName))
-				return new Response(report.OK, this.getSubForum(subForumName).getModerators());
-			else
-				return new Response(report.NO_SUCH_SUBFORUM);
-		}
-
-		public report addMember(Member member)
-		{
-			if (_members.contains(member))
-				return report.MEMBER_ALREADY_IN_FORUM;
-			else
-			{
-				_members.add(member);
-				return report.OK;
-			}
-		}
-
-		//getters and setters
-
-		public String get_forumName() {
-			return _forumName;
-		}
-
-		public void set_forumName(String _forumName) {
-			this._forumName = _forumName;
-		}
-
-		public Vector<Member> get_members() {
-			return _members;
-		}
-
-		public void set_members(Vector<Member> _members) {
-			this._members = _members;
-		}
-
-		public Vector<SubForum> get_subForums() {
-			return _subForums;
-		}
-
-		public void set_subForums(Vector<SubForum> _subForums) {
-			this._subForums = _subForums;
-		}
-
-		public Vector<Member> get_administrators() {
-			return _administrators;
-		}
-
-		public void set_administrators(Vector<Member> _administrators) {
-			this._administrators = _administrators;
-		}
-		public String get_description() {
-			return _description;
-		}
-		public void set_description(String _description) {
-			this._description = _description;
-		}
-
-		public String toString(){
-			return _forumName;
-		}
-
-		public ForumPolicy get_forumPolicy() {
-			return _forumPolicy;
-		}
-
-		public void set_forumPolicy(ForumPolicy _forumPolicy) {
-			this._forumPolicy = _forumPolicy;
-		}
-
-
-
-
-
-
 
 	}
-	/*
+
+	private void insertNewMember(Member newMember) {
+		_members.add(newMember);
+		Session ss=DataBaseInit.sf.openSession();  
+		  ss.beginTransaction();  
+		 //saving objects to session  
+		  ss.update(this);  
+		  ss.getTransaction().commit();  
+		  ss.close(); 
+	}
+
+	public void notifyNewMsgToMembers(Member member, String title, SubForum subforum)
+	{
+		for (int i = 0; i < this.get_members().size(); i++)
+			this.get_members().get(i).message(
+					"A new post has been added in: " + subforum.getName() + 
+					". Title: " + title + ". Posted by: " + member.get_userName() + 
+					". In: " + DateManagment.dateFormat.format(DateManagment.getDate()));
+	}
+	
+	public void notifyResponders(Member member, String title, SubForum subforum, Post post)
+	{
+		for (int i = 0; i < post.getResponds().size(); i++)
+			post.getResponds().get(i).getMember().message(
+					"a former post that you've replaied has changed in: " + subforum.getName() + 
+					". New title is: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
+					". Changed in " + DateManagment.dateFormat.format(DateManagment.getDate()));
+	}
+	
+	
+	public boolean canDeletePost(Member member, Post post, SubForum subforum) {
+		if ( (_forumPolicy.isDeleteMessagePublisher() && member.equals(post.getMember()))		//if member is owner and policy allows
+				|| (_forumPolicy.isDeleteMessageAdmin() && this.isAdmin(member))				//if member is admin and policy allows
+				|| (_forumPolicy.isDeleteMessageModerator() && subforum.isModerator(member)))	//if member is moder and policy allows
+			return true;
+		return false;
+	}
+	
+	public boolean canAddModerator(Member member) {
+		if ( (_forumPolicy.getModeratorDays() <= DateManagment.getDateDiffDays(member.get_regDate(), DateManagment.getDate()))	//if this date - registration date in days > policy days
+			&& (_forumPolicy.getModeratorPosts() <= member.getPosts().size()) )	//if member published enuf posts.
+			return true;
+		return false;
+	}
+	
+	public boolean canRemoveModerator(Member member, Member admin, SubForum subForum) {
+		if ( ((_forumPolicy.isDeleteModeratorOnlyByRankingAdmin() && admin.equals(member.getPromoter()) )	//only promoter admin can delete mod and admin is the promoter
+			||	(!_forumPolicy.isDeleteModeratorOnlyByRankingAdmin()))	//if all admins can delete the mod
+			&& (_forumPolicy.isDeleteLastModerator()					//if can delete last mod
+					|| (!_forumPolicy.isDeleteLastModerator() && subForum.getModerators().size() > 1)))	//if canNOT delete last mod but num of mods > 1
+			return true;
+		return false;
+	}
+	
+	public Response getPostNumInSubForum(String subForumName) {
+		if (this.findSubforum(subForumName))
+			return new Response(report.OK, this.getSubForum(subForumName).getAllPosts().size());
+		else
+			return new Response(report.NO_SUCH_SUBFORUM);
+	}
+
+	public Response getListOfPostsByMember(String mNickname) {
+		if (this.isMember(mNickname))
+			return new Response(report.OK, this.getMember(mNickname).getPosts());
+		else
+			return new Response(report.NO_SUCH_USER_NAME);
+	}
+
+	public Response getListOfModeratorsInSubForum(String subForumName) {
+		if (this.findSubforum(subForumName))
+			return new Response(report.OK, this.getSubForum(subForumName).getModerators());
+		else
+			return new Response(report.NO_SUCH_SUBFORUM);
+	}
+	
+	public report addMember(Member member)
+	{
+		if (_members.contains(member))
+			return report.MEMBER_ALREADY_IN_FORUM;
+		else
+		{
+			_members.add(member);
+			Session ss=DataBaseInit.sf.openSession();  
+			  ss.beginTransaction();  
+			 //saving objects to session  
+			  ss.update(this);  
+			  ss.getTransaction().commit();  
+			  ss.close(); 
+			return report.OK;
+		}
+	}
+
+	//getters and setters
+
+	public String get_forumName() {
+		return _forumName;
+	}
+
+	public void set_forumName(String _forumName) {
+		this._forumName = _forumName;
+	}
+
+	public List<Member> get_members() {
+		return  _members;
+	}
+
+	public void set_members(Vector<Member> _members) {
+		this._members = _members;
+	}
+
+	public List<SubForum> get_subForums() {
+		return  _subForums;
+	}
+
+	public void set_subForums(ArrayList<SubForum> _subForums) {
+		this._subForums = _subForums;
+	}
+
+	public List<Member> get_administrators() {
+		return  _administrators;
+	}
+
+	public void set_administrators(ArrayList<Member> _administrators) {
+		this._administrators = _administrators;
+	}
+	public String get_description() {
+		return _description;
+	}
+	public void set_description(String _description) {
+		this._description = _description;
+	}
+
+	public String toString(){
+		return _forumName;
+	}
+
+	public ForumPolicy get_forumPolicy() {
+		return _forumPolicy;
+	}
+
+	public void set_forumPolicy(ForumPolicy _forumPolicy) {
+		this._forumPolicy = _forumPolicy;
+	}
+
+
+
+
+
+
+
+}
+/*
 public boolean postInSubForum(String subName,String user,String title,String content){
 	SubForum subforum=getSubForum(subName);
 	if(subforum==null){
@@ -488,8 +587,8 @@ public boolean addModerator(String subForumName, String adminName,
 		return false;
 	}
 	return subForum.addModerator(moderator);
-
+	
 }
-	 */
+*/
 
 
