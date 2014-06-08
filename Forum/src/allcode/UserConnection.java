@@ -2,6 +2,7 @@ package allcode;
 
 import java.util.HashMap;
 
+import services.Logger2;
 import services.Response;
 import services.report;
 
@@ -13,7 +14,7 @@ public class UserConnection extends SiteConnection {
 	public UserConnection(ForumsManagement fs){
 		super(fs);
 		_member=null;
-		_log=null;
+		_log=Logger2.getLogUser();
 	}
 	
 	/**
@@ -40,7 +41,8 @@ public class UserConnection extends SiteConnection {
 		if(m.get_password().get_pass().equals(pass)){
 			_member=m;
 			try{
-			_log = new services.Logger2(_member.get_userName()+"-"+_forum.get_forumName());
+			Logger2.initLogUser();
+			_log = Logger2.getLogUser();
 			}
 			catch (Exception exc){
 				System.out.println("ERROR SETTING UP LOGGER");
