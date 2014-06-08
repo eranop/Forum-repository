@@ -46,12 +46,14 @@ public class Logger2 {
 		DateFormat date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String report= reportSwitch(r);
 		writer.write(date.toString() + "> "+ function + ": " + report);
+		writer.flush();
 	}
 	// for good reports
 	public static void writeToLog(String function){
 		DateFormat date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		//String report= reportSwitch(r);
 		writer.println(date.toString() + "> "+ function + ": " + "Done");
+		writer.flush();
 	}
 	
 	//convert reports to message for log

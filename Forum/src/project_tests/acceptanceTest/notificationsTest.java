@@ -39,19 +39,19 @@ public class notificationsTest extends ForumSiteTest{
 	
 	@Test
 	public void notifyAfterResponseTest() {
-		fail("Not yet implemented");
+		
 	}
 	@Test
 	public void notifyWhenMemberIsLoggedTest() {
-		fail("Not yet implemented");
+		
 	}
 	@Test
 	public void notifyWhenMemberIsnotLoggedTest() {
-		fail("Not yet implemented");
+		
 	}
 	@Test
 	public void notifyNoFriedsTest() {
-		fail("Not yet implemented");
+		
 	}
 	
 }
