@@ -2,10 +2,9 @@ package services;
 
 import java.io.Serializable;
 import java.util.*;
-<<<<<<< HEAD
-=======
+
 import java.util.regex.Pattern;
->>>>>>> refs/heads/version3.6
+
 
 import javax.mail.*;
 import javax.mail.internet.*;
