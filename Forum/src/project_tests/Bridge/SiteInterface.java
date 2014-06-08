@@ -1,5 +1,7 @@
 package project_tests.Bridge;
 
+import allcode.Member;
+
 public interface SiteInterface {
 	/*
 	 * all tests are state based- every connection save its state.
@@ -52,6 +54,9 @@ public interface SiteInterface {
 	public int writePostInSubForum(String title,String content);
 	public int writeResponsePostInSubForum(String title,String content);
 	public boolean deletePostInSubForum(int postID);
+	
+	//getters
+	public Member getMember();
 	
 	/*
 	public boolean sendComplainOnModerator(int id, String user,String moderator,

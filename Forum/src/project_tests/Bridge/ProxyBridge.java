@@ -1,5 +1,7 @@
 package project_tests.Bridge;
 
+import allcode.Member;
+
 public class ProxyBridge implements SiteInterface {
 
 	public SiteInterface real;
@@ -206,5 +208,12 @@ public class ProxyBridge implements SiteInterface {
 		if(real!=null)
 			return real.getCurrentConnectionID();
 		return -1;
+	}
+
+	@Override
+	public Member getMember() {
+		if (real!= null)
+			return real.getMember();
+		return null;
 	}
 }

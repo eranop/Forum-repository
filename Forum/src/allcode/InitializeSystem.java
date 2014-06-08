@@ -10,8 +10,11 @@ public class InitializeSystem {
 
 		SiteManager sm= new SiteManager(superAdminName, password, email);
 		Logger2.initLogSystem();
-        Logger2.initLogUser();
+
 		
+
+		Logger2.initLogUser();
+
 		return sm;
 	}	
 }

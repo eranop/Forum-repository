@@ -111,8 +111,8 @@ public class Member implements Serializable{
 	@Column (name="message_counter")
 	private int _msgCounter;
 	
-	public Member(String userName, String password, String email) {
-
+	public Member(String userName, String password, String email) 
+	{
 		_regDate = DateManagment.getDate();
 		this._userName = userName;
 		this._password = new Password(password);
@@ -126,9 +126,11 @@ public class Member implements Serializable{
 	}
 
 
-	
-	public Member(String userName, String password, String email, String answer,Forum forum) {
 
+
+
+	public Member(String userName, String password, String email, String answer,Forum forum) 
+	{
 
 		_regDate = DateManagment.getDate();
 		this._userName = userName;
@@ -288,6 +290,10 @@ public class Member implements Serializable{
 	
 	public Date get_regDate() {
 		return _regDate;
+	}
+	
+	public Map <Integer, InnerMessage> getMessages() {
+		return this._messages;
 	}
 	
 

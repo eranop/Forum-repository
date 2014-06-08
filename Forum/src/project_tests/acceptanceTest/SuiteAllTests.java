@@ -7,15 +7,18 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-/*unit tests
-	PostTest.class,
-    ForumSystemTest.class,
-    ForumTest.class,
-    SubForumTest.class,
-*/
-//acceptance tests
-    LoginTest.class,
-    
+	unitTests.ForumTest.class, 
+	unitTests.PolicyTest.class, 
+	unitTests.PostTest.class, 
+	unitTests.SubForumTest.class, 
+	
+	//acceptance tests 
+	LoginTest.class, 
+	//ForumSiteTest.class, 
+	PostTest.class, 
+	registerTest.class,
+	notificationsTest.class,
+	
 })public class SuiteAllTests
 {
  /* empty class */
