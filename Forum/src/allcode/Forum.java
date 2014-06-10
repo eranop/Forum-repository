@@ -473,8 +473,13 @@ public class Forum implements Serializable{
 		this._members = _members;
 	}
 
-	public List<SubForum> get_subForums() {
-		return  _subForums;
+	public Vector<String> get_subForums() {
+		Vector<String> subforumsList=new Vector<String>();
+		for(SubForum f: _subForums){
+			 subforumsList.add(f.getName());
+		 }
+		
+		return  subforumsList;
 	}
 
 	public void set_subForums(ArrayList<SubForum> _subForums) {

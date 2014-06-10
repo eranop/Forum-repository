@@ -2,6 +2,7 @@ package allcode;
 
 import java.util.HashMap;
 
+import services.Response;
 import services.report;
 
 /**
@@ -44,16 +45,17 @@ public abstract class SiteConnection {
 		_post=null;
 		return report.OK;
 	}
-	public report enterSubforum(String subforumName){
+	public Response enterSubforum(String subforumName){
 		if(_forum==null){
-			return report.NO_FORUM;
+			return new Response(report.NO_FORUM, null);
 		}
 		SubForum sf= _forum.getSubForum(subforumName);
 		if(sf==null){
-			return report.NO_SUCH_SUBFORUM;
+			return  new Response(report.NO_SUCH_SUBFORUM,null);
 		}
 		_subForum=sf;
-		return report.OK;
+		
+		return new Response(report.OK, sf.getRootPosts());
 	}
 	public report exitSubforum(){
 		if(_subForum==null)

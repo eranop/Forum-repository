@@ -13,8 +13,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 import javax.activation.*;
 
-import org.hamcrest.Matcher;
-
 
 
 @Embeddable

@@ -13,5 +13,5 @@ import java.rmi.RemoteException;
  * @author aviad elitzur
  */
 public interface ConnectionFactory  extends Remote {
-    ConnectionInterface createConnection(int id, String name) throws RemoteException;    
+    RemoteInterface createConnection() throws RemoteException;    
 }

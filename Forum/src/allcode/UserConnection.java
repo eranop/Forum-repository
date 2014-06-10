@@ -511,6 +511,7 @@ public class UserConnection extends SiteConnection {
 			return new Response(report.NO_FORUM);
 		}
 		_log.writeToLog("getSubForums");
+                
 		return new Response(report.OK, _forum.get_subForums());
 	}
 	
