@@ -35,6 +35,8 @@ import org.hibernate.Session;
 public class Forum implements Serializable{
 	//Fields
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name="forumName")
 	private String _forumName;

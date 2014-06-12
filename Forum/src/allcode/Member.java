@@ -51,6 +51,9 @@ import javax.persistence.Transient;
 @Table (name="Members")
 public class Member implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
+
 	@Column(name="date_of_registration")
 	private Date _regDate;
 

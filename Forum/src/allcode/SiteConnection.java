@@ -1,7 +1,10 @@
 package allcode;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
+import services.PostRMI;
 import services.Response;
 import services.report;
 
@@ -54,8 +57,12 @@ public abstract class SiteConnection {
 			return  new Response(report.NO_SUCH_SUBFORUM,null);
 		}
 		_subForum=sf;
-		
-		return new Response(report.OK, sf.getRootPosts());
+		Collection<Post> posts= sf.getAllPosts();
+		ArrayList<PostRMI> postList=new ArrayList<PostRMI>();
+		for(Post p : posts){
+			postList.add(new PostRMI(p.getTitle(),p.getContent()));
+		}
+		return new Response(report.OK, postList);
 	}
 	public report exitSubforum(){
 		if(_subForum==null)

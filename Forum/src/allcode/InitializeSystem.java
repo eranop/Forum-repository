@@ -37,6 +37,18 @@ public class InitializeSystem {
 		f.createSubForum("ping pong3", "white");
 		f.createSubForum("ping pong4", "white");
 		
+		uc.enterForum(f.get_forumName());
+		uc.registerToForum("oriya", "oriya", "oriya1989@walla.com", "no");
+		uc.enterSubforum("ping pong1");
+		uc.login("oriya", "oriya");
+		uc.writePost("first post", "oriya check our project first time");
+		uc.writePost("first post", "oriya check our project 2nd time");
+		uc.writePost("first post", "oriya check our project 3th time");
+		uc.writePost("first post", "oriya check our project 4th time");
+		
+		uc.exitForum();
+		
+		
 		sm.closeConnection(uc.getID());
 		sm.closeConnection(c.getID());
 		return sm;

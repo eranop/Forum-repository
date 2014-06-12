@@ -33,8 +33,10 @@ public class UserConnection extends SiteConnection {
 	public report login(String userName, String pass){
 		if(_forum == null)
 			return report.NO_FORUM;
-		if(_member!=null)
+		if(_member!=null){
+			System.out.println(_member.get_userName());
 			return report.ALREADY_MEMBER_EXIST;
+		}
 		Member m= _forum.getMember(userName);
 		if(m==null)
 			return report.NO_SUCH_USER_NAME;

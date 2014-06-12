@@ -27,7 +27,9 @@ import org.hibernate.Session;
 @Entity
 @Table(name = "Post")
 public class Post implements Serializable{
-	
+
+	private static final long serialVersionUID = 1L;
+
 	@ManyToOne
 	@JoinColumn(name="root_post")
 	private Post _root;

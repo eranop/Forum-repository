@@ -442,12 +442,19 @@ public class SubForum implements Serializable{
 	public void setUserPolicy(String userPolicy) {
 		this._userPolicy = userPolicy;
 	}
-	public Map <Integer, Post> getAllPosts() {
-		return _allPosts;
+	public Collection<Post> getAllPosts() {
+		return _allPosts.values();
 	}
 
-	public Map <Integer, Post> getRootPosts() {
-		return _rootPosts;
+	public ArrayList<String[]> getRootPosts() {
+		ArrayList<String[]> retPosts= new ArrayList<String[]>();
+		String postTitle, postContent;
+		for(Post p : _rootPosts.values()){
+			postTitle=p.getTitle();
+			postContent=p.getContent();
+			retPosts.add(new String[]{postTitle,postContent});
+		}
+		return retPosts;
 	}
 	
 	public List <Complain> getComplains() {
