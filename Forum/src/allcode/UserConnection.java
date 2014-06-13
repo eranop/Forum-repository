@@ -1,6 +1,7 @@
 package allcode;
  
 import java.util.HashMap;
+import java.util.Vector;
 
 import services.Logger2;
 import services.Response;
@@ -69,13 +70,14 @@ public class UserConnection extends SiteConnection {
 	 * functions that "set" in domain layer
 	 * return only report, not objects
 	 */
-	public report registerToForum(String userName, String password, String email, String answer){
+	public report registerToForum(String userName, String password, String email, 
+			String question, String answer){
 		if(_forum==null){
 			System.out.println("not in forum");
 			_log.writeToLog("registerToForum",report.NO_FORUM);
 			return report.NO_FORUM;
 		}
-		report rep = _forum.register(userName, password, email, answer);
+		report rep = _forum.register(userName, password, email, question, answer);
 		if(rep != report.OK){
 			_log.writeToLog("registerToForum",rep);
 		}
@@ -545,6 +547,35 @@ public class UserConnection extends SiteConnection {
 
 	public Member getMember() {
 		return _member;
+	}
+	
+	public Vector<String> getQuestions(){
+		return Password.getQuestions();
+	}
+
+	public report isValidAnswer(String userName, String answer) {
+		if(_forum == null)
+			return report.NO_FORUM;
+		if(_member!=null){
+			System.out.println(_member.get_userName());
+			return report.ALREADY_MEMBER_EXIST;
+		}
+		Member m= _forum.getMember(userName);
+		if(m==null)
+			return report.NO_SUCH_USER_NAME;
+		//TODO set canLogin method in forum
+		if(m.get_password().get_passAnswer().equals(answer)){
+			_member=m;
+			try{
+			Logger2.initLogUser();
+			_log = Logger2.getLogUser();
+			}
+			catch (Exception exc){
+				System.out.println("ERROR SETTING UP LOGGER");
+			}
+			return report.OK;
+		}	
+		return report.INVALID_ANSWER;
 	}
 
 }

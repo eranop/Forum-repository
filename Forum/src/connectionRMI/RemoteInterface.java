@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import allcode.Forum;
+import allcode.Password;
 import allcode.Post;
 import allcode.SubForum;
 import services.Response;
@@ -53,7 +54,10 @@ public interface RemoteInterface extends Remote{
 
 	public abstract void reset() throws RemoteException;
 
-
+	public abstract Vector<String> getQuestions() throws RemoteException;
+	
+	public abstract report isValidAnswer(String userName, String answer) throws RemoteException;
+	
 	public abstract report enterForum(String forumName) throws RemoteException;
 	public abstract report exitForum() throws RemoteException;
 	public abstract Response enterSubforum(String subforumName) throws RemoteException;

@@ -4,17 +4,39 @@
  */
 package myGUI;
 
+import connectionRMI.RMIclient;
+import connectionRMI.RemoteInterface;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import services.report;
+
 /**
  *
  * @author aviad elitzur
  */
 public class AdminGUI extends javax.swing.JFrame {
+    private final RemoteInterface _ci;
 
     /**
      * Creates new form ModeratorsGUI
      */
-    public AdminGUI() {
+    public AdminGUI() throws RemoteException {
         initComponents();
+         _ci=RMIclient.getConnectionByFactory();
+        if(_ci==null){
+            //TODO: close window
+        }
+    }
+    public boolean setForum(String forumName) throws RemoteException{
+        report r=_ci.enterForum(forumName);
+        if(r==report.OK){ 
+           reports.setText("OK");
+           return true;
+           }else{
+               reports.setText("find forum failed: " + r.toString());
+               return false;
+        }
     }
 
     /**
@@ -39,6 +61,7 @@ public class AdminGUI extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        reports = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -77,12 +100,14 @@ public class AdminGUI extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
         jLabel6.setText("administrator panel");
 
+        reports.setText("--reports--");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -102,7 +127,10 @@ public class AdminGUI extends javax.swing.JFrame {
                                     .addComponent(jLabel4)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(118, 118, 118)
-                        .addComponent(jLabel6)))
+                        .addComponent(jLabel6))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(reports, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(48, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -131,7 +159,9 @@ public class AdminGUI extends javax.swing.JFrame {
                             .addComponent(jButton1)
                             .addComponent(cancelSubButton)))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(51, 51, 51))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(reports)
+                .addGap(26, 26, 26))
         );
 
         pack();
@@ -167,7 +197,11 @@ public class AdminGUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminGUI().setVisible(true);
+                try {
+                    new AdminGUI().setVisible(true);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(AdminGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -185,5 +219,6 @@ public class AdminGUI extends javax.swing.JFrame {
     private javax.swing.JList jList2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel reports;
     // End of variables declaration//GEN-END:variables
 }

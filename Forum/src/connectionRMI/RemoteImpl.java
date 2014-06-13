@@ -37,7 +37,7 @@ public class RemoteImpl extends UnicastRemoteObject implements RemoteInterface{
 	@Override
 	public report registerToForum(String userName, String password,
 			String email, String question, String answer) {
-		return this.uc.registerToForum(userName, password, email,  answer);
+		return this.uc.registerToForum(userName, password, email, question,  answer);
 	}
 
 	@Override
@@ -162,5 +162,15 @@ public class RemoteImpl extends UnicastRemoteObject implements RemoteInterface{
 	@Override
 	public report exitPost() throws RemoteException {
 		return uc.exitPost();
+	}
+
+	@Override
+	public Vector<String> getQuestions() throws RemoteException {
+		return uc.getQuestions();
+	}
+
+	@Override
+	public report isValidAnswer(String userName, String answer) throws RemoteException {
+		return uc.isValidAnswer(userName, answer);
 	}
 }

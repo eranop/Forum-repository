@@ -109,10 +109,15 @@ public class ForumGUI extends javax.swing.JFrame {
         postsTextArea = new javax.swing.JTextArea();
         jLabel7 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
+        forgatPasswordLabel = new javax.swing.JLabel();
+        questionLabel = new javax.swing.JLabel();
+        answerTextField = new javax.swing.JTextField();
+        questionButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         login.setText("login");
+        login.setEnabled(false);
         login.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 loginMouseClicked(evt);
@@ -125,6 +130,7 @@ public class ForumGUI extends javax.swing.JFrame {
         });
 
         logout.setText("logout");
+        logout.setEnabled(false);
         logout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 logoutActionPerformed(evt);
@@ -145,10 +151,6 @@ public class ForumGUI extends javax.swing.JFrame {
 
         jLabel2.setText("content");
 
-        password.setText("jPasswordField2");
-
-        userName.setText("name");
-
         jLabel3.setText("name");
 
         jLabel4.setText("password");
@@ -160,6 +162,7 @@ public class ForumGUI extends javax.swing.JFrame {
         });
 
         psotSubmit.setText("submit");
+        psotSubmit.setEnabled(false);
         psotSubmit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 psotSubmitActionPerformed(evt);
@@ -169,6 +172,7 @@ public class ForumGUI extends javax.swing.JFrame {
         reports.setText("----reports----");
 
         enterSubForumButton.setText("enter sub forum");
+        enterSubForumButton.setEnabled(false);
         enterSubForumButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enterSubForumButtonActionPerformed(evt);
@@ -186,6 +190,7 @@ public class ForumGUI extends javax.swing.JFrame {
         main_title.setText("welcome to forums site ");
 
         register_button.setText("register");
+        register_button.setEnabled(false);
         register_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 register_buttonActionPerformed(evt);
@@ -193,6 +198,7 @@ public class ForumGUI extends javax.swing.JFrame {
         });
 
         adminButton.setText("administrator and moderator functions");
+        adminButton.setEnabled(false);
         adminButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 adminButtonActionPerformed(evt);
@@ -207,6 +213,7 @@ public class ForumGUI extends javax.swing.JFrame {
         });
 
         enterPostButton.setText("enter post");
+        enterPostButton.setEnabled(false);
 
         jLabel5.setText("not registered yet?");
 
@@ -214,6 +221,7 @@ public class ForumGUI extends javax.swing.JFrame {
         jLabel6.setText("login");
 
         complainButton.setText("complain on moderator");
+        complainButton.setEnabled(false);
         complainButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 complainButtonActionPerformed(evt);
@@ -228,6 +236,26 @@ public class ForumGUI extends javax.swing.JFrame {
         jScrollPane4.setViewportView(postsTextArea);
 
         jLabel7.setText("choose number of post to see its responses:");
+
+        forgatPasswordLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        forgatPasswordLabel.setText("forgat your password? press here");
+        forgatPasswordLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                forgatPasswordLabelMouseClicked(evt);
+            }
+        });
+
+        questionLabel.setText("--question--");
+
+        answerTextField.setEnabled(false);
+
+        questionButton.setText("check");
+        questionButton.setEnabled(false);
+        questionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                questionButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -280,18 +308,14 @@ public class ForumGUI extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addComponent(main_title, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(complainButton, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(19, 19, 19)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(20, 20, 20)
-                                        .addComponent(jLabel6)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel4)
                                             .addGroup(layout.createSequentialGroup()
@@ -304,18 +328,34 @@ public class ForumGUI extends javax.swing.JFrame {
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(login))
                                             .addComponent(userName)
-                                            .addComponent(password))
-                                        .addGap(10, 10, 10))))
+                                            .addComponent(password)))
+                                    .addComponent(forgatPasswordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(10, 10, 10))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(adminButton))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGap(49, 49, 49)
+                                .addComponent(jLabel6)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(register_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(adminButton, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addContainerGap(15, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(complainButton, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(register_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(20, 20, 20))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(questionButton))
+                            .addComponent(answerTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGap(48, 48, 48)
+                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGap(2, 2, 2)
+                                        .addComponent(questionLabel)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(30, 30, 30))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -338,14 +378,14 @@ public class ForumGUI extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(login)
                                     .addComponent(logout))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(register_button)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(adminButton)
+                                .addComponent(forgatPasswordLabel)
                                 .addGap(18, 18, 18)
-                                .addComponent(complainButton))
+                                .addComponent(questionLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(answerTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(questionButton))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -380,10 +420,17 @@ public class ForumGUI extends javax.swing.JFrame {
                                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addGap(15, 15, 15))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(register_button)
+                                .addGap(40, 40, 40)
+                                .addComponent(adminButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(enterPostButton)
                                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel7))
+                                    .addComponent(jLabel7)
+                                    .addComponent(complainButton))
                                 .addGap(42, 42, 42)))
                         .addComponent(reports)))
                 .addContainerGap())
@@ -408,7 +455,14 @@ public class ForumGUI extends javax.swing.JFrame {
 
     private void psotSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_psotSubmitActionPerformed
         try {
-            _ci.writePost(titleField.getText(),contentTextArea.getText());
+            if(titleField.getText().equals("") || contentTextArea.getText().equals("")){
+                reports.setText("missing fields in title or content");
+            }
+            else{
+                _ci.writePost(titleField.getText(),contentTextArea.getText());
+                titleField.setText("");
+                contentTextArea.setText("");
+            }
         } catch (RemoteException ex) {
             Logger.getLogger(ForumGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -425,6 +479,10 @@ public class ForumGUI extends javax.swing.JFrame {
             try {
                 report r=_ci.login(user, pass);
                 reports.setText(r.toString());
+                if(r==report.OK){
+                    userName.setText("");
+                    password.setText("");
+                }
             } catch (RemoteException ex) {
                 Logger.getLogger(ForumGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -445,28 +503,42 @@ public class ForumGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_forumsComboBoxActionPerformed
 
     private void register_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_register_buttonActionPerformed
-        Registration reg = new Registration();
-        reg.setVisible(true);
+        Registration reg;
+        try {
+            reg = new Registration();
+            reg.setVisible(true);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ForumGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_register_buttonActionPerformed
 
     private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectButtonActionPerformed
         _ci=RMIclient.getConnectionByFactory();
-        Vector<String> forums;
-        try {
-            forums = _ci.getForums();
-            forumsComboBox.setModel(new javax.swing.DefaultComboBoxModel<String>(forums));
-            reports.setText("connetcion done");
-        } catch (RemoteException ex) {
-            Logger.getLogger(ForumGUI.class.getName()).log(Level.SEVERE, null, ex);
+        if(_ci != null){
+            Vector<String> forums;
+            try {
+                forums = _ci.getForums();
+                forumsComboBox.setModel(new javax.swing.DefaultComboBoxModel<String>(forums));
+                reports.setText("connetcion done");
+                setButtensEnabled();
+            } catch (RemoteException ex) {
+                Logger.getLogger(ForumGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        //for(String f: forums){
-          //  forumsComboBox.add(f);
-        //}
-
+        else{
+            reports.setText("connection failed");
+        }
     }//GEN-LAST:event_connectButtonActionPerformed
 
     private void adminButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminButtonActionPerformed
-       
+        try {
+            AdminGUI admin=new AdminGUI();
+            admin.setForum((String)forumsComboBox.getSelectedItem());
+            admin.setVisible(true);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ForumGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+ 
     }//GEN-LAST:event_adminButtonActionPerformed
 
     private void complainButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_complainButtonActionPerformed
@@ -497,6 +569,53 @@ public class ForumGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_titleFieldActionPerformed
 
+    private void forgatPasswordLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgatPasswordLabelMouseClicked
+        answerTextField.setVisible(true);
+        questionButton.setVisible(true);
+        //answerTextField.setEditable(true);
+        answerTextField.setEnabled(true);
+        questionButton.setEnabled(true);
+    }//GEN-LAST:event_forgatPasswordLabelMouseClicked
+
+    private void questionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_questionButtonActionPerformed
+        if(userName.getText().equals("") || answerTextField.getText().equals("")){
+            reports.setText("missing field: please insert username and answer.");
+        }
+        else{
+            try {
+                report r=_ci.isValidAnswer(userName.getText(), answerTextField.getText());
+                if(r==report.OK){
+                    reports.setText("verification pass, you are logged now");
+                    answerTextField.setVisible(false);
+                    questionButton.setVisible(false);
+                    questionLabel.setVisible(false);
+                }
+                else{
+                    reports.setText(r.toString());
+                }
+                
+                
+            } catch (RemoteException ex) {
+                Logger.getLogger(ForumGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+            
+        }
+    }//GEN-LAST:event_questionButtonActionPerformed
+
+    public void setButtensEnabled(){
+        enterPostButton.setEnabled(true);
+        enterSubForumButton.setEnabled(true);
+        psotSubmit.setEnabled(true);
+        login.setEnabled(true);
+        logout.setEnabled(true);
+        register_button.setEnabled(true);
+        
+        //adminButton.setEnabled(true);
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -533,6 +652,7 @@ public class ForumGUI extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton adminButton;
+    private javax.swing.JTextField answerTextField;
     private javax.swing.JLabel choose_forum;
     private javax.swing.JLabel choose_subforum;
     private javax.swing.JButton complainButton;
@@ -540,6 +660,7 @@ public class ForumGUI extends javax.swing.JFrame {
     private javax.swing.JTextArea contentTextArea;
     private javax.swing.JButton enterPostButton;
     private javax.swing.JButton enterSubForumButton;
+    private javax.swing.JLabel forgatPasswordLabel;
     private javax.swing.JComboBox forumsComboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -558,6 +679,8 @@ public class ForumGUI extends javax.swing.JFrame {
     private javax.swing.JPasswordField password;
     private javax.swing.JTextArea postsTextArea;
     private javax.swing.JButton psotSubmit;
+    private javax.swing.JButton questionButton;
+    private javax.swing.JLabel questionLabel;
     private javax.swing.JButton register_button;
     private javax.swing.JLabel reports;
     private javax.swing.JList subforumsList;

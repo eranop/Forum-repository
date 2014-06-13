@@ -11,7 +11,9 @@ public class InitializeSystem {
 	public static SiteManager init(String superAdminName, String password, String email){
 		
 		DataBaseInit.initialize();
-
+		
+		Password.setQuestions();
+		
 		SiteManager sm= new SiteManager(superAdminName, password, email);
 		SuperAdminConnection c=sm.openSuperAdminConnection();
 		
@@ -38,7 +40,7 @@ public class InitializeSystem {
 		f.createSubForum("ping pong4", "white");
 		
 		uc.enterForum(f.get_forumName());
-		uc.registerToForum("oriya", "oriya", "oriya1989@walla.com", "no");
+		uc.registerToForum("oriya", "oriya", "oriya1989@walla.com","is it works?", "no");
 		uc.enterSubforum("ping pong1");
 		uc.login("oriya", "oriya");
 		uc.writePost("first post", "oriya check our project first time");

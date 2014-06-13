@@ -28,7 +28,7 @@ public class Password implements Serializable{
 	static String question3 = "What size is your underpants";
 	
 	@Transient
-	public static Vector <String> questions;
+	public static Vector <String> questions = new Vector<String>();
 	
 	@Column(name="password")
 	private String _pass;
@@ -43,6 +43,8 @@ public class Password implements Serializable{
 	@Column(name="password_answer")
 	private String _passAnswer;
 	
+	//private String _passQuestion;
+	
 	public Password(){
 		_pass=null;
 	}
@@ -53,19 +55,24 @@ public class Password implements Serializable{
 		_passwordDate = DateManagment.getDate();
 	}
 	
-	public Password (String password, String answer)
+	public Password (String password, String question,String answer)
 	{
 		this.set_pass(password);
 		this._passAnswer = answer;
+		//this._passQuestion=question;
 		_passwordDate = DateManagment.getDate();
 	}
 	
-	public void setQuestions()
+	public static void setQuestions()
 	{
 		questions.add(question1);
 		questions.add(question2);
 		questions.add(question3);
 	}
+	public static Vector<String> getQuestions(){
+		return questions;
+	}
+	
 	
 	public report answerPasswordQuestion(String answer)
 	{
@@ -96,6 +103,7 @@ public class Password implements Serializable{
 	public void set_pass(String _pass) {
 		this._pass = _pass;
 	}
+	
 	
 
 }
