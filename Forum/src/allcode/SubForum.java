@@ -446,6 +446,9 @@ public class SubForum implements Serializable{
 		return _allPosts.values();
 	}
 
+	public Collection<Post> getRootPostsValues(){
+		return _rootPosts.values();
+	}
 	public ArrayList<String[]> getRootPosts() {
 		ArrayList<String[]> retPosts= new ArrayList<String[]>();
 		String postTitle, postContent;

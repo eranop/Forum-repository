@@ -36,7 +36,7 @@ public abstract class SiteConnection {
 		if(f == null){
 			return report.NO_SUCH_FORUM;
 		}
-		System.out.println("entering forum" + forumName);
+		System.out.println("entering forum " + forumName);
 		_forum = f;
 		return report.OK;
 	}
@@ -57,10 +57,10 @@ public abstract class SiteConnection {
 			return  new Response(report.NO_SUCH_SUBFORUM,null);
 		}
 		_subForum=sf;
-		Collection<Post> posts= sf.getAllPosts();
+		Collection<Post> posts= sf.getRootPostsValues();
 		ArrayList<PostRMI> postList=new ArrayList<PostRMI>();
 		for(Post p : posts){
-			postList.add(new PostRMI(p.getTitle(),p.getContent()));
+			postList.add(new PostRMI(p.getTitle(), p.getContent(), p.getPublisher(), p.getIndex()));
 		}
 		return new Response(report.OK, postList);
 	}
@@ -70,16 +70,21 @@ public abstract class SiteConnection {
 		_subForum=null;
 		return report.OK;
 	}
-	public report enterPost(int id){
+	public Response enterPost(int id){
 		if(_subForum==null){
-			return report.NO_SUBFORUM;
+			return new Response(report.NO_SUBFORUM);
 		}
-		Post p=_subForum.getPostByIndex(id);
-		if(p==null){
-			return report.NO_SUCH_POST;
+		Post currentPost=_subForum.getPostByIndex(id);
+		if(currentPost==null){
+			return new Response(report.NO_SUCH_POST);
 		}
-		_post=p;
-		return report.OK;
+		_post=currentPost;
+		Collection<Post> posts= currentPost.getCollectionResponds();
+		ArrayList<PostRMI> postList=new ArrayList<PostRMI>();
+		for(Post p : posts){
+			postList.add(new PostRMI(p.getTitle(), p.getContent(), p.getPublisher(), p.getIndex()));
+		}
+		return new Response(report.OK, postList);
 	}
 	public report exitPost(){
 		if(_post==null){

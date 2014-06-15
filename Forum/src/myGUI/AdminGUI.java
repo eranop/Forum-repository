@@ -7,6 +7,7 @@ package myGUI;
 import connectionRMI.RMIclient;
 import connectionRMI.RemoteInterface;
 import java.rmi.RemoteException;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import services.report;
@@ -17,21 +18,24 @@ import services.report;
  */
 public class AdminGUI extends javax.swing.JFrame {
     private final RemoteInterface _ci;
-
+    private String _forumName;
     /**
      * Creates new form ModeratorsGUI
      */
     public AdminGUI() throws RemoteException {
         initComponents();
-         _ci=RMIclient.getConnectionByFactory();
-        if(_ci==null){
-            //TODO: close window
-        }
+         _ci=RMIclient.getConnectionByFactory();      
+         boolean ans=setForum("sport", "oriya", "oriya");
+         reports.setText("initialize adninistrator panel: " + ans);
     }
-    public boolean setForum(String forumName) throws RemoteException{
-        report r=_ci.enterForum(forumName);
-        if(r==report.OK){ 
+    public boolean setForum(String forumName, String userName, String pass) throws RemoteException{
+        report r1=_ci.enterForum(forumName);
+        report r2=_ci.login(userName, pass);
+        if(r1==report.OK && r2==report.OK){ 
            reports.setText("OK");
+           Vector<String> subforums=_ci.getSubForums(forumName);
+           subforumsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(subforums));
+           _forumName= forumName;
            return true;
            }else{
                reports.setText("find forum failed: " + r.toString());
@@ -49,123 +53,241 @@ public class AdminGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         cancelSubButton = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox();
+        appointModeratorButton = new javax.swing.JButton();
+        subforumsComboBox = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jLabel1 = new javax.swing.JLabel();
+        membersList = new javax.swing.JList();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         reports = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        complainsTextArea = new javax.swing.JTextArea();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        moderatorsList = new javax.swing.JList();
+        jLabel8 = new javax.swing.JLabel();
+        fireModeratorButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        postsSizeLabel = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jLabel4 = new javax.swing.JLabel();
+        informationLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         cancelSubButton.setText("cancel sub forum");
 
-        jButton1.setText("appoint moderator to sub forum");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+        appointModeratorButton.setText("appoint moderator");
+        appointModeratorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                appointModeratorButtonActionPerformed(evt);
+            }
         });
-        jScrollPane1.setViewportView(jList1);
 
-        jLabel1.setText("select sub forum for appointing moderator ");
+        subforumsComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subforumsComboBoxActionPerformed(evt);
+            }
+        });
+
+        jScrollPane1.setViewportView(membersList);
 
         jLabel2.setText("choose member to appoint");
 
         jLabel3.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
-        jLabel3.setText("apponting moderators");
-
-        jList2.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(jList2);
-
-        jLabel4.setText("choose sub-forum to delete:");
-
-        jLabel5.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
-        jLabel5.setText("delete sub-forum");
+        jLabel3.setText("appoint \\ fire moderators");
 
         jLabel6.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
         jLabel6.setText("administrator panel");
 
         reports.setText("--reports--");
 
+        complainsTextArea.setEditable(false);
+        complainsTextArea.setColumns(20);
+        complainsTextArea.setRows(5);
+        jScrollPane3.setViewportView(complainsTextArea);
+
+        jLabel7.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
+        jLabel7.setText("complains:");
+
+        jScrollPane4.setViewportView(moderatorsList);
+
+        jLabel8.setText("choose moderator to fire:");
+
+        fireModeratorButton.setText("fire moderator");
+        fireModeratorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fireModeratorButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("total number of posts in subforum");
+
+        postsSizeLabel.setText("0");
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane2.setViewportView(jTextArea1);
+
+        jLabel4.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
+        jLabel4.setText("posts of member:");
+
+        informationLabel.setText("information- who appoint and when");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(reports, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(159, 159, 159))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButton1)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3))
-                                .addGap(111, 111, 111)
+                                .addComponent(appointModeratorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(24, 24, 24)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(14, 14, 14)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel5)
-                                    .addComponent(cancelSubButton, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
-                                    .addComponent(jScrollPane2)
-                                    .addComponent(jLabel4)))))
+                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                                    .addComponent(fireModeratorButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel8)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(118, 118, 118)
-                        .addComponent(jLabel6))
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(postsSizeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addGap(136, 136, 136))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(subforumsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addGap(226, 226, 226)
+                            .addComponent(cancelSubButton, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel6)
+                            .addGap(245, 245, 245))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(62, 62, 62)))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(reports, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(48, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(informationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(55, 55, 55)
+                                .addComponent(jLabel4)
+                                .addGap(115, 115, 115)
+                                .addComponent(jLabel7)))
+                        .addGap(213, 213, 213))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(23, 23, 23)
                 .addComponent(jLabel6)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(subforumsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cancelSubButton)
+                        .addComponent(jLabel4)
+                        .addComponent(jLabel7)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel8))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1)
-                            .addComponent(cancelSubButton)))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(fireModeratorButton)
+                            .addComponent(appointModeratorButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(postsSizeLabel)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jScrollPane2)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(informationLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addComponent(reports)
-                .addGap(26, 26, 26))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void subforumsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subforumsComboBoxActionPerformed
+        String subforum= (String) subforumsComboBox.getSelectedItem();
+        try {
+            Vector<String> members=_ci.getMembersOfForum(_forumName);
+            Vector<String> moderators= _ci.getModeratorsList(subforum);
+            members.removeAll(moderators);
+            membersList.setListData(members.toArray());
+            moderatorsList.setListData(moderators.toArray());
+            _ci.exitSubforum();
+            _ci.enterSubforum(subforum);
+        } catch (RemoteException ex) {
+            Logger.getLogger(AdminGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_subforumsComboBoxActionPerformed
+
+    private void appointModeratorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_appointModeratorButtonActionPerformed
+        String moderator= appointModeratorButton.getText();
+        try {
+            report r = _ci.addModerator(moderator);
+            reports.setText("appoint moderator: " + r.toString());
+            if(r==report.OK){
+                //TODO: set the list to be corect
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(AdminGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_appointModeratorButtonActionPerformed
+
+    private void fireModeratorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fireModeratorButtonActionPerformed
+        String moderator= fireModeratorButton.getText();
+        try {
+            report r = _ci.removeModerator(moderator);
+            reports.setText("appoint moderator: " + r.toString());
+            if(r==report.OK){
+                //TODO: set the list to be corect
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(AdminGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_fireModeratorButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -206,19 +328,27 @@ public class AdminGUI extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton appointModeratorButton;
     private javax.swing.JButton cancelSubButton;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JTextArea complainsTextArea;
+    private javax.swing.JButton fireModeratorButton;
+    private javax.swing.JLabel informationLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JList membersList;
+    private javax.swing.JList moderatorsList;
+    private javax.swing.JLabel postsSizeLabel;
     private javax.swing.JLabel reports;
+    private javax.swing.JComboBox subforumsComboBox;
     // End of variables declaration//GEN-END:variables
 }

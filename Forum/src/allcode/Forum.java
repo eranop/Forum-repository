@@ -34,29 +34,29 @@ import org.hibernate.Session;
 @Table (name="Forums")
 public class Forum implements Serializable{
 	//Fields
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name="forumName")
 	private String _forumName;
-	
+
 	@Column(name="description")
 	private String _description;
-	
+
 	@Embedded
 	private ForumPolicy _forumPolicy;
-	
+
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
-	 @JoinTable(name="members_in_forum",
-	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="member_id")})
+	@JoinTable(name="members_in_forum",
+	joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="member_id")})
 	private List<Member> _members;
-	
+
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
-	 @JoinTable(name="subForums_Of_Forum",
-	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="subForum_id")})
+	@JoinTable(name="subForums_Of_Forum",
+	joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="subForum_id")})
 	private List<SubForum> _subForums;
-	
+
 	/*@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
 	 @JoinTable(name="admins_in_forum",
 	 joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="admin_id")})*/
@@ -84,7 +84,7 @@ public class Forum implements Serializable{
 		_administrators.add(admin);
 
 	}
-	
+
 	public Forum(){
 		_administrators=new ArrayList<Member>();
 	}
@@ -92,15 +92,15 @@ public class Forum implements Serializable{
 	//functionality
 
 	public report setFriends(Member user1,Member user2){
-			user1.addFriend(user2);
-			user2.addFriend(user1);
-			return report.OK;	
+		user1.addFriend(user2);
+		user2.addFriend(user1);
+		return report.OK;	
 	}
 	public report register(String name, String pass, String email, String question, String answer){
 		//add fields
 		//do delegation to member constructor
 		//have to check if this user is already exists
-		
+
 		if (name == null || pass == null || email == null || answer == null)
 		{
 			System.out.println("Error in register: One of the fields is EMPTY!");
@@ -131,17 +131,17 @@ public class Forum implements Serializable{
 		}
 		else{
 			if(Email.isValidEmail(email)){
-			Member newMember= new Member(name, pass, email, question, answer,this);
-			System.out.println("registered, an email will be sent");
-			
-			Session ss=DataBaseInit.sf.openSession();  
-			  ss.beginTransaction();  
-			 //saving objects to session  
-			  ss.saveOrUpdate(newMember);  
-			  ss.getTransaction().commit();
-			  ss.close(); 
-			  insertNewMember(newMember);
-			//wait for confirmation email?
+				Member newMember= new Member(name, pass, email, question, answer,this);
+				System.out.println("registered, an email will be sent");
+
+				Session ss=DataBaseInit.sf.openSession();  
+				ss.beginTransaction();  
+				//saving objects to session  
+				ss.saveOrUpdate(newMember);  
+				ss.getTransaction().commit();
+				ss.close(); 
+				insertNewMember(newMember);
+				//wait for confirmation email?
 			}
 			else{
 				return report.INVALID_EMAIL_PATTERN;
@@ -150,7 +150,7 @@ public class Forum implements Serializable{
 
 		return report.OK;
 	}
-	
+
 	private boolean nameContainsTags(String name) {
 		String[] tags = {"!", "@", "#", "$", "%", "^", "&",  "*", "(", ")", "[", "]", ":", "~", "\\", "{", "}", "+", "|", "<", 
 				">", ".", ";", "\"", "`"};
@@ -174,26 +174,37 @@ public class Forum implements Serializable{
 		if(!isMember(member))
 			return report.NO_SUCH_USER_NAME;
 		Member m=getMember(member);
-		
+
 		_administrators.add(m);
 		Session ss=DataBaseInit.sf.openSession();  
-		  ss.beginTransaction();  
-		 //saving objects to session  
-		  ss.update(this);
-		  ss.getTransaction().commit();  
-		  ss.close(); 
+		ss.beginTransaction();  
+		//saving objects to session  
+		ss.update(this);
+		ss.getTransaction().commit();  
+		ss.close(); 
 		return report.OK;
+	}
+
+	public report deleteAdminByName(String member){
+		if(!isMember(member))
+			return report.NO_SUCH_USER_NAME;
+		Member m=getMember(member);
+
+		boolean ans=_administrators.remove(m);
+		if(ans)
+			return report.OK;
+		return report.FAIL;
 	}
 
 	public report addAdmin(Member member) {
 		if(isMember(member)){
 			_administrators.add(member);
 			Session ss=DataBaseInit.sf.openSession();  
-			  ss.beginTransaction();  
-			 //saving objects to session  
-			  ss.update(this);
-			  ss.getTransaction().commit();  
-			  ss.close(); 
+			ss.beginTransaction();  
+			//saving objects to session  
+			ss.update(this);
+			ss.getTransaction().commit();  
+			ss.close(); 
 			return report.OK;
 		}
 		return report.NO_SUCH_USER_NAME;
@@ -202,22 +213,22 @@ public class Forum implements Serializable{
 	public report createSubForum(String name,String description){
 		//add fields
 		//delegation to Subforum constructor
-		
-		
+
+
 		if(findSubforum(name)){
 			System.out.println("sub forum already exists!");
 			return report.ALREADY_SUBFORUM_EXIST;
 		}
-		
+
 		SubForum sub = new SubForum(name, description, this);
 		_subForums.add(sub);
 		Session ss=DataBaseInit.sf.openSession();  
-		  ss.beginTransaction();  
-		 //saving objects to session  
-		  ss.saveOrUpdate(sub);  
-		  ss.update(this);
-		  ss.getTransaction().commit();  
-		  ss.close(); 
+		ss.beginTransaction();  
+		//saving objects to session  
+		ss.saveOrUpdate(sub);  
+		ss.update(this);
+		ss.getTransaction().commit();  
+		ss.close(); 
 		return report.OK;
 	}
 
@@ -247,12 +258,12 @@ public class Forum implements Serializable{
 		}
 		_subForums.remove(sf);
 		Session ss=DataBaseInit.sf.openSession();  
-		  ss.beginTransaction();  
-		 //saving objects to session  
-		  ss.update(sf);
-		  ss.update(this);
-		  ss.getTransaction().commit();  
-		  ss.close(); 
+		ss.beginTransaction();  
+		//saving objects to session  
+		ss.update(sf);
+		ss.update(this);
+		ss.getTransaction().commit();  
+		ss.close(); 
 		return report.OK;
 	}
 	/**
@@ -262,7 +273,7 @@ public class Forum implements Serializable{
 	private Member assureMember(String userName,String password) {
 		for(int i=0;i<_members.size();i++){
 			if(  _members.get(i).get_userName().equals(userName) &&
-					 _members.get(i).get_password().equals(password))
+					_members.get(i).get_password().equals(password))
 				return  _members.get(i);
 		}
 		return null;
@@ -332,9 +343,9 @@ public class Forum implements Serializable{
 	 */
 	private boolean findSubforum(String name) {
 		for(int i=0;i<_subForums.size();i++){
-			
+
 			if( _subForums.get(i).getName().equals(name))
-				
+
 				return true;
 		}
 		return false;
@@ -369,11 +380,11 @@ public class Forum implements Serializable{
 	private void insertNewMember(Member newMember) {
 		_members.add(newMember);
 		Session ss=DataBaseInit.sf.openSession();  
-		  ss.beginTransaction();  
-		 //saving objects to session  
-		  ss.update(this);  
-		  ss.getTransaction().commit();  
-		  ss.close(); 
+		ss.beginTransaction();  
+		//saving objects to session  
+		ss.update(this);  
+		ss.getTransaction().commit();  
+		ss.close(); 
 	}
 
 	public void notifyNewMsgToMembers(Member member, String title, SubForum subforum)
@@ -384,7 +395,7 @@ public class Forum implements Serializable{
 					". Title: " + title + ". Posted by: " + member.get_userName() + 
 					". In: " + DateManagment.dateFormat.format(DateManagment.getDate()));
 	}
-	
+
 	public void notifyResponders(Member member, String title, SubForum subforum, Post post)
 	{
 		for (int i = 0; i < post.getResponds().size(); i++)
@@ -393,8 +404,8 @@ public class Forum implements Serializable{
 					". New title is: " + post.getTitle() + ". Posted by: " + post.getPublisher() + 
 					". Changed in " + DateManagment.dateFormat.format(DateManagment.getDate()));
 	}
-	
-	
+
+
 	public boolean canDeletePost(Member member, Post post, SubForum subforum) {
 		if ( (_forumPolicy.isDeleteMessagePublisher() && member.equals(post.getMember()))		//if member is owner and policy allows
 				|| (_forumPolicy.isDeleteMessageAdmin() && this.isAdmin(member))				//if member is admin and policy allows
@@ -402,23 +413,23 @@ public class Forum implements Serializable{
 			return true;
 		return false;
 	}
-	
+
 	public boolean canAddModerator(Member member) {
 		if ( (_forumPolicy.getModeratorDays() <= DateManagment.getDateDiffDays(member.get_regDate(), DateManagment.getDate()))	//if this date - registration date in days > policy days
-			&& (_forumPolicy.getModeratorPosts() <= member.getPosts().size()) )	//if member published enuf posts.
+				&& (_forumPolicy.getModeratorPosts() <= member.getPosts().size()) )	//if member published enuf posts.
 			return true;
 		return false;
 	}
-	
+
 	public boolean canRemoveModerator(Member member, Member admin, SubForum subForum) {
 		if ( ((_forumPolicy.isDeleteModeratorOnlyByRankingAdmin() && admin.equals(member.getPromoter()) )	//only promoter admin can delete mod and admin is the promoter
-			||	(!_forumPolicy.isDeleteModeratorOnlyByRankingAdmin()))	//if all admins can delete the mod
-			&& (_forumPolicy.isDeleteLastModerator()					//if can delete last mod
-					|| (!_forumPolicy.isDeleteLastModerator() && subForum.getModerators().size() > 1)))	//if canNOT delete last mod but num of mods > 1
+				||	(!_forumPolicy.isDeleteModeratorOnlyByRankingAdmin()))	//if all admins can delete the mod
+				&& (_forumPolicy.isDeleteLastModerator()					//if can delete last mod
+						|| (!_forumPolicy.isDeleteLastModerator() && subForum.getModerators().size() > 1)))	//if canNOT delete last mod but num of mods > 1
 			return true;
 		return false;
 	}
-	
+
 	public Response getPostNumInSubForum(String subForumName) {
 		if (this.findSubforum(subForumName))
 			return new Response(report.OK, this.getSubForum(subForumName).getAllPosts().size());
@@ -439,7 +450,18 @@ public class Forum implements Serializable{
 		else
 			return new Response(report.NO_SUCH_SUBFORUM);
 	}
-	
+	public Vector<String> getModeratorList(String subForumName) {
+		Vector<String> moderators= new Vector<String>();
+		if (findSubforum(subForumName)){
+			List<Member> list=getSubForum(subForumName).getModerators();
+			if(!list.isEmpty()){
+				for(Member m : list){
+					moderators.add(m.get_userName());
+				}
+			}
+		}
+		return moderators;
+	}
 	public report addMember(Member member)
 	{
 		if (_members.contains(member))
@@ -448,11 +470,11 @@ public class Forum implements Serializable{
 		{
 			_members.add(member);
 			Session ss=DataBaseInit.sf.openSession();  
-			  ss.beginTransaction();  
-			 //saving objects to session  
-			  ss.update(this);  
-			  ss.getTransaction().commit();  
-			  ss.close(); 
+			ss.beginTransaction();  
+			//saving objects to session  
+			ss.update(this);  
+			ss.getTransaction().commit();  
+			ss.close(); 
 			return report.OK;
 		}
 	}
@@ -478,9 +500,9 @@ public class Forum implements Serializable{
 	public Vector<String> get_subForums() {
 		Vector<String> subforumsList=new Vector<String>();
 		for(SubForum f: _subForums){
-			 subforumsList.add(f.getName());
-		 }
-		
+			subforumsList.add(f.getName());
+		}
+
 		return  subforumsList;
 	}
 
@@ -490,6 +512,22 @@ public class Forum implements Serializable{
 
 	public List<Member> get_administrators() {
 		return  _administrators;
+	}
+	public Vector<String> get_administratorsVector() {
+		Vector<String> admins= new Vector<String>();
+		Iterator<Member> it=_administrators.iterator();
+		while(it.hasNext()){
+			admins.add(it.next().get_userName());
+		}
+		return  admins;
+	}
+	public Vector<String> get_membersVector() {
+		Vector<String> members= new Vector<String>();
+		Iterator<Member> it=_members.iterator();
+		while(it.hasNext()){
+			members.add(it.next().get_userName());
+		}
+		return  members;
 	}
 
 	public void set_administrators(ArrayList<Member> _administrators) {
@@ -594,8 +632,8 @@ public boolean addModerator(String subForumName, String adminName,
 		return false;
 	}
 	return subForum.addModerator(moderator);
-	
+
 }
-*/
+ */
 
 

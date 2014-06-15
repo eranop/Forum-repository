@@ -68,9 +68,11 @@ public class PostRMI implements Serializable{
 
 
 
-	public PostRMI(String title, String content) {
+	public PostRMI(String title, String content, String publisher, int index) {
 		_title=title;
 		_content=content;
+		_publisher=publisher;
+		_index=index;
 	}
 	
 	

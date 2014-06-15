@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import allcode.Forum;
+import allcode.Member;
 import allcode.Password;
 import allcode.Post;
 import allcode.SubForum;
@@ -23,8 +24,7 @@ public interface RemoteInterface extends Remote{
 
 	public abstract report addModerator(String moderatorName) throws RemoteException;
 
-	public abstract report removeModerator(String adminName,
-			String moderatorName) throws RemoteException;
+	public abstract report removeModerator(String moderatorName) throws RemoteException;
 
 	public abstract report createSubforum(String name, String description) throws RemoteException;
 
@@ -38,7 +38,9 @@ public interface RemoteInterface extends Remote{
 
 	public abstract Response writeResponsePost(String title, String content) throws RemoteException;
 
-	public abstract report postEdit(String title, String content) throws RemoteException;
+	public abstract report postEdit(int index, String title, String content) throws RemoteException;
+
+	public abstract Response getPostByIndex(int index) throws RemoteException;
 
 	public abstract report deletePost() throws RemoteException;
 	
@@ -58,13 +60,40 @@ public interface RemoteInterface extends Remote{
 	
 	public abstract report isValidAnswer(String userName, String answer) throws RemoteException;
 	
+	/**
+	 * administrator functions
+	 */
+	public abstract Vector<String> getModeratorsList(String subforum) throws RemoteException;
+	
+	
+	
+	/**
+	 * flow functions 
+	 */
 	public abstract report enterForum(String forumName) throws RemoteException;
 	public abstract report exitForum() throws RemoteException;
 	public abstract Response enterSubforum(String subforumName) throws RemoteException;
 	public abstract report exitSubforum() throws RemoteException;
-	public abstract report enterPost(int id) throws RemoteException;
+	public abstract Response enterPost(int id) throws RemoteException;
 	public abstract report exitPost() throws RemoteException;
 
-
-
+	/**
+	 * super administrator functions
+	 */
+	public report addNewForum(String forumName, String description) throws RemoteException;	
+	
+	public report deleteForum(String forumName) throws RemoteException;
+	
+	public report addAdminToForum(String name) throws RemoteException;
+	
+	public Response getNumberOfForums() throws RemoteException;
+	
+	public report setSuperAdmin(String superadminName, String superadminPass,
+			String email) throws RemoteException;
+	
+	public Vector<String> getMembersOfForum(String forum) throws RemoteException;
+	
+	public Vector<String> getAdministratorsVector(String forum) throws RemoteException;
+	
+	public report deleteAdminByName(String member) throws RemoteException;
 }

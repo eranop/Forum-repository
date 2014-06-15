@@ -1,13 +1,14 @@
 package allcode;
- 
+
 import java.util.HashMap;
 import java.util.Vector;
 
 import services.Logger2;
+import services.PostRMI;
 import services.Response;
 import services.report;
- 
- 
+
+
 public class UserConnection extends SiteConnection {
 
 	private Member _member;
@@ -18,7 +19,7 @@ public class UserConnection extends SiteConnection {
 		_member=null;
 		_log=Logger2.getLogUser();
 	}
-	
+
 	/**
 	 * for each state there is "in" and "out" functions
 	 */
@@ -45,8 +46,8 @@ public class UserConnection extends SiteConnection {
 		if(m.get_password().get_pass().equals(pass)){
 			_member=m;
 			try{
-			Logger2.initLogUser();
-			_log = Logger2.getLogUser();
+				Logger2.initLogUser();
+				_log = Logger2.getLogUser();
 			}
 			catch (Exception exc){
 				System.out.println("ERROR SETTING UP LOGGER");
@@ -150,7 +151,7 @@ public class UserConnection extends SiteConnection {
 		}
 	}
 
-	public report removeModerator(String adminName,String moderatorName){
+	public report removeModerator(String moderatorName){
 		if(_subForum == null){
 			System.out.println("not connected to forum!");
 			_log.writeToLog("complain",report.NO_SUBFORUM);
@@ -208,7 +209,7 @@ public class UserConnection extends SiteConnection {
 		else _log.writeToLog("createForum");
 		return rep;
 	}
-	
+
 	public report deleteSubForum(String subForumName){
 		if(_forum==null){
 			System.out.println("not connected to forum!");
@@ -310,7 +311,40 @@ public class UserConnection extends SiteConnection {
 	}
 
 
-	public report postEdit(String title, String content) {
+	public Response getPostByIndex(int index){
+		if(_forum==null){
+			System.out.println("not connected to forum!");
+			_log.writeToLog("getPostByIndex",report.NO_FORUM);
+			return new Response(report.NO_FORUM);
+		}
+		if(_subForum==null){
+			System.out.println("not connected to subforum!");
+			_log.writeToLog("getPostByIndex",report.NO_SUBFORUM);
+			return new Response(report.NO_SUBFORUM);
+		}
+		/*if(_member==null){
+			System.out.println("user not logged!");
+			_log.writeToLog("getPostByIndex",report.NOT_LOGGED);
+			return  new Response(report.NOT_LOGGED);
+		}*/
+		if(_post==null){
+			System.out.println("no post to response to");
+			_log.writeToLog("getPostByIndex",report.NO_POST);
+			return new Response(report.NO_POST);
+		}
+		Post p= _subForum.getPostByIndex(index);
+		if  (p != null){
+			_log.writeToLog("getPostByIndex");
+			PostRMI post = new PostRMI(p.getTitle(), p.getContent(), p.getPublisher(), p.getIndex());
+			return new Response( report.OK, post);
+		}
+		else{
+			_log.writeToLog("getPostByIndex", report.NO_SUCH_POST);
+			return new Response(report.NO_SUCH_POST);
+		}
+	}
+
+	public report postEdit(int index, String title, String content) {
 		if(_forum == null){
 			System.out.println("not connected to forum!");
 			_log.writeToLog("postEdit",report.NO_FORUM);
@@ -331,7 +365,7 @@ public class UserConnection extends SiteConnection {
 			_log.writeToLog("postEdit",report.NO_POST);
 			return report.NO_POST;
 		}
-		report rep = _subForum.postEdit(_member, _post.getIndex(), title, content);
+		report rep = _subForum.postEdit(_member, index, title, content);
 		if (rep == report.OK){
 			_log.writeToLog("postEdit");
 			_forum.notifyResponders(_member, title, _subForum, _post);
@@ -457,7 +491,7 @@ public class UserConnection extends SiteConnection {
 		}
 		return res;
 	} 			
-	
+
 	/**
 	 * Report function for admin user.
 	 * admin enters a sub forum name and gets Vector of all his moderatos.
@@ -491,23 +525,35 @@ public class UserConnection extends SiteConnection {
 		}
 		return res;
 	}
-	
+	public Vector<String> getModeratorsList(String subForumName)
+	{
+		Vector<String> moderators = new Vector<String>();
+		if(_forum==null){
+			System.out.println("not connected to forum!");
+			_log.writeToLog("getListOfModeratorsInSubForum",report.NO_FORUM);
+		}else{
+			_log.writeToLog("getPostNumInSubForum");
+			moderators= _forum.getModeratorList(subForumName);
+		}
+		return moderators;
+	}
+
 	/**
 	 * get list of all forums
 	 * @return reponse(ok, forums)
 	 */
-	
+
 	public Response getForums()
 	{
 		_log.writeToLog("getForums");
 		return new Response(report.OK, _fs.getForums());
 	}
-	
+
 	/**
 	 * get list of subforums in a forum
 	 * @return response(ok, subForums)
 	 */
-	
+
 	public Response getSubForums()
 	{
 		if (_forum == null){
@@ -515,15 +561,15 @@ public class UserConnection extends SiteConnection {
 			return new Response(report.NO_FORUM);
 		}
 		_log.writeToLog("getSubForums");
-                
+
 		return new Response(report.OK, _forum.get_subForums());
 	}
-	
+
 	/**
 	 * get list of all ROOT posts in a sub forum (post responds are in the post object
 	 * @return response(ok, posts)
 	 */
-	
+
 	public Response getPosts()
 	{
 		if (_forum == null){
@@ -548,7 +594,7 @@ public class UserConnection extends SiteConnection {
 	public Member getMember() {
 		return _member;
 	}
-	
+
 	public Vector<String> getQuestions(){
 		return Password.getQuestions();
 	}
@@ -567,8 +613,8 @@ public class UserConnection extends SiteConnection {
 		if(m.get_password().get_passAnswer().equals(answer)){
 			_member=m;
 			try{
-			Logger2.initLogUser();
-			_log = Logger2.getLogUser();
+				Logger2.initLogUser();
+				_log = Logger2.getLogUser();
 			}
 			catch (Exception exc){
 				System.out.println("ERROR SETTING UP LOGGER");
@@ -576,6 +622,71 @@ public class UserConnection extends SiteConnection {
 			return report.OK;
 		}	
 		return report.INVALID_ANSWER;
+	}
+	
+	
+	/**
+	 * 
+	 * super administrator fanctions
+	 * 
+	 */
+	public report addNewForum(String forumName, String description){
+		return _fs.createForum(forumName, description);
+	}
+	
+	public report deleteForum(String forumName) {
+		return _fs.deleteForum(forumName);
+	}
+	
+	public report addAdminToForum(String name){
+		if(_forum==null){
+			System.out.println("no such forum");
+			return report.NO_FORUM;
+		}
+		else{
+			Member member=_forum.getMember(name);
+			if(member!=null){
+				_forum.addAdmin(member);
+				return report.OK;
+			}
+			else{
+				System.out.println("no such member");
+				return report.NO_MEMBER;
+			}
+		}
+	}
+	
+	/**
+	 * report function for Admin.
+	 * gettin the number of forums in the system.
+	 * @return Response(report.ok, int) 
+	 */
+	public Response getNumberOfForums()
+	{
+		if(_forum==null){
+			System.out.println("not connected to forum!");
+			return new Response(report.NO_FORUM);
+		}
+		return new Response(report.OK, _fs.getForums().size());
+	}
+
+	public report setSuperAdmin(String superadminName, String superadminPass,
+			String email) {
+		
+		return _fs.setSuperAdmin(superadminName, superadminPass, email);	
+	}
+	
+	public Vector<String> getMembersOfForum(String forum){
+		Forum f=_fs.getForum(forum);
+		return f.get_membersVector();
+	}
+	public Vector<String> getAdministratorsVector(String forum){
+		Forum f=_fs.getForum(forum);
+		return f.get_administratorsVector();
+	}
+	
+	public report deleteAdminByName(String member){
+		return _forum.deleteAdminByName(member);
 	}
 
 }

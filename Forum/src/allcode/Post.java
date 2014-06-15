@@ -178,4 +178,8 @@ public class Post implements Serializable{
 		return this._responses;
 	}
 
+	public Collection getCollectionResponds()
+	{
+		return this._responses.values();
+	}
 }
