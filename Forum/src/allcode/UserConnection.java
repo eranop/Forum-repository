@@ -689,9 +689,9 @@ public class UserConnection extends SiteConnection {
 		return _forum.deleteAdminByName(member);
 	}
 	
-	public String getMyQuestion(){
-		if(_member!=null){
-			return _member.getMyQuestion();
+	public String getMyQuestion(String user){
+		if(_forum!=null && _forum.isMember(user)){
+			return _forum.getMember(user).getMyQuestion();
 		}
 		return null;
 	}

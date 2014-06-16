@@ -634,7 +634,7 @@ public class ForumGUI extends javax.swing.JFrame {
         answerTextField.setEnabled(true);
         questionButton.setEnabled(true);
         try {
-            questionLabel.setText(_ci.getMyQuestion());
+            questionLabel.setText(_ci.getMyQuestion(userName.getText()));
         } catch (RemoteException ex) {
             Logger.getLogger(ForumGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
