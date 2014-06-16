@@ -688,6 +688,13 @@ public class UserConnection extends SiteConnection {
 	public report deleteAdminByName(String member){
 		return _forum.deleteAdminByName(member);
 	}
+	
+	public String getMyQuestion(){
+		if(_member!=null){
+			return _member.getMyQuestion();
+		}
+		return null;
+	}
 
 }
 

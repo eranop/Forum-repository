@@ -58,6 +58,8 @@ public interface RemoteInterface extends Remote{
 
 	public abstract Vector<String> getQuestions() throws RemoteException;
 	
+	public String getMyQuestion() throws RemoteException;
+	
 	public abstract report isValidAnswer(String userName, String answer) throws RemoteException;
 	
 	/**

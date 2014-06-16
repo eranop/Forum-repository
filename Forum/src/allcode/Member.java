@@ -213,6 +213,10 @@ public class Member implements Serializable{
 			return report.WRONG_PASSWORD_ANSWER;
 	}	
 	
+	public String getMyQuestion(){
+		return _password.getQuestion();
+	}
+	
 	public void message(String message) {
 		InnerMessage newMessage = new InnerMessage("System message", message);
 		_messages.put(_msgCounter, newMessage);

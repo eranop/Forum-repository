@@ -10,18 +10,4 @@ java.text.SimpleDateFormat@129110e0> writeResponsePost: Done
 java.text.SimpleDateFormat@129110e0> writePost: Done
 java.text.SimpleDateFormat@129110e0> writePost: Done
 java.text.SimpleDateFormat@129110e0> writePost: Done
-java.text.SimpleDateFormat@129110e0> getSubForums: Done
-java.text.SimpleDateFormat@129110e0> getListOfModeratorsInSubForum: forum not foundjava.text.SimpleDateFormat@129110e0> getPostNumInSubForum: Done
-java.text.SimpleDateFormat@129110e0> getPostNumInSubForum: Done
-java.text.SimpleDateFormat@129110e0> addModerator: Done
-java.text.SimpleDateFormat@129110e0> getPostNumInSubForum: Done
-java.text.SimpleDateFormat@129110e0> getPostNumInSubForum: Done
-java.text.SimpleDateFormat@129110e0> removeModerator: Done
-java.text.SimpleDateFormat@129110e0> getPostNumInSubForum: Done
-java.text.SimpleDateFormat@129110e0> getPostNumInSubForum: Done
-java.text.SimpleDateFormat@129110e0> getPostNumInSubForum: Done
-java.text.SimpleDateFormat@129110e0> deleteSubForum: Done
-java.text.SimpleDateFormat@129110e0> getSubForums: Done
-java.text.SimpleDateFormat@129110e0> createSubforum: Done
-java.text.SimpleDateFormat@129110e0> getSubForums: Done
 java.text.SimpleDateFormat@129110e0> getForums: Done

@@ -590,7 +590,7 @@ public class ForumGUI extends javax.swing.JFrame {
     private void adminButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminButtonActionPerformed
         try {
             AdminGUI admin=new AdminGUI();
-            admin.setForum((String)forumsComboBox.getSelectedItem());
+            admin.setForum((String)forumsComboBox.getSelectedItem(), "", "");
             admin.setVisible(true);
         } catch (RemoteException ex) {
             Logger.getLogger(ForumGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -633,6 +633,11 @@ public class ForumGUI extends javax.swing.JFrame {
         //answerTextField.setEditable(true);
         answerTextField.setEnabled(true);
         questionButton.setEnabled(true);
+        try {
+            questionLabel.setText(_ci.getMyQuestion());
+        } catch (RemoteException ex) {
+            Logger.getLogger(ForumGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_forgatPasswordLabelMouseClicked
 
     private void questionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_questionButtonActionPerformed

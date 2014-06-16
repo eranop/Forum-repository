@@ -18,13 +18,13 @@ public class Password implements Serializable{
 	
 
 	
-	@Column(name="password_question1")
+	@Transient
 	static String question1 = "What is the name of your first pet";
 	
-	@Column(name="password_question2")
+	@Transient
 	static String question2 = "What is your favorate movie";
 	
-	@Column(name="password_question3")
+	@Transient
 	static String question3 = "What size is your underpants";
 	
 	@Transient
@@ -42,8 +42,9 @@ public class Password implements Serializable{
 	
 	@Column(name="password_answer")
 	private String _passAnswer;
-	
-	//private String _passQuestion;
+
+	@Column(name="password_question")
+	private String _passQuestion;
 	
 	public Password(){
 		_pass=null;
@@ -59,7 +60,7 @@ public class Password implements Serializable{
 	{
 		this.set_pass(password);
 		this._passAnswer = answer;
-		//this._passQuestion=question;
+		this._passQuestion=question;
 		_passwordDate = DateManagment.getDate();
 	}
 	
@@ -81,6 +82,10 @@ public class Password implements Serializable{
 		else
 			return report.WRONG_PASSWORD_ANSWER;
 	}	
+	
+	public String getQuestion(){
+		return _passQuestion;
+	}
 	
 	public Date get_passwordDate() {
 		return _passwordDate;
@@ -104,6 +109,4 @@ public class Password implements Serializable{
 		this._pass = _pass;
 	}
 	
-	
-
 }

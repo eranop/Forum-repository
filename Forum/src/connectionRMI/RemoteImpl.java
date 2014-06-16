@@ -229,5 +229,9 @@ public class RemoteImpl extends UnicastRemoteObject implements RemoteInterface{
 	public report deleteAdminByName(String member){
 		return uc.deleteAdminByName(member);
 	}
+	
+	public String getMyQuestion(){
+		return uc.getMyQuestion();
+	}
 
 }
