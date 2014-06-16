@@ -239,4 +239,11 @@ public class RemoteImpl extends UnicastRemoteObject implements RemoteInterface{
 		return uc.getMyQuestion(user);
 	}
 
+	@Override
+	public Vector<String> getModeratorSubforumsVector(String forum,
+			String moderator) throws RemoteException {
+		return uc.getModeratorSubforumsVector(forum, moderator);
+	}
+
+
 }

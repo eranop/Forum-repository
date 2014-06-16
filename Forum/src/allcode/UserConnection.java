@@ -1,6 +1,7 @@
 package allcode;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import services.Logger2;
@@ -713,9 +714,18 @@ public class UserConnection extends SiteConnection {
 		return f.get_administratorsVector();
 	}
 	
+	public Vector<String> getModeratorSubforumsVector(String forum, String moderator){
+		Forum f=_fs.getForum(forum);
+		return f.subforumsOfModerator(moderator);
+	}
+
+	
 	public report deleteAdminByName(String member){
 		return _forum.deleteAdminByName(member);
 	}
+	
+
+	
 	
 	public String getMyQuestion(String user){
 		if(_forum!=null && _forum.isMember(user)){

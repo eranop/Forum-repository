@@ -529,6 +529,23 @@ public class Forum implements Serializable{
 		}
 		return  members;
 	}
+	
+	public Vector<String> subforumsOfModerator(String user){
+		System.out.println("enter subforumsOfModerator");
+		Vector<String> ans= new Vector<String>();
+		if(isMember(user)){
+			System.out.println("she is a user");
+			Member m=getMember(user);
+			for(SubForum sf: _subForums){
+				if(sf.isModerator(m)){
+					System.out.println("she is moder of " + sf.getName() );
+					ans.add(sf.getName());
+				}
+			}
+		}
+		return ans;
+	}
+	
 
 	public void set_administrators(ArrayList<Member> _administrators) {
 		this._administrators = _administrators;

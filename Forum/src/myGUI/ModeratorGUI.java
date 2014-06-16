@@ -8,7 +8,10 @@ import connectionRMI.RMIclient;
 import connectionRMI.RemoteInterface;
 import java.rmi.RemoteException;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
+import services.report;
 
 /**
  *
@@ -20,11 +23,13 @@ public class ModeratorGUI extends javax.swing.JFrame {
     /**
      * Creates new form ModeratorGUI
      */
-    public ModeratorGUI() {
+    public ModeratorGUI() throws RemoteException {
         initComponents();
         groupButtons();
         _ci=RMIclient.getConnectionByFactory();
-        //setModerator(null, null, null, null);
+        setModerator("sport", "ping pong1", "oriya", "oriya");
+        showMembers();
+        showSubforumsOfModerator();
     }
     
     private void showMembers() throws RemoteException{
@@ -32,8 +37,13 @@ public class ModeratorGUI extends javax.swing.JFrame {
         Vector<String> members=_ci.getMembersOfForum(_forum);
         membersList.setListData(members.toArray());
     }
-    private void showSubforumsOfModerator(){
-        
+    private void showSubforumsOfModerator() throws RemoteException{
+        resetStatus();
+        Vector<String> subforums=_ci.getModeratorSubforumsVector(_forum, _user);
+        if(subforums.isEmpty()){
+            reports.setText("faild to find subforums");
+        }
+        subforumsList.setListData(subforums.toArray());
     }
     private void groupButtons( ) {
         ButtonGroup bg1 = new ButtonGroup( );
@@ -43,13 +53,20 @@ public class ModeratorGUI extends javax.swing.JFrame {
     }
     
     public void setModerator(String forum, String subforum, String user, String pass) throws RemoteException{
-        _ci.enterForum(forum);
-        _ci.enterSubforum(subforum);
-        _ci.login(user, pass);
-        _forum=forum;
-        _subforum=subforum;
-        _user=user;
-        _pass=pass;
+        report r1,r2,r3;
+        r1=_ci.enterForum(forum);
+        r2=_ci.enterSubforum(subforum).getReport();
+        r3=_ci.login(user, pass);
+        if(r1==report.OK && r2==report.OK && r3==report.OK){
+            _forum=forum;
+            _subforum=subforum;
+            _user=user;
+            _pass=pass;
+            subforumNameLabel.setText(subforum);
+            reports.setText("modrator initialize done");
+        }else{
+            reports.setText("modrator initialize failed");
+        }
     }
     
     private void resetStatus() throws RemoteException{
@@ -74,12 +91,13 @@ public class ModeratorGUI extends javax.swing.JFrame {
         banningButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        subforumsList = new javax.swing.JList();
         subforumNameLabel = new javax.swing.JLabel();
         _1RadioButton = new javax.swing.JRadioButton();
         _2RadioButton = new javax.swing.JRadioButton();
         _3RadioButton = new javax.swing.JRadioButton();
         jLabel3 = new javax.swing.JLabel();
+        reports = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -89,11 +107,21 @@ public class ModeratorGUI extends javax.swing.JFrame {
         jScrollPane1.setViewportView(membersList);
 
         banningButton.setText("ban member");
+        banningButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                banningButtonActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("forums you moderator of:");
 
-        jList1.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
-        jScrollPane2.setViewportView(jList1);
+        subforumsList.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        subforumsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                subforumsListMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(subforumsList);
 
         subforumNameLabel.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
         subforumNameLabel.setText("subforum");
@@ -106,6 +134,8 @@ public class ModeratorGUI extends javax.swing.JFrame {
         _3RadioButton.setText("for ever");
 
         jLabel3.setText("choose member to ban");
+
+        reports.setText("--reports--");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -138,6 +168,10 @@ public class ModeratorGUI extends javax.swing.JFrame {
                                 .addComponent(subforumNameLabel)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(reports, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {_1RadioButton, _2RadioButton, _3RadioButton});
@@ -167,13 +201,29 @@ public class ModeratorGUI extends javax.swing.JFrame {
                                 .addComponent(banningButton))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(reports)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {_1RadioButton, _2RadioButton, _3RadioButton});
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void banningButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_banningButtonActionPerformed
+        
+    }//GEN-LAST:event_banningButtonActionPerformed
+
+    private void subforumsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_subforumsListMouseClicked
+        _subforum=(String) subforumsList.getSelectedValue();
+        try {
+            resetStatus();
+            subforumNameLabel.setText(_subforum);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ModeratorGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_subforumsListMouseClicked
 
     /**
      * @param args the command line arguments
@@ -205,7 +255,11 @@ public class ModeratorGUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ModeratorGUI().setVisible(true);
+                try {
+                    new ModeratorGUI().setVisible(true);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ModeratorGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -217,10 +271,11 @@ public class ModeratorGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JList membersList;
+    private javax.swing.JLabel reports;
     private javax.swing.JLabel subforumNameLabel;
+    private javax.swing.JList subforumsList;
     // End of variables declaration//GEN-END:variables
 }

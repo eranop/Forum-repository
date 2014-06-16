@@ -69,8 +69,8 @@ public interface RemoteInterface extends Remote{
 	 */
 	public abstract Vector<String> getModeratorsList(String subforum) throws RemoteException;
 	
-	
-	
+	public abstract Vector<String> getModeratorSubforumsVector(String forum, String moderator)
+			throws RemoteException;
 	/**
 	 * flow functions 
 	 */

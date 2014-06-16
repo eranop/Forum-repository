@@ -22,6 +22,7 @@ ConnectionFactory{
 		super();
 
 		try {
+			//System.setProperty("java.rmi.server.hostname", "132.73.198.149");
 			_sm=InitializeSystem.init("aviad", "123", "aviadelitzur@gmail.com");
 			Registry registry = LocateRegistry.createRegistry(200);
 			registry.rebind("aviad_elitzur_connections", this);

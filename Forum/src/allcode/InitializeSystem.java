@@ -50,7 +50,10 @@ public class InitializeSystem {
 		
 		uc.enterSubforum("ping pong1");
 		uc.login("avi",	"123");
-		uc.addModerator("oriya");
+		r=uc.addModerator("oriya");
+		uc.exitSubforum();
+		uc.enterSubforum("ping pong2");
+		r=uc.addModerator("oriya");
 		uc.logout();
 		uc.login("oriya", "oriya");
 		Post p=(Post) uc.writePost("first post", "oriya check our project first time").getMe();
@@ -68,7 +71,7 @@ public class InitializeSystem {
 		
 		sm.closeConnection(uc.getID());
 		sm.closeConnection(c.getID());
-		System.out.println("admin appoint " + r.toString());
+		System.out.println("moderator appoint " + r.toString());
 		return sm;
 	}	
 }
