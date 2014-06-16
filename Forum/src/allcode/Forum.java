@@ -11,7 +11,7 @@ import services.Email;
 import services.Response;
 import services.report;
 
-import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -28,6 +28,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.Session;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 
 @Entity
@@ -47,12 +49,14 @@ public class Forum implements Serializable{
 	@Embedded
 	private ForumPolicy _forumPolicy;
 
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
+	@OneToMany(fetch=FetchType.EAGER) 
+	@Cascade(value={CascadeType.ALL})
 	@JoinTable(name="members_in_forum",
 	joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="member_id")})
 	private List<Member> _members;
 
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
+	@OneToMany(fetch=FetchType.EAGER) 
+	@Cascade(value={CascadeType.ALL})
 	@JoinTable(name="subForums_Of_Forum",
 	joinColumns={@JoinColumn(name="forum")},inverseJoinColumns={@JoinColumn(name="subForum_id")})
 	private List<SubForum> _subForums;
