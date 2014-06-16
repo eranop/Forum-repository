@@ -98,7 +98,7 @@ public class Member implements Serializable{
 	private List <Password> _oldPasswords;
 	
 	@ElementCollection(fetch=FetchType.EAGER)
-	  @MapKeyColumn(name="_index")
+	  @MapKeyColumn(name="_postID")
 	@Column(name="post")
 	@CollectionTable(name="member_posts",joinColumns={@JoinColumn(name="member_index")})
 	/*@OneToMany(mappedBy="_publisher")

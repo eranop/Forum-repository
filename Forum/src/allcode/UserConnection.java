@@ -414,6 +414,34 @@ public class UserConnection extends SiteConnection {
 		return report.NOT_ALLOWED;
 	}
 
+	public report deletePostByIndex(int index){
+		if(_forum==null){
+			System.out.println("not connected to forum!");
+			_log.writeToLog("deletePost",report.NO_FORUM);
+			return report.NO_FORUM;
+		}
+		if(_subForum==null){
+			System.out.println("not connected to subforum!");
+			_log.writeToLog("deletePost",report.NO_SUBFORUM);
+			return report.NO_SUBFORUM;
+		}
+		if(_member==null){
+			System.out.println("user not logged!");
+			_log.writeToLog("deletePost",report.NOT_LOGGED);
+			return report.NOT_LOGGED;
+		}
+		Post post= _subForum.getPostByIndex(index);
+		if (post !=null && _forum.canDeletePost(_member, post, _subForum)){
+			report rep = _subForum.deletePost(post);
+			if(rep!=report.OK){
+				_log.writeToLog("deletePost",rep);
+			}
+			else _log.writeToLog("deletePost");
+			return rep;
+		}
+		_log.writeToLog("deletePost",report.NOT_ALLOWED);
+		return report.NOT_ALLOWED;
+	}
 
 	/**
 	 * functions that transform objects of domain layer 

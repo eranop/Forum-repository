@@ -44,6 +44,8 @@ public interface RemoteInterface extends Remote{
 
 	public abstract report deletePost() throws RemoteException;
 	
+	public abstract report deletePostByIndex(int index) throws RemoteException;
+
 	public abstract Vector<String> getForums() throws RemoteException;
 
 	public abstract Vector<String> getSubForums(String forum) throws RemoteException;

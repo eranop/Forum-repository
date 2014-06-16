@@ -70,7 +70,7 @@
                                       </Group>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Component id="connectButton" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="9" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="postInformationLabel" max="32767" attributes="0"/>
                               </Group>
@@ -81,20 +81,24 @@
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="jScrollPane4" min="-2" pref="412" max="-2" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="jLabel7" max="32767" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="postNumberField" min="-2" pref="48" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="editPostButton" max="32767" attributes="0"/>
-                                      <Component id="enterPostButton" pref="119" max="32767" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <Component id="jLabel7" max="32767" attributes="0"/>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Component id="postNumberField" min="-2" pref="48" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                          <Component id="enterPostButton" min="-2" pref="119" max="-2" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="editPostButton" min="-2" pref="119" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
+                                  <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                                  <Component id="deletePostButton" min="-2" pref="110" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="main_title" min="-2" pref="432" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="main_title" alignment="0" min="-2" pref="432" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="88" max="-2" attributes="0"/>
                   </Group>
@@ -123,7 +127,7 @@
                                           <Component id="password" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
-                                  <Component id="forgatPasswordLabel" alignment="1" pref="232" max="32767" attributes="0"/>
+                                  <Component id="forgatPasswordLabel" alignment="1" pref="241" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                           </Group>
@@ -261,13 +265,16 @@
                               <Component id="adminButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="enterPostButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="postNumberField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="complainButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="editPostButton" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="editPostButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="enterPostButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="deletePostButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -547,6 +554,14 @@
         </Property>
         <Property name="text" type="java.lang.String" value="write post"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="deletePostButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="delete post"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deletePostButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

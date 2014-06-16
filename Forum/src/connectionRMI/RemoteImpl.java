@@ -97,6 +97,11 @@ public class RemoteImpl extends UnicastRemoteObject implements RemoteInterface{
 	}
 
 	@Override
+	public report deletePostByIndex(int index) {
+		return this.uc.deletePostByIndex(index);
+	}
+
+	@Override
 	public Response getListOfPostsByMember(String mNickname) {
 		return this.uc.getListOfPostsByMember(mNickname);
 	}

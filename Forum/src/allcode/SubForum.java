@@ -78,14 +78,14 @@ public class SubForum implements Serializable{
 	private List <Member> _moderators;		//List of moderatos (maybe should be set so the same user cannot be added twice)
 	
 	@ElementCollection(fetch=FetchType.EAGER)
-	  @MapKeyColumn(name="_index")
+	  @MapKeyColumn(name="_postID")
 	@Column(name="post")
 	@CollectionTable(name="all_posts",joinColumns={@JoinColumn(name="subForum_index")})
 	
 	private Map <Integer, Post> _allPosts;	//List of all posts
 	
 	@ElementCollection(fetch=FetchType.EAGER)
-	  @MapKeyColumn(name="_index")
+	  @MapKeyColumn(name="_postID")
 	@Column(name="post")
 	@CollectionTable(name="root_posts",joinColumns={@JoinColumn(name="subForum_index")})
 	private Map <Integer, Post> _rootPosts;	//List of root posts
