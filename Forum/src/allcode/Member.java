@@ -25,8 +25,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 
 import org.hibernate.Session;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
-import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -69,6 +70,7 @@ public class Member implements Serializable{
 	
 	
 	@OneToOne
+	@Cascade(value={CascadeType.ALL})
 	@JoinColumn(name="forumName")
 	private Forum _forum;
 	
@@ -82,23 +84,27 @@ public class Member implements Serializable{
 	private String _verificationCode;
 	
 	@OneToOne 
+	@Cascade(value={CascadeType.ALL})
 	@JoinColumn(name="promoter")
 	private Member promoter;
 	
 	@Transient //not implemented
 	private MemberType _type;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)  
+	@OneToMany(fetch=FetchType.EAGER)  
+	@Cascade(value={CascadeType.ALL})
 	 @JoinTable(name="friends_of_member",
 	 joinColumns={@JoinColumn(name="memberID")},inverseJoinColumns={@JoinColumn(name="freindID")})
 	private List <Member> _friends;
 	
 	@ElementCollection(fetch=FetchType.EAGER)
+	@Cascade(value={CascadeType.ALL})
 	@CollectionTable(name="old_passwords",joinColumns=@JoinColumn(name="memberID"))
 	private List <Password> _oldPasswords;
 	
 	@ElementCollection(fetch=FetchType.EAGER)
-	  @MapKeyColumn(name="_index")
+	@Cascade(value={CascadeType.ALL})
+	  @MapKeyColumn(name="_postID")
 	@Column(name="post")
 	@CollectionTable(name="member_posts",joinColumns={@JoinColumn(name="member_index")})
 	/*@OneToMany(mappedBy="_publisher")
@@ -106,6 +112,7 @@ public class Member implements Serializable{
 	private Map <Integer, Post> _posts;
 	
 	@ElementCollection(fetch=FetchType.EAGER)
+	@Cascade(value={CascadeType.ALL})
 	  @MapKeyColumn(name="message_index")
 	@Column(name="messages")
 	@CollectionTable(name="member_messages",joinColumns={@JoinColumn(name="member_index")})

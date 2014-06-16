@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
+
+
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -23,18 +24,27 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.Session;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name = "Post")
 public class Post implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-
+	@Id
+	@GeneratedValue
+	@Column(name="post_index")
+	private int _postID;
+	
+	
 	@ManyToOne
+	@Cascade(value={CascadeType.ALL})
 	@JoinColumn(name="root_post")
 	private Post _root;
 	
 	@ManyToOne
+	@Cascade(value={CascadeType.ALL})
 	@JoinColumn(name="member_id")
 	private Member _publisher;
 	
@@ -44,13 +54,13 @@ public class Post implements Serializable{
 	@Column (name="post_content",length=8000)
 	private String _content;
 	
-	@Id
-	@Column(name = "post_index")
+	@Column(name = "post_index_per_subforum")
 	private int _index;
 	
 	
 	@ElementCollection(fetch=FetchType.EAGER)
-	  @MapKeyColumn(name="_index")
+	@Cascade(value={CascadeType.ALL})
+	  @MapKeyColumn(name="_postID")
 	@Column(name="respond_post")
 	@CollectionTable(name="responds",joinColumns={@JoinColumn(name="original_post_index")})
 	private Map <Integer, Post> _responses;
