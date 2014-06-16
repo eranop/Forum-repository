@@ -7,9 +7,13 @@ package myGUI;
 import connectionRMI.RMIclient;
 import connectionRMI.RemoteInterface;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
+import services.Response;
 import services.report;
 
 /**
@@ -18,14 +22,15 @@ import services.report;
  */
 public class AdminGUI extends javax.swing.JFrame {
     private final RemoteInterface _ci;
-    private String _forumName;
+    private String _forumName, _user, _pass;
+    
     /**
      * Creates new form ModeratorsGUI
      */
     public AdminGUI() throws RemoteException {
         initComponents();
          _ci=RMIclient.getConnectionByFactory();      
-         boolean ans=setForum("sport", "oriya", "oriya");
+         boolean ans=setForum("sport", "avi", "123");
          reports.setText("initialize adninistrator panel: " + ans);
     }
     public boolean setForum(String forumName, String userName, String pass) throws RemoteException{
@@ -35,12 +40,17 @@ public class AdminGUI extends javax.swing.JFrame {
            reports.setText("OK");
            Vector<String> subforums=_ci.getSubForums(forumName);
            subforumsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(subforums));
-           _forumName= forumName;
+           _forumName= forumName; _user=userName; _pass= pass;
            return true;
            }else{
-               reports.setText("find forum failed: " + r.toString());
+               reports.setText("find forum failed: " + r1.toString() + r2.toString());
                return false;
         }
+    }
+    public void setAdmin() throws RemoteException{
+        _ci.exitForum();
+        _ci.enterForum(_forumName);
+        _ci.login(_user, _pass);
     }
 
     /**
@@ -74,10 +84,22 @@ public class AdminGUI extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jLabel4 = new javax.swing.JLabel();
         informationLabel = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        newSubforumTextField = new javax.swing.JTextField();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        newSubforumTextArea = new javax.swing.JTextArea();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        newSubforumButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         cancelSubButton.setText("cancel sub forum");
+        cancelSubButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelSubButtonActionPerformed(evt);
+            }
+        });
 
         appointModeratorButton.setText("appoint moderator");
         appointModeratorButton.addActionListener(new java.awt.event.ActionListener() {
@@ -112,6 +134,11 @@ public class AdminGUI extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
         jLabel7.setText("complains:");
 
+        moderatorsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                moderatorsListMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(moderatorsList);
 
         jLabel8.setText("choose moderator to fire:");
@@ -136,13 +163,28 @@ public class AdminGUI extends javax.swing.JFrame {
 
         informationLabel.setText("information- who appoint and when");
 
+        jLabel5.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
+        jLabel5.setText("create new sub-forum");
+
+        newSubforumTextArea.setColumns(20);
+        newSubforumTextArea.setRows(5);
+        jScrollPane5.setViewportView(newSubforumTextArea);
+
+        jLabel9.setText("topic:");
+
+        jLabel10.setText("description:");
+
+        newSubforumButton.setText("submit");
+        newSubforumButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newSubforumButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(reports, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(159, 159, 159))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -160,47 +202,65 @@ public class AdminGUI extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
                                     .addComponent(fireModeratorButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel8)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                            .addComponent(jLabel8))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(postsSizeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
-                        .addGap(136, 136, 136))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(subforumsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addGap(226, 226, 226)
-                            .addComponent(cancelSubButton, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel6)
-                            .addGap(245, 245, 245))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(62, 62, 62)))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(informationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(136, 136, 136))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(55, 55, 55)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(subforumsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGap(226, 226, 226)
+                                        .addComponent(cancelSubButton, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(123, 123, 123)
                                 .addComponent(jLabel4)
-                                .addGap(115, 115, 115)
-                                .addComponent(jLabel7)))
-                        .addGap(213, 213, 213))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel7)
+                                .addGap(66, 66, 66))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(86, 86, 86)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(informationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel1)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(postsSizeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGap(209, 209, 209)))))
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(60, 60, 60)
+                .addComponent(reports, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel9)
+                        .addGap(18, 18, 18)
+                        .addComponent(newSubforumTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(43, 43, 43)
+                        .addComponent(jLabel10)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(newSubforumButton)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -216,7 +276,6 @@ public class AdminGUI extends javax.swing.JFrame {
                         .addComponent(cancelSubButton)
                         .addComponent(jLabel4)
                         .addComponent(jLabel7)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -229,18 +288,33 @@ public class AdminGUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(fireModeratorButton)
-                            .addComponent(appointModeratorButton))
+                            .addComponent(appointModeratorButton)))
+                    .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(postsSizeLabel)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jScrollPane2)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(informationLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
-                .addComponent(reports)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(26, 26, 26)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5)
+                    .addComponent(informationLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(newSubforumTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel1)
+                    .addComponent(postsSizeLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(newSubforumButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                        .addComponent(reports))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -255,8 +329,9 @@ public class AdminGUI extends javax.swing.JFrame {
             members.removeAll(moderators);
             membersList.setListData(members.toArray());
             moderatorsList.setListData(moderators.toArray());
-            _ci.exitSubforum();
-            _ci.enterSubforum(subforum);
+            setAdmin();
+            Response r=_ci.enterSubforum(subforum);
+            reports.setText("enter subfurum: " + subforum + " " + r.getReport().toString());
         } catch (RemoteException ex) {
             Logger.getLogger(AdminGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -264,30 +339,75 @@ public class AdminGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_subforumsComboBoxActionPerformed
 
     private void appointModeratorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_appointModeratorButtonActionPerformed
-        String moderator= appointModeratorButton.getText();
+        String moderator= (String) membersList.getSelectedValue();
+        int index= membersList.getSelectedIndex();
         try {
             report r = _ci.addModerator(moderator);
             reports.setText("appoint moderator: " + r.toString());
-            if(r==report.OK){
-                //TODO: set the list to be corect
-            }
+           
         } catch (RemoteException ex) {
             Logger.getLogger(AdminGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_appointModeratorButtonActionPerformed
 
     private void fireModeratorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fireModeratorButtonActionPerformed
-        String moderator= fireModeratorButton.getText();
+        String moderator= (String) moderatorsList.getSelectedValue();
+        int index= moderatorsList.getSelectedIndex();
         try {
             report r = _ci.removeModerator(moderator);
-            reports.setText("appoint moderator: " + r.toString());
-            if(r==report.OK){
-                //TODO: set the list to be corect
-            }
+            reports.setText("fire moderator: " + r.toString());
+           
         } catch (RemoteException ex) {
             Logger.getLogger(AdminGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_fireModeratorButtonActionPerformed
+
+    private void newSubforumButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newSubforumButtonActionPerformed
+        String topic= newSubforumTextField.getText();
+        String desc= newSubforumTextArea.getText();
+        if(topic.equals("") || desc.equals("")){
+            reports.setText("empty fields. please fill topic and description");
+        }else{
+            try {
+                setAdmin();
+                report r= _ci.createSubforum(topic, desc);
+                reports.setText("create new sub forum: " + r.toString());
+                if(r==report.OK){
+                    Vector<String> subforums=_ci.getSubForums(_forumName);
+                    subforumsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(subforums));
+           
+                    newSubforumTextArea.setText("");
+                    newSubforumTextField.setText("");
+                }
+            } catch (RemoteException ex) {
+                Logger.getLogger(AdminGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_newSubforumButtonActionPerformed
+
+    private void cancelSubButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelSubButtonActionPerformed
+        String sub=(String) subforumsComboBox.getSelectedItem();
+        try {
+            report r=_ci.deleteSubForum(sub);
+            reports.setText("delete sub-forum: " + r.toString());
+            if(r==report.OK){
+                Vector<String> subforums=_ci.getSubForums(_forumName);
+                subforumsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(subforums));
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(AdminGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_cancelSubButtonActionPerformed
+
+    private void moderatorsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderatorsListMouseClicked
+        String moderator=(String) moderatorsList.getSelectedValue();
+        try {
+            Vector<String> s=_ci.getQuestions();
+            complainsTextArea.setText(s.elementAt(0));
+        } catch (RemoteException ex) {
+            Logger.getLogger(AdminGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_moderatorsListMouseClicked
 
     /**
      * @param args the command line arguments
@@ -334,19 +454,26 @@ public class AdminGUI extends javax.swing.JFrame {
     private javax.swing.JButton fireModeratorButton;
     private javax.swing.JLabel informationLabel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JList membersList;
     private javax.swing.JList moderatorsList;
+    private javax.swing.JButton newSubforumButton;
+    private javax.swing.JTextArea newSubforumTextArea;
+    private javax.swing.JTextField newSubforumTextField;
     private javax.swing.JLabel postsSizeLabel;
     private javax.swing.JLabel reports;
     private javax.swing.JComboBox subforumsComboBox;
