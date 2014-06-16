@@ -12,7 +12,7 @@ import services.Complain;
 import services.Response;
 import services.report;
 
-import javax.persistence.CascadeType;
+
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -34,6 +34,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.Session;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity
 
@@ -64,10 +66,12 @@ public class SubForum implements Serializable{
 	
 	
 	@OneToOne
+	@Cascade(value={CascadeType.ALL})
 	@JoinColumn(name="father_forum")
 	private Forum _forum;						//The main forum above this sub.
 	
 	@OneToMany(fetch=FetchType.EAGER)
+	@Cascade(value={CascadeType.ALL})
 	@JoinTable 
 	(
 			name="subForum_moderators",
@@ -78,6 +82,8 @@ public class SubForum implements Serializable{
 	private List <Member> _moderators;		//List of moderatos (maybe should be set so the same user cannot be added twice)
 	
 	@ElementCollection(fetch=FetchType.EAGER)
+
+	@Cascade(value={CascadeType.ALL})
 	  @MapKeyColumn(name="_postID")
 	@Column(name="post")
 	@CollectionTable(name="all_posts",joinColumns={@JoinColumn(name="subForum_index")})
@@ -85,6 +91,7 @@ public class SubForum implements Serializable{
 	private Map <Integer, Post> _allPosts;	//List of all posts
 	
 	@ElementCollection(fetch=FetchType.EAGER)
+	@Cascade(value={CascadeType.ALL})
 	  @MapKeyColumn(name="_postID")
 	@Column(name="post")
 	@CollectionTable(name="root_posts",joinColumns={@JoinColumn(name="subForum_index")})
